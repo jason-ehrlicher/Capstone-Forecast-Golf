@@ -2,13 +2,13 @@ import React from "react";
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import Topbar from "./scenes/global/Topbar";
-import Sidebar from  "./scenes/Sidebar"
+import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Reports from "./scenes/reports";
 import History from "./scenes/history";
 import Upload from "./scenes/Upload";
 import ForeCast from "./scenes/forecast";
-import Calender from "./scenes/calender";
+import Calendar from "./scenes/calendar"
 import Team from "./scenes/team"
 import { Route, Routes } from "react-router-dom";
 
@@ -19,9 +19,9 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="App">
+        <div className="App" style={{ display: 'flex', height: '100vh' }}>
           <Sidebar />
-          <main className="content">
+          <div className="main-content" style={{ flex: 1, overflow: 'auto' }}>
             <Topbar />
             <Routes>
               <Route path="/" element={<Dashboard />} />
@@ -30,9 +30,9 @@ function App() {
               <Route path="/history" element={<History />} />
               <Route path="/upload" element={<Upload />} />
               <Route path="/forecast" element={<ForeCast />} />
-              <Route path="/calendar" element={<Calender />} />
+              <Route path="/calendar" element={<Calendar />} />
             </Routes>
-          </main>
+          </div>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
