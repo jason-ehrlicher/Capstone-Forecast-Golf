@@ -12,6 +12,7 @@ import Calendar from "./scenes/calendar";
 import Team from "./scenes/team";
 import Landing from "./scenes/landing";
 import { Route, Routes, useLocation as useAppLocation } from "react-router-dom";
+import SignUpModal from "./components/SignUpModal";
 
 function App() {
   const [theme, colorMode] = useMode();
