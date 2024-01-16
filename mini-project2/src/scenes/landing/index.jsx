@@ -14,11 +14,8 @@ import Typography from "@mui/material/Typography";
 import logo from "/assets/forecast golf banner.png";
 import logo2 from "/assets/forecast golf logo1.png";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
+import SignUpModal from "../../components/SignUpModal";
 
 function Copyright(props) {
   return (
@@ -40,12 +37,11 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-const handleOpenModal = () => {
-  setOpenModal(true);
-};
+
 
 export default function SignInSide() {
-  const [openModal, setOpenModal] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
@@ -171,14 +167,8 @@ export default function SignInSide() {
           </Box>
         </Grid>
       </Grid>
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>Sign Up</DialogTitle>
-        <DialogContent>{/* Content for Sign Up */}</DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal}>Cancel</Button>
-          <Button onClick={handleCloseModal}>Sign Up</Button>
-        </DialogActions>
-      </Dialog>
+            {/* SignUpModal */}
+            <SignUpModal open={openModal} onClose={handleCloseModal} />
     </ThemeProvider>
   );
 }
