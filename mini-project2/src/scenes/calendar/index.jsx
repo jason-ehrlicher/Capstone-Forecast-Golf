@@ -135,7 +135,7 @@ const Calendar = () => {
             ]}
             headerToolbar={{
               left: "prev,next today",
-              canter: "title",
+              center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
             initialViw="dayGridMonth"
@@ -155,32 +155,32 @@ const Calendar = () => {
               {
                 id: "5123",
                 title: "Tuesday Mens League",
-                date: "2024-01-22",
+                date: "2024-01-23",
               },
               {
                 id: "5124",
                 title: "Tuesday Mens League",
-                date: "2024-01-01",
+                date: "2024-01-02",
               },
               {
                 id: "5125",
                 title: "Tuesday Mens League",
-                date: "2024-01-08",
+                date: "2024-01-09",
               },
               {
                 id: "5126",
                 title: "Tuesday Mens League",
-                date: "2024-01-15",
+                date: "2024-01-16",
               },
               {
                 id: "5127",
                 title: "Tuesday Mens League",
-                date: "2024-01-29",
+                date: "2024-01-30",
               },
               {
                 id: "5128",
                 title: "Tuesday Mens League",
-                date: "2024-02-05",
+                date: "2024-02-06",
               },
             ]}
           />
