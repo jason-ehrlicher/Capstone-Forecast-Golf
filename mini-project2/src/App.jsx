@@ -12,7 +12,7 @@ import Calendar from "./scenes/calendar";
 import Team from "./scenes/team";
 import Landing from "./scenes/landing";
 import { Route, Routes, useLocation as useAppLocation } from "react-router-dom";
-import SignUpModal from "./components/SignUpModal";
+import Weather from "./scenes/weather";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -30,6 +30,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/weather" element={<Weather />} />
               <Route path="/team" element={<Team />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/history" element={<History />} />
