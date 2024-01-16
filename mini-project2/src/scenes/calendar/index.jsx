@@ -1,5 +1,5 @@
 import Header from "../../components/Header";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -15,37 +15,75 @@ import {
   useTheme,
 } from "@mui/material";
 import { tokens } from "../../theme";
+import CalendarModal from "../../components/CalendarModal";
+
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [currentEvents, setCurrentEvents] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const calendarRef = useRef(null);
 
-  const handleDateClick = (selected) => {
-    const title = prompt("Please enter a title for your event");
-    const calendarApi = selected.view.calendar;
-    calendarApi.unselect();
-
-    if (title) {
-      calendarApi.addEvent({
-        id: `${selected.dateStr}-${title}`,
-        title,
-        start: selected.startStr,
-        end: selected.endStr,
-        allDay: selected.allDay,
-      });
-    }
+  const createEventId = () => {
+    return String(new Date().getTime()); // Example to create a unique ID based on the current timestamp
   };
 
-  const handleEventClick = () => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete the event? '${selected.event.title}'`
-      )
-    ) {
-      selected.event.remove();
-    }
+  const handleDateClick = (selectedInfo) => {
+    // Prepare a new event object
+    const newEvent = {
+      start: selectedInfo.startStr,
+      end: selectedInfo.endStr,
+      allDay: selectedInfo.allDay,
+    };
+    setSelectedEvent(newEvent);
+    setModalOpen(true);
   };
+
+  const handleEventClick = (clickInfo) => {
+    // Set the selected event and open the modal
+    setSelectedEvent({
+      id: clickInfo.event.id,
+      title: clickInfo.event.title,
+      start: clickInfo.event.start,
+      end: clickInfo.event.end,
+      allDay: clickInfo.event.allDay,
+    });
+    setModalOpen(true);
+  };
+
+  const handleEventAdd = (event) => {
+    const calendarApi = calendarRef.current.getApi();
+    calendarApi.addEvent({
+      id: createEventId(), // Ensure a unique ID is generated for new events
+      title: event.title,
+      start: event.start,
+      end: event.end,
+      allDay: event.allDay,
+    });
+    setCurrentEvents(calendarApi.getEvents());
+  };
+
+  const handleEventUpdate = (event) => {
+    const calendarApi = calendarRef.current.getApi();
+    let eventToUpdate = calendarApi.getEventById(event.id);
+    if (eventToUpdate) {
+      eventToUpdate.setProp("title", event.title);
+      eventToUpdate.setDates(event.start, event.end);
+    }
+    setCurrentEvents(calendarApi.getEvents());
+  };
+
+  const handleEventDelete = (event) => {
+    const calendarApi = calendarRef.current.getApi();
+    let eventToDelete = calendarApi.getEventById(event.id);
+    if (eventToDelete) {
+      eventToDelete.remove();
+    }
+    setCurrentEvents(calendarApi.getEvents());
+  };
+
   return (
     <Box m="20px">
       <Header title="CALENDAR" subtitle="Plan and Track Your Schedule" />
@@ -87,6 +125,7 @@ const Calendar = () => {
         {/* calendar */}
         <Box flex="1 1 100%" ml="15px">
           <FullCalendar
+            ref={calendarRef}
             height="75vh"
             plugins={[
               dayGridPlugin,
@@ -147,6 +186,14 @@ const Calendar = () => {
           />
         </Box>
       </Box>
+      <CalendarModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        selectedEvent={selectedEvent}
+        onAddEvent={handleEventAdd}
+        onUpdateEvent={handleEventUpdate}
+        onDeleteEvent={handleEventDelete}
+      />
     </Box>
   );
 };
