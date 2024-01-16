@@ -11,6 +11,7 @@ import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+import ThermostatOutlinedIcon from "@mui/icons-material/ThermostatOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import logo from "/assets/forecast golf logo1.png";
@@ -122,7 +123,7 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Dashboard"
-              to="/"
+              to="/dashboard"
               icon={<DashboardOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -135,13 +136,20 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Weather"
+              to="/weather"
+              icon={<ThermostatOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Manage Team"
               to="/team"
               icon={<PeopleOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-                        <Typography
+            <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}

@@ -130,7 +130,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
+
               <Box
                 sx={{
                   display: "flex",
@@ -146,6 +146,7 @@ export default function SignInSide() {
                   style={{ maxWidth: "150px" }}
                 />
               </Box>
+              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>
