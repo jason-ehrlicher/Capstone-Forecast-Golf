@@ -8,23 +8,27 @@ import Reports from "./scenes/reports";
 import History from "./scenes/history";
 import Upload from "./scenes/Upload";
 import ForeCast from "./scenes/forecast";
-import Calendar from "./scenes/calendar"
-import Team from "./scenes/team"
-import { Route, Routes } from "react-router-dom";
+import Calendar from "./scenes/calendar";
+import Team from "./scenes/team";
+import Landing from "./scenes/landing";
+import { Route, Routes, useLocation as useAppLocation } from "react-router-dom";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const appLocation = useAppLocation();
+  const isLandingPAge = appLocation.pathname === "/";
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="App" style={{ display: 'flex', height: '100vh' }}>
-          <Sidebar />
-          <div className="main-content" style={{ flex: 1, overflow: 'auto' }}>
-            <Topbar />
+        <div className="App" style={{ display: "flex", height: "100vh" }}>
+          {!isLandingPAge && <Sidebar />}
+          <div className="main-content" style={{ flex: 1, overflow: "auto" }}>
+            {!isLandingPAge && <Topbar />}
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/history" element={<History />} />
