@@ -13,6 +13,7 @@ import Team from "./scenes/team";
 import Landing from "./scenes/landing";
 import { Route, Routes, useLocation as useAppLocation } from "react-router-dom";
 import Weather from "./scenes/weather";
+import FAQ from "./scenes/faq";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -37,6 +38,7 @@ function App() {
               <Route path="/upload" element={<Upload />} />
               <Route path="/forecast" element={<ForeCast />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/faq" element={<FAQ />} />
             </Routes>
           </div>
         </div>
