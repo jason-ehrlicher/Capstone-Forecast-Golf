@@ -14,7 +14,7 @@ const Upload = () => {
 
   const handleUpload = () => {
     if (selectedFile) {
-      // Implement your file upload logic here
+      // Implement file upload logic here
       console.log("Uploading file:", selectedFile.name);
     }
   };
