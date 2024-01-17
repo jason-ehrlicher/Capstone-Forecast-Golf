@@ -113,7 +113,7 @@ const Sidebar = () => {
             </Box>
           )}
           {/* Menu Items */}
-          <Box paddingLEft={isCollapsed ? undefined : "10px"}>
+          <Box paddingLeft={isCollapsed ? undefined : "10px"}>
             <Typography
               variant="h6"
               color={colors.grey[300]}

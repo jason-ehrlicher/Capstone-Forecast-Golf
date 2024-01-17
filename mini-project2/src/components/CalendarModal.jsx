@@ -10,12 +10,11 @@ import {
   Checkbox,
   FormControlLabel,
   IconButton,
+  Box,
+  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box } from "@mui/material";
-import { useTheme, } from "@emotion/react";
 import { tokens } from "../theme";
-
 
 function CalendarModal({
   open,
@@ -59,52 +58,138 @@ function CalendarModal({
   return (
     <Dialog open={open} onClose={onClose}>
       {/* Logo Image */}
-      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          p: 5,
+          backgroundColor:
+            theme.palette.mode === "light" ? "#fcfcfc" : colors.primary[400],
+        }}
+      >
         <img
           src={logo}
           alt="Forecast Golf Logo"
           style={{ maxWidth: "350px" }}
         />
       </Box>
-      <DialogTitle>
+      <DialogTitle sx={{ backgroundColor: colors.primary[400] }}>
         Event Details:
         <IconButton
           aria-label="close"
           onClick={onClose}
-          style={{ position: "absolute", right: 8, top: 8 }}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: colors.grey[100],
+          }}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          backgroundColor:
+            theme.palette.mode === "light" ? "#fcfcfc" : colors.primary[500],
+        }}
+      >
         <TextField
           fullWidth
           label="Event Title"
           value={eventTitle}
           onChange={(e) => setEventTitle(e.target.value)}
           margin="normal"
+          InputLabelProps={{
+            style: {
+              color:
+                theme.palette.mode === "light"
+                  ? colors.primary[100]
+                  : colors.grey[100],
+            },
+          }}
+          InputProps={{
+            style: {
+              color:
+                theme.palette.mode === "light"
+                  ? colors.primary[800]
+                  : colors.grey[100],
+            },
+            notchedOutline: {
+              borderColor:
+                theme.palette.mode === "light"
+                  ? colors.primary[400]
+                  : colors.grey[100],
+            },
+          }}
+          sx={{
+            "& label.Mui-focused": {
+              color: colors.primary[100],
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: colors.primary[100],
+              },
+              "&:hover fieldset": {
+                borderColor: colors.primary[100],
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: colors.primary[100],
+              },
+            },
+          }}
         />
+
         <FormControlLabel
           control={
             <Checkbox
               checked={allDay}
               onChange={(e) => setAllDay(e.target.checked)}
+              sx={{
+                color: colors.greenAccent[500],
+                "&.Mui-checked": {
+                  color: colors.blueAccent[500],
+                },
+                "&:not(.Mui-checked)": {
+                  color:
+                    theme.palette.mode === "light"
+                      ? colors.primary[100]
+                      : colors.greenAccent[500],
+                },
+              }}
             />
           }
           label="All Day Event"
+          sx={{
+            color:
+              theme.palette.mode === "light"
+                ? colors.primary[100]
+                : colors.grey[100],
+          }}
         />
       </DialogContent>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          backgroundColor:
+            theme.palette.mode === "light" ? "#fcfcfc" : colors.primary[600],
+          color:
+            theme.palette.mode === "light"
+              ? colors.grey[700]
+              : colors.grey[100],
+        }}
+      >
         {isExistingEvent && (
           <Button
-          style={{ color: 'red' }}
             onClick={() => onDeleteEvent(selectedEvent)}
+            sx={{ color: colors.redAccent[500] }}
           >
             Delete Event
           </Button>
         )}
-        <Button onClick={handleSubmit}
-        color="secondary"
+        <Button
+          onClick={handleSubmit}
+          color="secondary"
+          sx={{ color: colors.greenAccent[500] }}
         >
           {isExistingEvent ? "Update" : "Add"} Event
         </Button>
