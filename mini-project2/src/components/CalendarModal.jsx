@@ -115,12 +115,12 @@ function CalendarModal({
                   ? colors.primary[800]
                   : colors.grey[100],
             },
-            notchedOutline: {
-              borderColor:
-                theme.palette.mode === "light"
-                  ? colors.primary[400]
-                  : colors.grey[100],
-            },
+            // notchedOutline: {
+            //   borderColor:
+            //     theme.palette.mode === "light"
+            //       ? colors.primary[400]
+            //       : colors.grey[100],
+            // },
           }}
           sx={{
             "& label.Mui-focused": {

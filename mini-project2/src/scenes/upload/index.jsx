@@ -9,7 +9,14 @@ const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    const fileType = file.type;
+    if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || fileType === "application/vnd.ms-excel" || file.name.endsWith('.csv')) {
+      setSelectedFile(file);
+    } else {
+      alert("Please select an Excel or CSV file.");
+      event.target.value = null; // Reset the input
+    }
   };
 
   const handleUpload = () => {
@@ -31,12 +38,17 @@ const Upload = () => {
           p: 4,
           "& .MuiPaper-root": {
             backgroundColor: colors.primary[400],
+            color: colors.grey[100],
           },
           "& .MuiButton-root": {
             backgroundColor: colors.greenAccent[600],
+            '&:hover': {
+              backgroundColor: colors.greenAccent[500],
+            },
           },
           "& .MuiInput-root": {
             borderBottom: `1px solid ${colors.greenAccent[700]}`,
+            color: colors.grey[100],
           },
         }}
       >
@@ -55,13 +67,15 @@ const Upload = () => {
             width: "60%",
             maxWidth: "600px",
             minHeight: "200px",
+            backgroundColor: colors.primary[500],
+            color: colors.grey[100],
           }}
         >
           <Input
             type="file"
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             onChange={handleFileChange}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, color: colors.grey[100] }}
           />
           <Button
             variant="contained"
@@ -72,7 +86,7 @@ const Upload = () => {
             Upload File
           </Button>
           {selectedFile && (
-            <Typography variant="subtitle1" sx={{ mt: 2 }}>
+            <Typography variant="subtitle1" sx={{ mt: 2, color: colors.grey[100] }}>
               File selected: {selectedFile.name}
             </Typography>
           )}
