@@ -17,21 +17,28 @@ import {
 import { tokens } from "../../theme";
 import CalendarModal from "../../components/CalendarModal";
 
-
+// Calendar component definition
 const Calendar = () => {
+  // Using Material-UI theme and custom tokens for styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // State for managing current events, modal visibility, and selected event
   const [currentEvents, setCurrentEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Ref for accessing the FullCalendar API
   const calendarRef = useRef(null);
 
+  // Function to create a unique event ID
   const createEventId = () => {
-    return String(new Date().getTime()); // Example to create a unique ID based on the current timestamp
+    return String(new Date().getTime()); // Create a unique ID based on the current timestamp
   };
 
+  // Function to handle date selection on the calendar
   const handleDateClick = (selectedInfo) => {
-    // Prepare a new event object
+    // Creating a new event object and opening the modal
     const newEvent = {
       start: selectedInfo.startStr,
       end: selectedInfo.endStr,
@@ -41,6 +48,7 @@ const Calendar = () => {
     setModalOpen(true);
   };
 
+  // Function to handle existing event clicks
   const handleEventClick = (clickInfo) => {
     // Set the selected event and open the modal
     setSelectedEvent({
@@ -53,6 +61,7 @@ const Calendar = () => {
     setModalOpen(true);
   };
 
+  // Function to handle adding a new event
   const handleEventAdd = (event) => {
     const calendarApi = calendarRef.current.getApi();
     calendarApi.addEvent({
@@ -65,6 +74,7 @@ const Calendar = () => {
     setCurrentEvents(calendarApi.getEvents());
   };
 
+  // Function to handle updating an existing event
   const handleEventUpdate = (event) => {
     const calendarApi = calendarRef.current.getApi();
     let eventToUpdate = calendarApi.getEventById(event.id);
@@ -75,6 +85,7 @@ const Calendar = () => {
     setCurrentEvents(calendarApi.getEvents());
   };
 
+  // Function to handle deleting an event
   const handleEventDelete = (event) => {
     const calendarApi = calendarRef.current.getApi();
     let eventToDelete = calendarApi.getEventById(event.id);
@@ -84,30 +95,36 @@ const Calendar = () => {
     setCurrentEvents(calendarApi.getEvents());
   };
 
+  // Rendering the Calendar component
   return (
     <Box m="20px">
+      {/* Header component with title and subtitle */}
       <Header title="CALENDAR" subtitle="Plan and Track Your Schedule" />
+
+      {/* Layout for Calendar and Sidebar */}
       <Box display="flex" justifyContent="space-between">
-        {/* Calender Sidebar */}
+        {/* Sidebar for displaying current events */}
         <Box
           flex="1 1 20%"
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
         >
+          {/* Title for the events list */}
           <Typography variant="h5">Events</Typography>
           <List>
             {currentEvents.map((event) => (
               <ListItem
-                key={event.id}
+                key={event.id} // Unique key for each event
                 sx={{
                   backgroundColor: colors.greenAccent[500],
                   margin: "10px 0",
                   borderRadius: "2px",
                 }}
               >
+                {/* Event title and date */}
                 <ListItemText
-                  primary={event.title}
+                  primary={event.title} // Event title
                   secondary={
                     <Typography>
                       {formatDate(event.start, {
@@ -122,22 +139,26 @@ const Calendar = () => {
             ))}
           </List>
         </Box>
-        {/* calendar */}
+
+        {/* Main calendar view */}
         <Box flex="1 1 100%" ml="15px">
           <FullCalendar
-            ref={calendarRef}
+            ref={calendarRef} // Reference to access FullCalendar API
             height="75vh"
+            // Plugins for different calendar views and interactions
             plugins={[
               dayGridPlugin,
               timeGridPlugin,
               interactionPlugin,
               listPlugin,
             ]}
+            // Configuration of the calendar header
             headerToolbar={{
               left: "prev,next today",
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
+            // Calendar configuration
             initialView="dayGridMonth"
             editable={true}
             selectable={true}
@@ -146,6 +167,8 @@ const Calendar = () => {
             select={handleDateClick}
             eventClick={handleEventClick}
             eventsSet={(events) => setCurrentEvents(events)}
+            
+            // Array of initial events
             initialEvents={[
               {
                 id: "12315",
@@ -186,6 +209,8 @@ const Calendar = () => {
           />
         </Box>
       </Box>
+
+          {/* Modal for adding, updating, and deleting events */}
       <CalendarModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

@@ -3,29 +3,41 @@ import { Button, Typography, Box, Paper, Input, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 
+// Component definition for 'Upload'
 const Upload = () => {
   const theme = useTheme();
+
+   // Generating color tokens based on the current theme mode
   const colors = tokens(theme.palette.mode);
+
+  // State for managing the selected file
   const [selectedFile, setSelectedFile] = useState(null);
 
+
+  // Function to handle file selection
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const fileType = file.type;
+    const file = event.target.files[0]; // Getting the first file from the file input
+    const fileType = file.type;  // Extracting the type of the file
+
+    // Checking if the file is an Excel, CSV, or a file with '.csv' extension
     if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || fileType === "application/vnd.ms-excel" || file.name.endsWith('.csv')) {
-      setSelectedFile(file);
+      setSelectedFile(file);  // Setting the selected file
     } else {
-      alert("Please select an Excel or CSV file.");
+      alert("Please select an Excel or CSV file.");  // Alert if file is not Excel or CSV
+
       event.target.value = null; // Reset the input
     }
   };
 
+   // Function to handle file upload
   const handleUpload = () => {
     if (selectedFile) {
-      // Implement file upload logic here
+      // Implement file upload logic here, right now it just console logs
       console.log("Uploading file:", selectedFile.name);
     }
   };
 
+  // Render method of the component
   return (
     <Box m="20px">
       <Header title="UPLOAD" subtitle="Securely Add Your Data" />

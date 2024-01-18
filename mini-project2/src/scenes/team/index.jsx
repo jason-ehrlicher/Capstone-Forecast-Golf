@@ -7,10 +7,12 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 
+// Team component definition
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Define columns for the data grid
   const columns = [
     { field: "id", headerName: "ID" },
     {
@@ -40,6 +42,8 @@ const Team = () => {
       field: "access",
       headerName: "Access Level",
       flex: 1,
+
+      // The renderCell property defines how the cell content should be rendered.
       renderCell: ({ row: { access } }) => {
         return (
           <Box
@@ -55,19 +59,24 @@ const Team = () => {
             }
             borderRadius="4px"
           >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]}>{access}</Typography>
+            {access === "admin" && <AdminPanelSettingsOutlinedIcon />} {/* Displays an icon if 'access' is 'admin'. */}
+            {access === "manager" && <SecurityOutlinedIcon />}  {/* Displays an icon if 'access' is 'manager'. */}
+            {access === "user" && <LockOpenOutlinedIcon />}  {/* Displays an icon if 'access' is 'user'. */}
+            <Typography color={colors.grey[100]}>{access}</Typography>  {/* Displays the 'access' value with white text color. */}
           </Box>
         );
       },
     },
   ];
 
+  // Rendering the Team component
   return (
     <Box m="20px">
+
+      {/* Header component with a title and subtitle */}
       <Header title="TEAM" subtitle="Manage Your Team" />
+
+      {/* Data grid styling */}
       <Box m="40px 0 0 0" height="75vh" sx={{
         "& .MuiDataGrid-root": {
           border: "none",
@@ -93,6 +102,7 @@ const Team = () => {
           color: `${colors.greenAccent[200]} !important`,
         },
       }}>
+        {/* DataGrid component displaying team data */}
         <DataGrid rows={mockDataTeam} columns={columns} />
       </Box>
     </Box>

@@ -16,6 +16,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { tokens } from "../theme";
 
+// CalendarModal component definition
 function CalendarModal({
   open,
   onClose,
@@ -24,14 +25,19 @@ function CalendarModal({
   onUpdateEvent,
   onDeleteEvent,
 }) {
+
+  // State variables for the event details
   const [eventTitle, setEventTitle] = useState("");
   const [allDay, setAllDay] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const isExistingEvent = selectedEvent && selectedEvent.id;
+
+  // Accessing the theme for styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+   // Effect to initialize state when selectedEvent changes
   useEffect(() => {
     if (selectedEvent) {
       setEventTitle(selectedEvent.title || "");
@@ -41,6 +47,7 @@ function CalendarModal({
     }
   }, [selectedEvent]);
 
+  // Function to handle form submission
   const handleSubmit = () => {
     if (eventTitle) {
       const event = {
@@ -55,9 +62,11 @@ function CalendarModal({
     }
   };
 
+  // Rendering the modal dialog
   return (
     <Dialog open={open} onClose={onClose}>
-      {/* Logo Image */}
+      
+      {/* Displaying the logo */}
       <Box
         sx={{
           display: "flex",
@@ -73,6 +82,8 @@ function CalendarModal({
           style={{ maxWidth: "350px" }}
         />
       </Box>
+
+      {/* Dialog title with close button */}
       <DialogTitle sx={{ backgroundColor: colors.primary[400] }}>
         Event Details:
         <IconButton
@@ -88,12 +99,15 @@ function CalendarModal({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
+
+       {/* Dialog content for event details */}
       <DialogContent
         sx={{
           backgroundColor:
             theme.palette.mode === "light" ? "#fcfcfc" : colors.primary[500],
         }}
       >
+          {/* Text field for event title */}
         <TextField
           fullWidth
           label="Event Title"
@@ -139,7 +153,7 @@ function CalendarModal({
             },
           }}
         />
-
+{/* Checkbox for all-day event */}
         <FormControlLabel
           control={
             <Checkbox
@@ -168,6 +182,8 @@ function CalendarModal({
           }}
         />
       </DialogContent>
+
+      {/* Dialog actions for submit and delete buttons */}
       <DialogActions
         sx={{
           backgroundColor:
@@ -178,6 +194,7 @@ function CalendarModal({
               : colors.grey[100],
         }}
       >
+        {/* Conditionally render delete button for existing events */}
         {isExistingEvent && (
           <Button
             onClick={() => onDeleteEvent(selectedEvent)}
@@ -186,6 +203,8 @@ function CalendarModal({
             Delete Event
           </Button>
         )}
+        
+        {/* Submit button for adding or updating event */}
         <Button
           onClick={handleSubmit}
           color="secondary"
