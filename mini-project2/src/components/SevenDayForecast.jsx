@@ -2,12 +2,18 @@ import React from "react";
 import { Box, Typography, Card, useTheme } from "@mui/material";
 import { tokens } from "../theme";
 
+// SevenDayForecast component definition
 const SevenDayForecast = ({ dailyData, isMetric }) => {
+  // Accessing the theme for styling
   const theme = useTheme();
+
+  // Extracting color tokens based on the current theme mode
   const colors = tokens(theme.palette.mode);
 
+  // Rendering the 7-day forecast card
   return (
     <Card
+      // Styling for the card
       sx={{
         p: 3,
         backgroundColor:
@@ -15,18 +21,23 @@ const SevenDayForecast = ({ dailyData, isMetric }) => {
             ? colors.primary[800]
             : colors.primary[400],
         color: colors.grey[100],
-        overflowX: "auto",
+        overflowX: "auto", // Allows horizontal scrolling
         textAlign: "center",
       }}
     >
+      {/* Title for the 7-day forecast */}
       <Typography variant="h3" gutterBottom>
         7-Day Forecast
       </Typography>
+
+      {/* Container for daily forecast items */}
       <Box sx={{ display: "flex", overflowX: "auto" }}>
+        {/* Mapping over dailyData to display each day's forecast */}
         {dailyData.map((day, index) => (
           <Box
-            key={index}
+            key={index} // Unique key for each item
             sx={{
+              // Styling for each forecast item
               minWidth: 150,
               flexShrink: 0,
               p: 2,
@@ -40,6 +51,7 @@ const SevenDayForecast = ({ dailyData, isMetric }) => {
               borderRadius: 2,
             }}
           >
+            {/* Displaying date */}
             <Typography variant="subtitle1">
               {new Date(day.dt * 1000).toLocaleDateString("en-US", {
                 weekday: "short",
@@ -47,18 +59,28 @@ const SevenDayForecast = ({ dailyData, isMetric }) => {
                 month: "short",
               })}
             </Typography>
+
+            {/* Displaying high temperature */}
             <Typography variant="subtitle2">
               High: {day.temp.max}°{isMetric ? "C" : "F"}
             </Typography>
+
+            {/* Displaying low temperature */}
             <Typography variant="subtitle2">
               Low: {day.temp.min}°{isMetric ? "C" : "F"}
             </Typography>
+
+            {/* Displaying humidity */}
             <Typography variant="subtitle2">
               Humidity: {day.humidity}%
             </Typography>
+
+            {/* Displaying wind speed */}
             <Typography variant="subtitle2">
               Wind: {day.wind_speed} {isMetric ? "m/s" : "mph"}
             </Typography>
+
+            {/* Weather icon */}
             <Box
               component="img"
               sx={{ height: 30 }}

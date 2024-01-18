@@ -10,21 +10,21 @@ import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ThermostatOutlinedIcon from "@mui/icons-material/ThermostatOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import logo from "/assets/forecast golf logo1.png";
 
+// Item component for individual menu items
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <MenuItem
-      active={selected === title}
+      active={selected === title} // Highlighting the active item
       style={{ color: colors.grey[100] }}
-      onClick={() => setSelected(title)}
-      icon={icon}
+      onClick={() => setSelected(title)} // Setting the selected item
+      icon={icon} // Icon for the menu item
     >
       <Typography>{title}</Typography>
       <Link to={to} />
@@ -32,15 +32,17 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
+// Sidebar component definition
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
+  const [isCollapsed, setIsCollapsed] = useState(false); // State for collapsing the sidebar
+  const [selected, setSelected] = useState("Dashboard"); // State for the selected menu item
 
   return (
     <Box
       sx={{
+        // Styling for the sidebar
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -58,17 +60,20 @@ const Sidebar = () => {
         },
       }}
     >
+      {/* Main sidebar structure using ProSidebar */}
       <ProSidebar collapsed={isCollapsed}>
+         {/* Menu component to hold all menu items */}
         <Menu iconShape="square">
-          {/* Menu Icon */}
+         {/* Menu item for toggling the sidebar's collapsed state */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            onClick={() => setIsCollapsed(!isCollapsed)} // Toggle function
+            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined} // Icon for the menu item
             style={{
               margin: "10px 0 20px 0",
               color: colors.grey[100],
             }}
           >
+             {/* Displaying the 'ADMIN' label and toggle icon when sidebar is not collapsed */}
             {!isCollapsed && (
               <Box
                 display="flex"
@@ -85,7 +90,8 @@ const Sidebar = () => {
               </Box>
             )}
           </MenuItem>
-          {/* Logo */}
+
+            {/* Logo section, displayed only when the sidebar is not collapsed */}
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
@@ -112,8 +118,10 @@ const Sidebar = () => {
               </Box>
             </Box>
           )}
-          {/* Menu Items */}
+           {/* Menu items for navigation */}
           <Box paddingLeft={isCollapsed ? undefined : "10px"}>
+
+             {/* Section title for 'Operations' */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -121,6 +129,8 @@ const Sidebar = () => {
             >
               Operations
             </Typography>
+
+             {/* Individual menu items for different pages */}
             <Item
               title="Dashboard"
               to="/dashboard"
@@ -149,6 +159,8 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+            {/* Section title for 'Data' */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
