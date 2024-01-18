@@ -15,8 +15,11 @@ import useParseCSV from "../../hooks/useParseCSV";
 import { tokens } from "../../theme";
 
 const History = () => {
+  // Access the theme to use in styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // State for storing the selected year
   const [selectedYear, setSelectedYear] = useState("");
 
   // Columns definition for DataGrid
@@ -40,15 +43,18 @@ const History = () => {
 
   // Function to parse a date string into a Date object
   const parseDate = (dateString) => {
-    const parts = dateString.split("-"); // Split the input dateString by hyphen ("-")
-    // Check if the split parts length is exactly 3 (i.e., Year, Month, Day)
+    // Splitting the dateString into parts (year, month, day)
+    const parts = dateString.split("-");
+    // Check if dateString format is correct (YYYY-MM-DD)
     if (parts.length === 3) {
-      const year = parseInt(parts[0], 10); // Parse as integer
+      // Parse each part into integers and construct a Date object
+      const year = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10) - 1;
       const day = parseInt(parts[2], 10);
       return new Date(year, month, day); // Return a new Date object constructed from year, month, and day
     }
-    return null; // If dateString is not in the expected format, return nul
+    // Return null if format is incorrect
+    return null;
   };
 
   // Extract unique years from the data for the dropdown
@@ -63,44 +69,47 @@ const History = () => {
     )
   ).sort();
 
-  
   // Function to handle year selection change
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
 
-   // Function to group data by month and year
+  // Function to group data by month and year
   const groupDataByMonth = (data) => {
     const monthlyData = {};
     data.forEach((item, index) => {
       const parsedDate = parseDate(item.Date);
-      // Skip if the year doesn't match the selected year
+      /// Exclude data not matching the selected year
       if (selectedYear && parsedDate.getFullYear() !== selectedYear) {
         return;
       }
-
+      // Format the date to a readable Month-Year string
       const monthYear = parsedDate.toLocaleString("default", {
         month: "long",
         year: "numeric",
       });
-
+      // Initialize the array for each month-year if it doesn't exist
       if (!monthlyData[monthYear]) {
         monthlyData[monthYear] = [];
       }
+      // Push the item into the respective month-year array
       monthlyData[monthYear].push({
         ...item,
-        uniqueId: `${monthYear}-${index}`,
+        uniqueId: `${monthYear}-${index}`, // Generating a unique ID
       });
     });
     return monthlyData;
   };
 
+  // Generating a unique ID
   const calculateYTDTotals = (data) => {
-    if (!selectedYear) return 0;
+    if (!selectedYear) return 0; // Return 0 if no year is selected
+    // Use the reduce function to iterate over each item in the data array
     return data.reduce((sum, item) => {
       const parsedDate = parseDate(item.Date);
+      // Sum up 'Rounds Played' for the selected year
       if (parsedDate && parsedDate.getFullYear() === selectedYear) {
-        const roundsPlayed = parseInt(item["Rounds Played"], 10);
+        const roundsPlayed = parseInt(item["Rounds Played"], 10);  //Radix specified as 10 to avoid unexpected results
         return sum + (isNaN(roundsPlayed) ? 0 : roundsPlayed);
       }
       return sum;
@@ -109,6 +118,7 @@ const History = () => {
 
   // Function to render each month's DataGrid
   const renderMonthDataGrid = (monthYear, monthData, totalRoundsPlayed) => {
+    // Prepare data for rendering, including a total row for each month
     const dataWithTotal = [
       ...monthData,
       {
@@ -127,6 +137,7 @@ const History = () => {
           </Typography>
           <Box
             sx={{
+              // Styling for the DataGrid component
               "& .MuiDataGrid-root": {
                 border: `1px solid ${colors.grey[300]}`,
               },
@@ -164,7 +175,7 @@ const History = () => {
     <Box m="20px">
       <Header title="HISTORY" subtitle="Daily Rounds Played Archive" />
 
-      {/* Select box for year filter */}
+      {/* Dropdown selector for year filter */}
       <Box mb={4}>
         <FormControl fullWidth>
           <InputLabel id="year-select-label">Year</InputLabel>
@@ -185,7 +196,7 @@ const History = () => {
         </FormControl>
       </Box>
 
-      {/* Conditionally render YTD total box */}
+      {/* Display YTD total box if a year is selected */}
       {selectedYear && (
         <Box mb={4} p={2} bgcolor={colors.blueAccent[700]} color="white">
           <Typography variant="h2" textAlign="center">
@@ -193,7 +204,7 @@ const History = () => {
           </Typography>
         </Box>
       )}
-
+      {/* Render DataGrids for each month */}
       <Grid container spacing={2}>
         {Object.entries(groupDataByMonth(data)).map(
           ([monthYear, monthData]) => {
