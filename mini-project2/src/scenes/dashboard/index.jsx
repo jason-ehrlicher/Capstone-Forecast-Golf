@@ -4,6 +4,7 @@ import WeatherWidget from "../../components/WeatherWidget";
 import Heatmap from "../../components/Heatmap";
 import { tokens } from "../../theme";
 import InputRounds from "../../components/InputRounds";
+import AverageRoundsBarChart from "../../components/AverageRoundsBarChart";
 
 // Dashboard component definition
 const Dashboard = () => {
@@ -13,15 +14,12 @@ const Dashboard = () => {
       {/* Header component with a title and subtitle */}
       <Header title="DASHBOARD" subtitle="Your Personalized Overview" />
 
-            {/* WeatherWidget component to display weather information */}
-            <WeatherWidget />
 
-            <InputRounds />
+      <WeatherWidget />
 
-      {/* Heatmap Chart */}
+      <InputRounds />
+      <AverageRoundsBarChart />
       <Heatmap />
-
-
     </Box>
   );
 };
