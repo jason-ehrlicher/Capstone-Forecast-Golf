@@ -20,10 +20,13 @@ const Heatmap = () => {
   if (error) return <p>Error loading data</p>;
 
   return (
-    <Box mb="0px" style={{ height: "500px" }}>
+    <Box mt="30px" style={{ 
+        height: "500px",
+        backgroundColor: colors.primary[400] }}>
       <Typography
         variant="h4"
         style={{
+            padding: "10px",
           textAlign: "center",
           color: colors.grey[100],
         }}
