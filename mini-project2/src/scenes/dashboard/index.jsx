@@ -5,6 +5,7 @@ import Heatmap from "../../components/Heatmap";
 import { tokens } from "../../theme";
 import InputRounds from "../../components/InputRounds";
 import AverageRoundsBarChart from "../../components/AverageRoundsBarChart";
+import MonthLineChart from "../../components/MonthlyRoundsLinechart";
 
 // Dashboard component definition
 const Dashboard = () => {
@@ -19,6 +20,7 @@ const Dashboard = () => {
 
       <InputRounds />
       <AverageRoundsBarChart />
+      <MonthLineChart />
       <Heatmap />
     </Box>
   );
