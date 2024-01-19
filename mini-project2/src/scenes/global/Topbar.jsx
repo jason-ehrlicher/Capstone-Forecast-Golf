@@ -110,6 +110,8 @@ const Topbar = () => {
           >
             {/* Edit Profile option */}
             <ListItemButton
+            component={Link}
+            to="/account"
               selected={selectedIndex === 0}
               onClick={(event) => handleListItemClick(event, 0)}
             >
@@ -134,6 +136,8 @@ const Topbar = () => {
 
             {/* Settings option */}
             <ListItemButton
+             component={Link}
+             to="/settings"
               selected={selectedIndex === 2}
               onClick={(event) => handleListItemClick(event, 2)}
             >

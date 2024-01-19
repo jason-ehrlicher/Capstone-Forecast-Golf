@@ -14,6 +14,8 @@ import Landing from "./scenes/landing";
 import { Route, Routes, useLocation as useAppLocation } from "react-router-dom";
 import Weather from "./scenes/weather";
 import FAQ from "./scenes/faq";
+import Settings from "./scenes/settings";
+import Account from "./scenes/account";
 
 // Main App component
 
@@ -59,6 +61,8 @@ function App() {
               <Route path="/forecast" element={<ForeCast />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/account" element={<Account />} />
             </Routes>
           </div>
         </div>
