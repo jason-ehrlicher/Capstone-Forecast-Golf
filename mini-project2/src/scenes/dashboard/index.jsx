@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import WeatherWidget from "../../components/WeatherWidget";
 import Heatmap from "../../components/Heatmap";
 import { tokens } from "../../theme";
+import InputRounds from "../../components/InputRounds";
 
 // Dashboard component definition
 const Dashboard = () => {
@@ -12,11 +13,15 @@ const Dashboard = () => {
       {/* Header component with a title and subtitle */}
       <Header title="DASHBOARD" subtitle="Your Personalized Overview" />
 
+            {/* WeatherWidget component to display weather information */}
+            <WeatherWidget />
+
+            <InputRounds />
+
       {/* Heatmap Chart */}
       <Heatmap />
 
-      {/* WeatherWidget component to display weather information */}
-      <WeatherWidget />
+
     </Box>
   );
 };
