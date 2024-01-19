@@ -1,26 +1,27 @@
 import React, { useState, useContext } from "react";
 import {
-  Box, 
-  IconButton, 
-  List, 
-  ListItemButton, 
-  ListItemIcon, 
-  ListItemText, 
-  Popover, 
-  useTheme, 
-  InputBase, 
+  Box,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+  useTheme,
+  InputBase,
+  Avatar,
 } from "@mui/material";
-import { ColorModeContext, tokens } from "../../theme"; 
+import { ColorModeContext, tokens } from "../../theme";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { Link } from "react-router-dom"; 
+import HankHill from "/assets/Hank_Hill.jpg";
+import { Link } from "react-router-dom";
 
 const Topbar = () => {
   const theme = useTheme(); // Access the current theme
@@ -58,7 +59,11 @@ const Topbar = () => {
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* Search Bar */}
-      <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="3px">
+      <Box
+        display="flex"
+        backgroundColor={colors.primary[400]}
+        borderRadius="3px"
+      >
         <InputBase sx={{ ml: 2, flex: 1 }} placeholder="search" />
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
@@ -69,7 +74,11 @@ const Topbar = () => {
       <Box display="flex">
         {/* Toggle button for light/dark theme */}
         <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+          {theme.palette.mode === "dark" ? (
+            <LightModeOutlinedIcon />
+          ) : (
+            <DarkModeOutlinedIcon />
+          )}
         </IconButton>
 
         {/* Notification icon */}
@@ -77,10 +86,12 @@ const Topbar = () => {
           <NotificationsOutlinedIcon />
         </IconButton>
 
-
         {/* User profile icon */}
         <IconButton onClick={handleProfileMenu}>
-          <PersonOutlinedIcon />
+          <Avatar
+            src={HankHill}
+            sx={{ width: 24, height: 24 }} 
+          />
         </IconButton>
 
         {/* Profile dropdown menu */}
@@ -110,8 +121,8 @@ const Topbar = () => {
           >
             {/* Edit Profile option */}
             <ListItemButton
-            component={Link}
-            to="/account"
+              component={Link}
+              to="/account"
               selected={selectedIndex === 0}
               onClick={(event) => handleListItemClick(event, 0)}
             >
@@ -136,8 +147,8 @@ const Topbar = () => {
 
             {/* Settings option */}
             <ListItemButton
-             component={Link}
-             to="/settings"
+              component={Link}
+              to="/settings"
               selected={selectedIndex === 2}
               onClick={(event) => handleListItemClick(event, 2)}
             >
