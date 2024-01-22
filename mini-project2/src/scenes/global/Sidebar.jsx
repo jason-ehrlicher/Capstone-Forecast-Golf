@@ -176,7 +176,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="History"
+              title="Historical Data"
               to="/history"
               icon={<HistoryOutlinedIcon />}
               selected={selected}

@@ -173,7 +173,7 @@ const History = () => {
   // Rendering the History component
   return (
     <Box m="20px">
-      <Header title="HISTORY" subtitle="Daily Rounds Played Archive" />
+      <Header title="HISTORICAL DATA" subtitle="Daily Rounds Played Archive" />
 
       {/* Dropdown selector for year filter */}
       <Box mb={4}>
