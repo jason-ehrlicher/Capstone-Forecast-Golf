@@ -14,10 +14,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* Header component with a title and subtitle */}
       <Header title="DASHBOARD" subtitle="Your Personalized Overview" />
-
-
       <WeatherWidget />
-
       <InputRounds />
       <AverageRoundsBarChart />
       <MonthLineChart />

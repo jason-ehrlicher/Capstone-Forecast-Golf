@@ -6,16 +6,17 @@ import { tokens } from "../theme";
 import { Box, Typography } from "@mui/material";
 
 const AverageRoundsBarChart = () => {
-  const { data, loading, error } = useParseCSV();
+  const { data, loading, error } = useParseCSV();  // Using custom hook to get CSV data
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Calculate average rounds per day of the week
+ // useMemo hook to calculate average rounds per day, only recalculated when data, loading, or error changes
   const averageRoundsData = useMemo(() => {
     if (loading || error) {
-      return [];
+      return [];  // Return an empty array if data is loading or there is an error
     }
 
+    // Reducing data to accumulate rounds per day
     const roundsPerDay = data.reduce((acc, item) => {
       const day = item.Day;
       acc[day] = acc[day] || [];
@@ -23,6 +24,7 @@ const AverageRoundsBarChart = () => {
       return acc;
     }, {});
 
+    // Mapping over each day to calculate the average
     return Object.keys(roundsPerDay).map((day) => {
       const total = roundsPerDay[day].reduce((sum, rounds) => sum + rounds, 0);
       const average = Math.round(total / roundsPerDay[day].length);
@@ -30,9 +32,11 @@ const AverageRoundsBarChart = () => {
     });
   }, [data, loading, error]);
 
+  // Handling loading and error states
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data</p>;
 
+   // Render the bar chart inside a Box component
   return (
     <Box
       mt="30px"
@@ -42,7 +46,7 @@ const AverageRoundsBarChart = () => {
         backgroundColor: colors.primary[400],
       }}
     >
-              <Typography
+      <Typography
         variant="h4"
         style={{
           textAlign: "center",
@@ -56,9 +60,9 @@ const AverageRoundsBarChart = () => {
         Average Rounds Per Day
       </Typography>
       <ResponsiveBar
-        data={averageRoundsData}
-        keys={["average"]}
-        indexBy="day"
+        data={averageRoundsData}  // Data for the bar chart
+        keys={["average"]}  // Keys to determine the bars
+        indexBy="day"  // Indexing by day of the week
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         valueScale={{ type: "linear" }}

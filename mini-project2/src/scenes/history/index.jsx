@@ -109,7 +109,7 @@ const History = () => {
       const parsedDate = parseDate(item.Date);
       // Sum up 'Rounds Played' for the selected year
       if (parsedDate && parsedDate.getFullYear() === selectedYear) {
-        const roundsPlayed = parseInt(item["Rounds Played"], 10);  //Radix specified as 10 to avoid unexpected results
+        const roundsPlayed = parseInt(item["Rounds Played"], 10);  //Radix specified as 10 to avoid unexpected
         return sum + (isNaN(roundsPlayed) ? 0 : roundsPlayed);
       }
       return sum;
