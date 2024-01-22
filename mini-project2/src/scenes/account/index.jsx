@@ -40,6 +40,7 @@ const Account = () => {
             src={HankHill}
             sx={{ width: theme.spacing(10), height: theme.spacing(10) }}
           />
+          <Typography color={colors.grey[200]}>ADMIN</Typography>
           <Typography color={colors.greenAccent[500]}>
             Location: [Your Location]
           </Typography>
