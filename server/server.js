@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const WeatherController = require("./controllers/WeatherController");
 const RoundsPlayedController = require("./controllers/RoundsPlayedController");
 
 const app = express();
@@ -17,7 +17,7 @@ app.get("/health", (req, res) => {
 });
 
 // API Endpoints
-
+app.get("/weather", WeatherController.getWeatherData);
 app.get("/rounds-played", RoundsPlayedController.getRoundsPlayedData);
 
 // Start the server
