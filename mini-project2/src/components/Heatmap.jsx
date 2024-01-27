@@ -1,32 +1,56 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { ResponsiveCalendar } from "@nivo/calendar";
-import useParseCSV from "../hooks/useParseCSV";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
 import { Typography, Box } from "@mui/material";
 
 const Heatmap = () => {
-  const { data, loading, error } = useParseCSV(); // Using the custom hook
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Transform data to the format expected by Nivo Calendar
-  const transformedData = data.map((item) => ({
-    day: item.Date,
-    value: item["Rounds Played"],
-  }));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/rounds-played");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedData = await response.json();
+        const formattedData = Object.entries(fetchedData)
+          .filter(([date]) => !date.startsWith('2021')) // Exclude data from the year 2021
+          .map(([date, details]) => ({
+            day: date,
+            value: details.roundsPlayed,
+          }));
+        setData(formattedData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  if (error) return <p>Error loading data: {error.message}</p>;
+
+  // Determine the 'from' and 'to' dates for the calendar
+  const calendarFrom = '2023-01-01';
+  const calendarTo = data.length > 0 ? data[data.length - 1].day : '2023-12-31';
+
 
   return (
-    <Box mt="30px" style={{ 
-        height: "500px",
-        backgroundColor: colors.primary[400] }}>
+    <Box mt="30px" style={{ height: "500px", backgroundColor: colors.primary[400] }}>
       <Typography
         variant="h4"
         style={{
-            padding: "10px",
+          padding: "10px",
           textAlign: "center",
           color: colors.grey[100],
         }}
@@ -34,9 +58,9 @@ const Heatmap = () => {
         Rounds Played Heatmap
       </Typography>
       <ResponsiveCalendar
-        data={transformedData}
-        from="2023-01-01"
-        to={transformedData[transformedData.length - 1].day}
+        data={data}
+        from={calendarFrom}
+        to={calendarTo}
         emptyColor="#eeeeee"
         colors={["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"]}
         margin={{ top: 40, right: 40, bottom: 80, left: 40 }}
@@ -69,6 +93,11 @@ const Heatmap = () => {
             itemDirection: "right-to-left",
           },
         ]}
+        role="application"
+        ariaLabel="Average rounds per day bar chart"
+        barAriaLabel={(e) =>
+          `${e.id}: ${e.formattedValue} average rounds on ${e.indexValue}`
+        }
       />
     </Box>
   );

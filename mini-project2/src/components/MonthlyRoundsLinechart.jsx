@@ -1,34 +1,54 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
-import useParseCSV from "../hooks/useParseCSV";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
 import { Box, Typography } from "@mui/material";
 
 const MonthLineChart = () => {
-  const { data, loading, error } = useParseCSV();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Function to format month-year as 'MMM YY'
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/rounds-played");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedData = await response.json();
+        // Transform the fetched data here if necessary
+        setData(fetchedData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const formatMonthYear = (date) => {
     const month = date.toLocaleString("default", { month: "short" });
     const year = date.getFullYear().toString().substr(-2);
     return `${month} '${year}`;
   };
 
-  // Calculate total rounds per month
   const totalRoundsPerMonth = useMemo(() => {
-    if (loading || error) {
+    if (loading || error || !data) {
       return [];
     }
 
     const roundsByMonth = {};
-    data.forEach((item) => {
-      const date = new Date(item.Date);
-      const monthYear = formatMonthYear(date);
+    Object.entries(data).forEach(([date, details]) => {
+      const formattedDate = new Date(date);
+      const monthYear = formatMonthYear(formattedDate);
       roundsByMonth[monthYear] =
-        (roundsByMonth[monthYear] || 0) + parseInt(item["Rounds Played"], 10);
+        (roundsByMonth[monthYear] || 0) + details.roundsPlayed;
     });
 
     const last12MonthsData = Object.entries(roundsByMonth)
@@ -39,7 +59,7 @@ const MonthLineChart = () => {
   }, [data, loading, error]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  if (error) return <p>Error loading data: {error.message}</p>;
 
   return (
     <Box

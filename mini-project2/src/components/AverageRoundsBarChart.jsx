@@ -1,30 +1,49 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ResponsiveBar } from "@nivo/bar";
-import useParseCSV from "../hooks/useParseCSV";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
 import { Box, Typography } from "@mui/material";
 
 const AverageRoundsBarChart = () => {
-  const { data, loading, error } = useParseCSV();  // Using custom hook to get CSV data
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
- // useMemo hook to calculate average rounds per day, only recalculated when data, loading, or error changes
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:3000/rounds-played");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedData = await response.json();
+        const formattedData = Object.values(fetchedData); // Convert object to array
+        setData(formattedData);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const averageRoundsData = useMemo(() => {
-    if (loading || error) {
-      return [];  // Return an empty array if data is loading or there is an error
+    if (loading || error || !data) {
+      return [];
     }
 
-    // Reducing data to accumulate rounds per day
     const roundsPerDay = data.reduce((acc, item) => {
-      const day = item.Day;
+      const day = item.day;
       acc[day] = acc[day] || [];
-      acc[day].push(parseInt(item["Rounds Played"], 10) || 0);
+      acc[day].push(item.roundsPlayed || 0);
       return acc;
     }, {});
 
-    // Mapping over each day to calculate the average
     return Object.keys(roundsPerDay).map((day) => {
       const total = roundsPerDay[day].reduce((sum, rounds) => sum + rounds, 0);
       const average = Math.round(total / roundsPerDay[day].length);
@@ -32,9 +51,8 @@ const AverageRoundsBarChart = () => {
     });
   }, [data, loading, error]);
 
-  // Handling loading and error states
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  if (error) return <p>Error loading data: {error.message}</p>;
 
    // Render the bar chart inside a Box component
   return (
