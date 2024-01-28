@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -10,27 +10,20 @@ import {
   Switch,
 } from "@mui/material";
 import { tokens } from "../theme";
-import useWeatherApi from "../hooks/useWeatherApi";
 import useLocation from "../hooks/useLocation";
 
 // WeatherWidget component definition
 const WeatherWidget = () => {
+  const [weatherData, setWeatherData] = useState(null);
+  const [isMetric, setIsMetric] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const toggleUnits = () => setIsMetric(!isMetric);
+  const { latitude, longitude, error } = useLocation();
+
   // Accessing the theme for styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // State for toggling between metric and imperial units
-  const [isMetric, setIsMetric] = useState(false);
-  const units = isMetric ? "metric" : "imperial";
-
-  // Function to toggle the unit state
-  const toggleUnits = () => setIsMetric(!isMetric);
-
-  // Custom hooks to get location and weather data
-  const { latitude, longitude, error } = useLocation();
-  const weatherData = useWeatherApi(latitude, longitude, units);
-
-  // Formatting today's date
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-US", {
     weekday: "long",
@@ -38,6 +31,36 @@ const WeatherWidget = () => {
     month: "long",
     year: "numeric",
   });
+
+  useEffect(() => {
+    if (!latitude || !longitude) return;
+
+    const fetchWeatherData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/weather-by-location?lat=${latitude}&lon=${longitude}&units=${isMetric ? 'metric' : 'imperial'}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setWeatherData(data);
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWeatherData();
+  }, [latitude, longitude, isMetric]);  // Depend on the units system
+
+  // Render the component
+  if (isLoading) {
+    return <Box>Loading...</Box>;
+  }
+
+  if (!weatherData) {
+    return <Box>Error loading weather data.</Box>;
+  }
 
   // Handling the loading state
   if (!weatherData) {

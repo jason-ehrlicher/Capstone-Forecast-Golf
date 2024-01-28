@@ -1,42 +1,44 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  useTheme,
-  FormControlLabel,
-  Switch,
-  Card,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Grid, useTheme, FormControlLabel, Switch } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
-import useWeatherApi from "../../hooks/useWeatherApi";
 import useLocation from "../../hooks/useLocation";
 import CurrentWeather from "../../components/CurrentWether";
 import HourlyForecast from "../../components/HourlyForecast";
 import SevenDayForecast from "../../components/SevenDayForecast";
 
-// Weather component definition
 const Weather = () => {
-  // State for toggling between metric and imperial units
   const [isMetric, setIsMetric] = useState(false);
-
-  // Determine the unit type based on state
-  const units = isMetric ? "metric" : "imperial";
-
-  const theme = useTheme();
-  // Generating color tokens based on the current theme mode
-  const colors = tokens(theme.palette.mode);
-
-  // Custom hook to get the user's current location
+  const [weatherData, setWeatherData] = useState(null);
   const { latitude, longitude, error } = useLocation();
 
-  // Custom hook to fetch weather data using the API
-  const weatherData = useWeatherApi(latitude, longitude, units);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
-  // Function to toggle between metric and imperial units
+  useEffect(() => {
+    if (latitude && longitude) {
+      const fetchWeatherData = async () => {
+        try {
+          const units = isMetric ? "metric" : "imperial";
+          const response = await fetch(
+            `http://localhost:3000/weather-by-location?lat=${latitude}&lon=${longitude}&units=${units}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setWeatherData(data);
+        } catch (err) {
+          console.error("Error fetching weather data:", err);
+        }
+      };
+
+      fetchWeatherData();
+    }
+  }, [latitude, longitude, isMetric]);
+
   const toggleUnits = () => setIsMetric(!isMetric);
 
-  // Loading state: Displayed when weather data is not yet available
   if (!weatherData) {
     return <Box m="20px">Loading...</Box>;
   }
@@ -86,7 +88,7 @@ const Weather = () => {
             isMetric={isMetric}
           />
         </Grid>
-         {/* Display hourly forecast */}
+        {/* Display hourly forecast */}
         <Grid item xs={12}>
           <HourlyForecast hourlyData={weatherData.hourly} isMetric={isMetric} />
         </Grid>

@@ -7,15 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
-*.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Misc
+*.local
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,4 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
+# IDE files
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Environment files
+.env
+/Users/jasonehrlicher/git/Mini-Project-II/server/.env
+
+# Configuration files
 config.js
