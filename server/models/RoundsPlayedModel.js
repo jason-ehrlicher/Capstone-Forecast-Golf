@@ -41,7 +41,7 @@ function mergeData(weatherData, roundsPlayedData) {
 }
 
 
-// Example of how to use these functions
+
 async function main() {
     const weatherFilePath = path.join(__dirname, '../data/Historical Weather Data.csv');
     const roundsPlayedFilePath = path.join(__dirname, '../data/Rounds Played copy.csv');
@@ -55,12 +55,12 @@ async function main() {
 
     const roundsPlayedData = await readRoundsPlayed(roundsPlayedFilePath);
 
-    console.log("Sample weather data:", Object.entries(weatherData).slice(0, 5));
-    console.log("Sample rounds played data:", Object.entries(roundsPlayedData).slice(0, 5));
+    // console.log("Sample weather data:", Object.entries(weatherData).slice(0, 5));
+    // console.log("Sample rounds played data:", Object.entries(roundsPlayedData).slice(0, 5));
     
     const combinedData = mergeData(weatherData, roundsPlayedData);
 
-    console.log(combinedData);
+    // console.log(combinedData);
 }
 
 main();

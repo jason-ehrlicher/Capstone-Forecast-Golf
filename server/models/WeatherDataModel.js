@@ -110,7 +110,7 @@ async function processFile(filePath) {
     };
   }
 
-  console.log("Processed weather data:", dailyWeatherProcessed);
+  // console.log("Processed weather data:", dailyWeatherProcessed);
   return dailyWeatherProcessed;
 }
 

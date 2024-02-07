@@ -34,3 +34,5 @@ dist-ssr
 
 # Configuration files
 config.js
+
+.env
