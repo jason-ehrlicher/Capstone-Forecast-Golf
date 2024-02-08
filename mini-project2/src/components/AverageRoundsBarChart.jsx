@@ -15,7 +15,7 @@ const AverageRoundsBarChart = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3000/rounds-played");
+        const response = await fetch("http://localhost:8082/rounds-played");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

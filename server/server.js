@@ -1,9 +1,13 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
+
 const WeatherController = require("./controllers/WeatherController");
 const RoundsPlayedController = require("./controllers/RoundsPlayedController");
 const WeatherByLocationController = require("./controllers/WeatherByLocationController");
+
+const userRoutes = require("./routes/userRoutes"); 
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +29,8 @@ app.get(
   "/weather-by-location",
   WeatherByLocationController.getWeatherByLocation
 );
+app.use("/api/users", userRoutes);
+
 
 // Start the server
 app.listen(PORT, () => {
