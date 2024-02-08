@@ -22,6 +22,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import QuizIcon from "@mui/icons-material/Quiz";
 import HankHill from "/assets/Hank_Hill.jpg";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const Topbar = () => {
   const theme = useTheme(); // Access the current theme
@@ -30,6 +31,7 @@ const Topbar = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(0); // State for tracking the selected index in the list
   const [anchorEl, setAnchorEl] = useState(null); // State for managing the anchor of the Popover
+  const navigate = useNavigate();
 
   // Function to handle list item click
   const handleListItemClick = (event, index) => {
@@ -47,10 +49,13 @@ const Topbar = () => {
     setAnchorEl(null); // Clear the anchor, closing the Popover
   };
 
-  // Function to handle logout logic (to be implemented)
+  // Function to handle logout logic 
   const handleLogout = () => {
-    console.log("Logout Clicked"); // Placeholder for actual logout logic
-    handleClose(); // Close the Popover
+    // Remove the token from localStorage
+    localStorage.removeItem('token');
+
+    // Redirect user to the login page
+    navigate('/'); 
   };
 
   const open = Boolean(anchorEl); // Determine if the Popover is open

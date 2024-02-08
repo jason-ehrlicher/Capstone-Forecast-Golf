@@ -21,7 +21,7 @@ const Weather = () => {
         try {
           const units = isMetric ? "metric" : "imperial";
           const response = await fetch(
-            `http://localhost:3000/weather-by-location?lat=${latitude}&lon=${longitude}&units=${units}`
+            `http://localhost:8082/weather-by-location?lat=${latitude}&lon=${longitude}&units=${units}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

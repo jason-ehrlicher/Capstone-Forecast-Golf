@@ -37,7 +37,7 @@ const WeatherWidget = () => {
 
     const fetchWeatherData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/weather-by-location?lat=${latitude}&lon=${longitude}&units=${isMetric ? 'metric' : 'imperial'}`);
+        const response = await fetch(`http://localhost:8082/weather-by-location?lat=${latitude}&lon=${longitude}&units=${isMetric ? 'metric' : 'imperial'}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
