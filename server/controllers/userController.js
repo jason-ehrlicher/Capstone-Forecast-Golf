@@ -13,6 +13,8 @@ const getUsers = (req, res) => {
     });
 };
 
+
+
 // Create a new user in the database
 const createUser = (req, res) => {
   const userData = req.body; // Assuming userData contains all the required user fields
@@ -30,6 +32,10 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   const { id } = req.params; // Extracting user ID from request parameters
   const updateData = req.body; // Assuming updateData contains the fields to be updated
+
+  if (!id) {
+    return res.status(400).send({ message: "User ID is undefined." });
+  }
   
   Models.User.update(updateData, { where: { id } })
     .then((numUpdated) => {

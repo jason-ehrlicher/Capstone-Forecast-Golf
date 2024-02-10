@@ -41,6 +41,8 @@ User.init(
       allowNull: false,
       defaultValue: false,
     },
+
+
     // Profile Picture URL
     profilePicture: {
       type: DataTypes.STRING,
