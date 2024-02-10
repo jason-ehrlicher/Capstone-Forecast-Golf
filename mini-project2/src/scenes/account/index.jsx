@@ -11,41 +11,92 @@ import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import HankHill from "/assets/Hank_Hill.jpg";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { FormControl } from "@mui/material";
 
 const Account = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { user, updateUserContext } = useAuth();
+  const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  useEffect(() => {
+    console.log("Profile Current User: ", user);
+    console.log('Phone num:', user?.user?.phoneNumber)
+  }, [user]);
 
-  const handleFirstNameChange = (event) => {
-    setFirstName(event.target.value);
+  // Function to validate email format
+  const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
+  // Function to format the phone number
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    if (phoneNumber.length <= 3) return `(${phoneNumber}`;
+    if (phoneNumber.length <= 6)
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+      3,
+      6
+    )}-${phoneNumber.slice(6, 10)}`;
   };
 
-  const handleLastNameChange = (event) => {
-    setLastName(event.target.value);
+  // Initial state setup with user data
+  const [userData, setUserData] = useState({
+    id: user?.user?.id || null,
+    firstName: user?.user?.firstName || "",
+    lastName: user?.user?.lastName || "",
+    email: user?.user?.email || "",
+    phoneNumber: formatPhoneNumber(user?.user?.phoneNumber) || "", // Format the phone number upon initial setup
+  });
+
+  // Handle form field changes
+  const handleChange = (prop) => (event) => {
+    const { value } = event.target;
+    if (prop === "email") {
+      const isValid = validateEmail(value);
+      setErrors({ ...errors, email: isValid ? "" : "Invalid email format" });
+      setUserData({ ...userData, [prop]: value });
+    } else if (prop === "phoneNumber") {
+      const formattedPhoneNumber = formatPhoneNumber(value);
+      setUserData({ ...userData, [prop]: formattedPhoneNumber });
+    } else {
+      setUserData({ ...userData, [prop]: value });
+    }
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+    try {
+      const response = await fetch(
+        `http://localhost:8082/api/users/${userData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            // Save only digits to the database for consistency
+            phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update user.");
+      }
+
+      const updatedUserData = await response.json();
+      updateUserContext(updatedUserData); // Assuming updateUserContext is implemented to update context
+      alert("Profile updated successfully.");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error updating profile.");
+    }
   };
-
-  const handlePhoneNumberChange = (event) => {
-    setPhoneNumber(event.target.value);
-  };
-
-  const textColorLightMode =
-    theme.palette.mode === "light" ? colors.grey[800] : colors.blueAccent[100];
-
-  const buttonColorLightMode =
-    theme.palette.mode === "light"
-      ? colors.blueAccent[200]
-      : colors.greenAccent[700];
-
-      
 
   return (
     <Box p="20px">
@@ -53,50 +104,27 @@ const Account = () => {
 
       {/* Avatar Section */}
       <Box mt="40px" display="flex" flexDirection="column" alignItems="center">
-        <Box
-          mt="20px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap="10px"
-        >
-          <Avatar
-            src={HankHill}
-            sx={{ width: theme.spacing(10), height: theme.spacing(10) }}
-          />
-          <Typography color={colors.grey[200]}>ADMIN</Typography>
-          <Typography color={colors.greenAccent[500]}>
-            Location: [Your Location]
-          </Typography>
-          <Typography color={colors.greenAccent[500]}>
-            Time Zone: [Your Time Zone]
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            marginTop: theme.spacing(2),
-            backgroundColor: buttonColorLightMode,
-          }}
-        >
-          Upload Picture
-        </Button>
+        <Avatar
+          src={HankHill}
+          sx={{ width: theme.spacing(10), height: theme.spacing(10) }}
+        />
+        <Typography color={colors.grey[200]}>ADMIN</Typography>
+        {/* Additional user information can be displayed here */}
       </Box>
 
       {/* Profile Section */}
       <Box mt="40px" display="flex" flexDirection="column" alignItems="center">
-        <Typography variant="h4" color={textColorLightMode}>
+        <Typography variant="h4" color={colors.grey[100]}>
           Profile
         </Typography>
-        <form style={{ width: "100%" }}>
+        <form style={{ width: "100%" }} onSubmit={handleSubmit}>
           <TextField
             label="First Name"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={firstName}
-            onChange={handleFirstNameChange}
+            value={userData.firstName}
+            onChange={handleChange("firstName")}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}
@@ -106,42 +134,43 @@ const Account = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            value={lastName}
-            onChange={handleLastNameChange}
+            value={userData.lastName}
+            onChange={handleChange("lastName")}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}
           />
-          <TextField
-            label="Email Address"
+          {/* Email Field with validation */}
+          <FormControl
             variant="outlined"
             fullWidth
             margin="normal"
-            value={email}
-            onChange={handleEmailChange}
-            InputLabelProps={{
-              style: { color: colors.greenAccent[300] },
-            }}
-          />
+            error={!!errors.email}
+          >
+            <TextField
+              label="Email Address"
+              variant="outlined"
+              value={userData.email}
+              onChange={handleChange("email")}
+              InputLabelProps={{ style: { color: colors.greenAccent[300] } }}
+            />
+            {errors.email && <FormHelperText>{errors.email}</FormHelperText>}
+          </FormControl>
+          {/* Phone Number Field */}
           <TextField
             label="Phone Number"
             variant="outlined"
             fullWidth
             margin="normal"
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-            InputLabelProps={{
-              style: { color: colors.greenAccent[300] },
-            }}
+            value={userData.phoneNumber}
+            onChange={handleChange("phoneNumber")}
+            InputLabelProps={{ style: { color: colors.greenAccent[300] } }}
           />
           <Box textAlign="center" mt={2}>
             <Button
               type="submit"
               variant="contained"
-              color="primary"
-              sx={{
-                backgroundColor: buttonColorLightMode,
-              }}
+              sx={{ backgroundColor: colors.greenAccent[500] }}
             >
               Save Profile
             </Button>

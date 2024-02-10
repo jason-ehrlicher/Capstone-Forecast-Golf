@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 
 // Custom hook definition
 const useLocation = () => {
-
   // State to store location data and any potential error
   const [location, setLocation] = useState({
     latitude: null,
     longitude: null,
     error: null,
   });
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // Function to handle successful retrieval of location
   const handleSuccess = (position) => {
@@ -23,24 +24,22 @@ const useLocation = () => {
     setIsLoading(false);
   };
 
-   // Function to handle errors in retrieving location
+  // Function to handle errors in retrieving location
   const handleError = (error) => {
-
     // Updating the location state with the error message
     setLocation({
       latitude: null,
       longitude: null,
       error: error.message,
     });
+    setIsLoading(false);
   };
 
   // useEffect hook to execute geolocation code when the component mounts
   useEffect(() => {
-
     // Checking if the geolocation API is available in the browser
     if (!navigator.geolocation) {
-
-       // Updating the location state with an error if geolocation is not supported
+      // Updating the location state with an error if geolocation is not supported
       setLocation((prevState) => ({
         ...prevState,
         error: "Geolocation is not supported by your browser",
@@ -48,12 +47,12 @@ const useLocation = () => {
       setIsLoading(false);
     } else {
       // Requesting the current position
-       // handleSuccess is called if successful, handleError if there's an error
+      // handleSuccess is called if successful, handleError if there's an error
       navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
     }
   }, []); // Empty dependency array ensures this runs once on mount
-  
-  return location;
+
+  return { ...location, isLoading };
 };
 
 export default useLocation;

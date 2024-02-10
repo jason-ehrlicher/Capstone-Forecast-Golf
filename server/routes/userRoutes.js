@@ -2,29 +2,47 @@ const express = require("express");
 const router = express.Router();
 const Controllers = require("../controllers");
 const bodyParser = require("body-parser");
-const { User } = require('../models'); // Adjust the path as necessary
-
+const { User } = require("../models"); // Adjust the path as necessary
 
 // GET all users
-// Example endpoint: http://localhost:8081/api/users
+// Example endpoint: http://localhost:8082/api/users
 router.get("/", (req, res) => {
   Controllers.userController.getUsers(req, res);
 });
 
+router.get("/:id", (req, res) => {
+  const userId = req.params.id; // Extracting the user ID from the request parameters
+
+  User.findByPk(userId) // Using findByPk (Find by Primary Key) method to get a user by id
+    .then((user) => {
+      if (user) {
+        res.json(user); // Sending back the user as JSON
+      } else {
+        res.status(404).send({ message: `User with id=${userId} not found.` }); // Handling case where user is not found
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(500)
+        .send({ error: "An error occurred while retrieving user." });
+    });
+});
+
 // Post create new user
-// Example endpoint: http://localhost:8081/api/users/create
+// Example endpoint: http://localhost:8082/api/users/create
 router.post("/create", (req, res) => {
   Controllers.userController.createUser(req, res);
 });
 
 // PUT update user by id
-// Example endpoint: http://localhost:8081/api/users/<id>
+// Example endpoint: http://localhost:8082/api/users/<id>
 router.put("/:id", (req, res) => {
   Controllers.userController.updateUser(req, res);
 });
 
 // DELETE user by id
-// Example endpoint: http://localhost:8081/api/users/<id>
+// Example endpoint: http://localhost:8082/api/users/<id>
 router.delete("/:id", (req, res) => {
   Controllers.userController.deleteUser(req, res);
 });
@@ -43,7 +61,7 @@ router.post("/signin", (req, res) => {
       if (user.password === password) {
         res.json({
           message: "Login successful",
-          user: { email: user.email, id: user.id,  firstName: user.firstName },
+          user: { email: user.email, id: user.id, firstName: user.firstName, lastName: user.lastName, phoneNumber: user.phoneNumber, profilePicture: user.profilePicture },
         }); // Avoid sending back the password
       } else {
         res.status(401).json({ message: "Invalid credentials" });

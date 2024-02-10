@@ -10,6 +10,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loginError, setLoginError] = useState("");
 
+  const refreshUserState = (userData) => {
+    setUser(userData);
+  };
+
   useEffect(() => {
     console.log("Current User: ", user);
   }, [user]);
@@ -26,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
       const result = await response.json();
       if (response.ok) {
-        setUser(result);
+        refreshUserState(result);
         setLoginError("");
       } else {
         throw new Error(result.message || " Login Failed");
@@ -41,11 +45,20 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+const updateUserContext = (updatedUserData) => {
+  // Assuming updatedUserData is the latest user data including the phone number
+  setUser((prevUser) => ({
+    ...prevUser,
+    user: updatedUserData
+  }));
+};
+
   const value = {
     user,
     loginError,
     login,
     logout,
+    updateUserContext,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
