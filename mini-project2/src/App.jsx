@@ -17,6 +17,7 @@ import FAQ from "./scenes/faq";
 import Settings from "./scenes/settings";
 import Account from "./scenes/account";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Main App component
 
@@ -49,17 +50,17 @@ function App() {
               {/* Router setup for navigating between different scenes */}
               <Routes>
                 <Route path="/" element={<Landing />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/weather" element={<Weather />} />
-                <Route path="/team" element={<Team />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/history" element={<History />} />
-                <Route path="/upload" element={<Upload />} />
-                <Route path="/forecast" element={<ForeCast />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/account" element={<Account />} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/weather" element={<ProtectedRoute><Weather /></ ProtectedRoute>} />
+                <Route path="/team" element={<ProtectedRoute><Team /></ ProtectedRoute>} />
+                <Route path="/reports" element={<ProtectedRoute><Reports /></ ProtectedRoute>} />
+                <Route path="/history" element={<ProtectedRoute><History /></ ProtectedRoute>} />
+                <Route path="/upload" element={<ProtectedRoute><Upload /></ ProtectedRoute>} />
+                <Route path="/forecast" element={<ProtectedRoute><ForeCast /></ ProtectedRoute>} />
+                <Route path="/calendar" element={<ProtectedRoute><Calendar /></ ProtectedRoute>} />
+                <Route path="/faq" element={<ProtectedRoute><FAQ /></ ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ ProtectedRoute>} />
+                <Route path="/account" element={<ProtectedRoute><Account /></ ProtectedRoute>} />
               </Routes>
             </div>
           </div>
