@@ -24,11 +24,14 @@ import HankHill from "/assets/Hank_Hill.jpg";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Welcome from "../../components/Welcome";
+import { useAuth } from "../../context/AuthContext";
 
 const Topbar = () => {
   const theme = useTheme(); // Access the current theme
   const colors = tokens(theme.palette.mode); // Access color tokens based on the current theme mode
   const colorMode = useContext(ColorModeContext); // Access color mode context for theme toggling
+
+  const { logout } = useAuth();
 
   const [selectedIndex, setSelectedIndex] = useState(0); // State for tracking the selected index in the list
   const [anchorEl, setAnchorEl] = useState(null); // State for managing the anchor of the Popover
@@ -52,11 +55,8 @@ const Topbar = () => {
 
   // Function to handle logout logic
   const handleLogout = () => {
-    // Remove the token from localStorage
-    localStorage.removeItem("token");
-
-    // Redirect user to the login page
-    navigate("/");
+    logout(); // Call logout from AuthProvider
+    navigate("/"); 
   };
 
   const open = Boolean(anchorEl); // Determine if the Popover is open
