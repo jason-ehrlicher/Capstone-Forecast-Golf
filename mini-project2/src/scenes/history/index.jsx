@@ -12,7 +12,7 @@ import {
 import Header from "../../components/Header";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from "@mui/material/Tooltip";
 
 const History = () => {
   const theme = useTheme();
@@ -36,7 +36,7 @@ const History = () => {
             Day: details.day,
             "Rounds Played": details.roundsPlayed,
             "Weather Icon": details.weatherIcon,
-            ...details
+            ...details,
           })
         );
         setFetchedData(formattedData);
@@ -67,23 +67,27 @@ const History = () => {
 
           const tooltipContent = (
             <div>
-            <p>Feels Like: {params.row.averageFeelsLike}°F</p>
-            <p>Temp Min: {params.row.averageTempMin}°F</p>
-            <p>Temp Max: {params.row.averageTempMax}°F</p>
-            <p>Pressure: {params.row.averagePressure} hPa</p>
-            <p>Humidity: {params.row.averageHumidity}%</p>
-            <p>Wind Speed: {params.row.averageWindSpeed} mph</p>
-            <p>Wind Gust: {params.row.averageWindGust} mph</p>
-            <p>Rain: {params.row.rainTotal} mm</p>
-            <p>Snow: {params.row.snowTotal} mm</p>
-            <p>Main: {params.row.weatherMain}</p>
-            <p>Description: {params.row.weatherDescription}</p>
-          </div>
-        );
+              <p>Feels Like: {params.row.averageFeelsLike}°F</p>
+              <p>Temp Min: {params.row.averageTempMin}°F</p>
+              <p>Temp Max: {params.row.averageTempMax}°F</p>
+              <p>Pressure: {params.row.averagePressure} hPa</p>
+              <p>Humidity: {params.row.averageHumidity}%</p>
+              <p>Wind Speed: {params.row.averageWindSpeed} mph</p>
+              <p>Wind Gust: {params.row.averageWindGust} mph</p>
+              <p>Rain: {params.row.rainTotal} mm</p>
+              <p>Snow: {params.row.snowTotal} mm</p>
+              <p>Main: {params.row.weatherMain}</p>
+              <p>Description: {params.row.weatherDescription}</p>
+            </div>
+          );
 
           return (
             <Tooltip title={tooltipContent} arrow>
-              <img src={iconUrl} alt="Weather Icon" style={{ width: '30px', height: '30px', marginLeft: '10px' }} />
+              <img
+                src={iconUrl}
+                alt="Weather Icon"
+                style={{ width: "30px", height: "30px", marginLeft: "10px" }}
+              />
             </Tooltip>
           );
         }
@@ -128,6 +132,30 @@ const History = () => {
       }
       return sum;
     }, 0);
+  };
+
+  const calculateQuarterlyTotals = (data, year) => {
+    const quarterlyTotals = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
+
+    data.forEach((item) => {
+      const parsedDate = new Date(item.Date);
+      const month = parsedDate.getMonth() + 1; // JavaScript months are 0-indexed
+      const itemYear = parsedDate.getFullYear();
+
+      if (itemYear === year) {
+        if (month >= 1 && month <= 3) {
+          quarterlyTotals.Q1 += item["Rounds Played"];
+        } else if (month >= 4 && month <= 6) {
+          quarterlyTotals.Q2 += item["Rounds Played"];
+        } else if (month >= 7 && month <= 9) {
+          quarterlyTotals.Q3 += item["Rounds Played"];
+        } else if (month >= 10 && month <= 12) {
+          quarterlyTotals.Q4 += item["Rounds Played"];
+        }
+      }
+    });
+
+    return quarterlyTotals;
   };
 
   const renderMonthDataGrid = (monthYear, monthData, totalRoundsPlayed) => {
@@ -205,12 +233,54 @@ const History = () => {
         </FormControl>
       </Box>
       {selectedYear && (
-        <Box mb={4} p={2} bgcolor={colors.blueAccent[700]} color="white">
-          <Typography variant="h2" textAlign="center">
-            Total Rounds Played in {selectedYear}:{" "}
-            {calculateYTDTotals(fetchedData)}
-          </Typography>
-        </Box>
+        <>
+          <Box
+            mb={4}
+            p={2}
+            bgcolor={colors.blueAccent[700]}
+            color="white"
+            sx={{
+              border: `1px solid ${colors.grey[300]}`, 
+              borderRadius: theme.shape.borderRadius, 
+            }}
+          >
+            <Typography
+              variant="h2"
+              textAlign="center"
+              sx={{ fontSize: "1.5rem" }}
+            >
+              Total Rounds Played in {selectedYear}:{" "}
+              {calculateYTDTotals(fetchedData)}
+            </Typography>
+          </Box>
+
+          <Box
+            mb={4}
+            p={2}
+            bgcolor={colors.blueAccent[700]}
+            color="white"
+            width="100%"
+            sx={{
+              border: `1px solid ${colors.grey[300]}`, 
+              borderRadius: theme.shape.borderRadius,   
+            }}
+          >
+            <Grid container justifyContent="center" alignItems="center">
+              {Object.entries(
+                calculateQuarterlyTotals(fetchedData, parseInt(selectedYear))
+              ).map(([quarter, total]) => (
+                <Grid item xs={12} sm={3} key={quarter}>
+                  <Typography
+                    textAlign="center"
+                    sx={{ fontSize: "1.5rem", color: "white" }}
+                  >
+                    {quarter}: {total}
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        </>
       )}
       <Grid container spacing={2}>
         {Object.entries(groupDataByMonth(fetchedData)).map(
