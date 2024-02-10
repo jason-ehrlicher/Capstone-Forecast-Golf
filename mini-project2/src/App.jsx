@@ -16,11 +16,11 @@ import Weather from "./scenes/weather";
 import FAQ from "./scenes/faq";
 import Settings from "./scenes/settings";
 import Account from "./scenes/account";
+import { AuthProvider } from "./context/AuthContext";
 
 // Main App component
 
 function App() {
-
   // Using a custom hook to manage the theme and color mode
   const [theme, colorMode] = useMode();
 
@@ -31,43 +31,41 @@ function App() {
   const isLandingPAge = appLocation.pathname === "/";
 
   return (
+    <AuthProvider>
+      {/* // Providing the color mode context to the application */}
+      <ColorModeContext.Provider value={colorMode}>
+        {/* Applying the theme to the entire application */}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
 
-     // Providing the color mode context to the application
-    <ColorModeContext.Provider value={colorMode}>
+          {/* Main application layout */}
+          <div className="App" style={{ display: "flex", height: "100vh" }}>
+            {/* Conditionally rendering the Sidebar if not on the landing page */}
+            {!isLandingPAge && <Sidebar />}
+            <div className="main-content" style={{ flex: 1, overflow: "auto" }}>
+              {/* Conditionally rendering the Topbar if not on the landing page */}
+              {!isLandingPAge && <Topbar />}
 
-      {/* Applying the theme to the entire application */}
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-
-         {/* Main application layout */}
-        <div className="App" style={{ display: "flex", height: "100vh" }}>
-
-          {/* Conditionally rendering the Sidebar if not on the landing page */}
-          {!isLandingPAge && <Sidebar />}
-          <div className="main-content" style={{ flex: 1, overflow: "auto" }}>
-
-            {/* Conditionally rendering the Topbar if not on the landing page */}
-            {!isLandingPAge && <Topbar />}
-
-             {/* Router setup for navigating between different scenes */}
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/weather" element={<Weather />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/forecast" element={<ForeCast />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/account" element={<Account />} />
-            </Routes>
+              {/* Router setup for navigating between different scenes */}
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/weather" element={<Weather />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/upload" element={<Upload />} />
+                <Route path="/forecast" element={<ForeCast />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/account" element={<Account />} />
+              </Routes>
+            </div>
           </div>
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </AuthProvider>
   );
 }
 

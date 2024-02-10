@@ -22,7 +22,8 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import QuizIcon from "@mui/icons-material/Quiz";
 import HankHill from "/assets/Hank_Hill.jpg";
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import Welcome from "../../components/Welcome";
 
 const Topbar = () => {
   const theme = useTheme(); // Access the current theme
@@ -49,35 +50,42 @@ const Topbar = () => {
     setAnchorEl(null); // Clear the anchor, closing the Popover
   };
 
-  // Function to handle logout logic 
+  // Function to handle logout logic
   const handleLogout = () => {
     // Remove the token from localStorage
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
 
     // Redirect user to the login page
-    navigate('/'); 
+    navigate("/");
   };
 
   const open = Boolean(anchorEl); // Determine if the Popover is open
   const id = open ? "profile-popover" : undefined; // ID for the Popover
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
-      {/* Search Bar */}
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      p={2}
+    >
+      {/* Search Bar on the left */}
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="search" />
+        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
         </IconButton>
       </Box>
 
-      {/* Icons for various functionalities */}
+      {/* Welcome component in the middle */}
+      <Welcome />
+
+      {/* Icons on the right */}
       <Box display="flex">
-        {/* Toggle button for light/dark theme */}
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <LightModeOutlinedIcon />
@@ -85,18 +93,11 @@ const Topbar = () => {
             <DarkModeOutlinedIcon />
           )}
         </IconButton>
-
-        {/* Notification icon */}
         <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
-
-        {/* User profile icon */}
         <IconButton onClick={handleProfileMenu}>
-          <Avatar
-            src={HankHill}
-            sx={{ width: 24, height: 24 }} 
-          />
+          <Avatar src={HankHill} sx={{ width: 24, height: 24 }} />
         </IconButton>
 
         {/* Profile dropdown menu */}
@@ -105,14 +106,8 @@ const Topbar = () => {
           open={open}
           anchorEl={anchorEl}
           onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <List
             component="nav"
@@ -124,7 +119,6 @@ const Topbar = () => {
               },
             }}
           >
-            {/* Edit Profile option */}
             <ListItemButton
               component={Link}
               to="/account"
@@ -136,8 +130,6 @@ const Topbar = () => {
               </ListItemIcon>
               <ListItemText primary="Edit Profile" />
             </ListItemButton>
-
-            {/* FAQ option with navigation to /faq */}
             <ListItemButton
               component={Link}
               to="/faq"
@@ -149,8 +141,6 @@ const Topbar = () => {
               </ListItemIcon>
               <ListItemText primary="FAQ" />
             </ListItemButton>
-
-            {/* Settings option */}
             <ListItemButton
               component={Link}
               to="/settings"
@@ -162,8 +152,6 @@ const Topbar = () => {
               </ListItemIcon>
               <ListItemText primary="Settings" />
             </ListItemButton>
-
-            {/* Logout option */}
             <ListItemButton
               selected={selectedIndex === 3}
               onClick={handleLogout}

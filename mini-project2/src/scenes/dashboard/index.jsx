@@ -6,6 +6,7 @@ import { tokens } from "../../theme";
 import InputRounds from "../../components/InputRounds";
 import AverageRoundsBarChart from "../../components/AverageRoundsBarChart";
 import MonthLineChart from "../../components/MonthlyRoundsLinechart";
+import Welcome from "../../components/Welcome";
 
 // Dashboard component definition
 const Dashboard = () => {

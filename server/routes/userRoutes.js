@@ -43,7 +43,7 @@ router.post("/signin", (req, res) => {
       if (user.password === password) {
         res.json({
           message: "Login successful",
-          user: { email: user.email, id: user.id },
+          user: { email: user.email, id: user.id,  firstName: user.firstName },
         }); // Avoid sending back the password
       } else {
         res.status(401).json({ message: "Invalid credentials" });

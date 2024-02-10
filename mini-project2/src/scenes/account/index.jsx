@@ -10,10 +10,32 @@ import {
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import HankHill from "/assets/Hank_Hill.jpg";
+import { useState, useEffect } from "react";
 
 const Account = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePhoneNumberChange = (event) => {
+    setPhoneNumber(event.target.value);
+  };
 
   const textColorLightMode =
     theme.palette.mode === "light" ? colors.grey[800] : colors.blueAccent[100];
@@ -22,6 +44,8 @@ const Account = () => {
     theme.palette.mode === "light"
       ? colors.blueAccent[200]
       : colors.greenAccent[700];
+
+      
 
   return (
     <Box p="20px">
@@ -71,6 +95,8 @@ const Account = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={firstName}
+            onChange={handleFirstNameChange}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}
@@ -80,6 +106,8 @@ const Account = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={lastName}
+            onChange={handleLastNameChange}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}
@@ -89,6 +117,8 @@ const Account = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={email}
+            onChange={handleEmailChange}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}
@@ -98,6 +128,8 @@ const Account = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={phoneNumber}
+            onChange={handlePhoneNumberChange}
             InputLabelProps={{
               style: { color: colors.greenAccent[300] },
             }}

@@ -20,6 +20,7 @@ const useLocation = () => {
       longitude,
       error: null,
     });
+    setIsLoading(false);
   };
 
    // Function to handle errors in retrieving location
@@ -44,6 +45,7 @@ const useLocation = () => {
         ...prevState,
         error: "Geolocation is not supported by your browser",
       }));
+      setIsLoading(false);
     } else {
       // Requesting the current position
        // handleSuccess is called if successful, handleError if there's an error

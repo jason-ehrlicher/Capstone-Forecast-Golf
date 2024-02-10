@@ -8,6 +8,7 @@ import {
   Grid,
   FormControlLabel,
   Switch,
+  CircularProgress,
 } from "@mui/material";
 import { tokens } from "../theme";
 import useLocation from "../hooks/useLocation";
@@ -37,30 +38,42 @@ const WeatherWidget = () => {
 
     const fetchWeatherData = async () => {
       try {
-        const response = await fetch(`http://localhost:8082/weather-by-location?lat=${latitude}&lon=${longitude}&units=${isMetric ? 'metric' : 'imperial'}`);
+        const response = await fetch(
+          `http://localhost:8082/weather-by-location?lat=${latitude}&lon=${longitude}&units=${
+            isMetric ? "metric" : "imperial"
+          }`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         setWeatherData(data);
       } catch (error) {
-        console.error('Error fetching weather data:', error);
+        console.error("Error fetching weather data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchWeatherData();
-  }, [latitude, longitude, isMetric]);  // Depend on the units system
+  }, [latitude, longitude, isMetric]); // Depend on the units system
 
   // Render the component
   if (isLoading) {
-    return <Box>Loading...</Box>;
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
+  
 
-  if (!weatherData) {
-    return <Box>Error loading weather data.</Box>;
-  }
+
 
   // Handling the loading state
   if (!weatherData) {
@@ -222,7 +235,7 @@ const WeatherWidget = () => {
           {/* Mapping over hourly data to display each hour's forecast */}
           {weatherData.hourly.slice(1, 13).map((hour, index) => (
             <Box
-              key={index}  // Unique key for each hour
+              key={index} // Unique key for each hour
               sx={{
                 minWidth: 150,
                 p: 1,
@@ -245,7 +258,7 @@ const WeatherWidget = () => {
                 })}
               </Typography>
 
-               {/* Displaying the temperature */}
+              {/* Displaying the temperature */}
               <Typography variant="subtitle2">
                 {hour.temp}°{isMetric ? "C" : "F"}
               </Typography>

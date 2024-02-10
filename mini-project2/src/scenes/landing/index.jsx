@@ -14,6 +14,8 @@ import logo2 from "/assets/forecast golf logo1.png";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SignUpModal from "../../components/SignUpModal";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 
 
 // Copyright component for the footer
@@ -50,44 +52,25 @@ export default function SignInSide() {
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
-  const [loginError, setLoginError] = useState("");
-  const [loginSuccess, setLoginSuccess] = useState(false);
+  const { login, loginError } = useAuth();
+
 
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    const loginData = {
-      email: data.get("email"),
-      password: data.get("password"),
-    };
-
-    try {
-      const response = await fetch("http://localhost:8082/api/users/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        setLoginSuccess(true);
-        setLoginError("");
-        console.log(result);
-        // Redirect to the dashboard
-        navigate('/dashboard'); 
-      } else {
-        setLoginSuccess(false);
-        setLoginError(result.message || "Login failed");
-      }
-    } catch (error) {
-      console.error("Error during sign in:", error);
-      setLoginError("An error occurred during login");
+  
+    const email = data.get("email");
+    const password = data.get("password");
+  
+    await login(email, password);
+  
+    // Navigate to the dashboard if login is successful
+    if (!loginError) {
+      navigate('/dashboard');
     }
   };
+  
 
   // Rendering the component
   return (
@@ -129,9 +112,7 @@ export default function SignInSide() {
               {loginError && (
                 <Typography color="error">{loginError}</Typography>
               )}
-              {loginSuccess && (
-                <Typography color="primary">Login Successful!</Typography>
-              )}
+
               {/* Email input field */}
               <TextField
                 margin="normal"
