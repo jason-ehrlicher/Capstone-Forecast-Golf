@@ -64,37 +64,36 @@ const Account = () => {
       setUserData({ ...userData, [prop]: value });
     }
   };
+
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
-      const response = await fetch(
-        `http://localhost:8082/api/users/${userData.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            // Save only digits to the database for consistency
-            phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update user.");
+      const response = await fetch(`http://localhost:8082/api/users/${userData.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""), // Ensuring phone number format
+        }),
+      });
+  
+      if (response.ok) {
+        const updatedUserData = await response.json();
+        updateUserContext({ ...user, ...updatedUserData }); // Ensure this merges as expected
+        alert("Profile updated successfully.");
+      } else {
+        const result = await response.json();
+        throw new Error(result.message || "Failed to update user.");
       }
-
-      const updatedUserData = await response.json();
-      updateUserContext(updatedUserData); // Assuming updateUserContext is implemented to update context
-      alert("Profile updated successfully.");
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Error updating profile.");
+      alert("Error updating profile: " + error.message);
     }
   };
 

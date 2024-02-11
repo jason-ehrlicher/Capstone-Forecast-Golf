@@ -42,6 +42,17 @@ User.init(
       defaultValue: false,
     },
 
+    textNotifications: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    
+    pushNotifications: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
 
     // Profile Picture URL
     profilePicture: {

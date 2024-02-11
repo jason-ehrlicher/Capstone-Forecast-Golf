@@ -41,17 +41,20 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
     }
   };
+  // Updates the user context with new data
+  const updateUserContext = (updatedUserData) => {
+    console.log("Updating user context with:", JSON.stringify(updatedUserData, null, 2));
+    setUser(prevUser => ({
+      ...prevUser,
+      ...updatedUserData,
+    }));
+  };
+
   const logout = () => {
     setUser(null);
   };
 
-const updateUserContext = (updatedUserData) => {
-  // Assuming updatedUserData is the latest user data including the phone number
-  setUser((prevUser) => ({
-    ...prevUser,
-    user: updatedUserData
-  }));
-};
+
 
   const value = {
     user,

@@ -13,8 +13,6 @@ const getUsers = (req, res) => {
     });
 };
 
-
-
 // Create a new user in the database
 const createUser = (req, res) => {
   const userData = req.body; // Assuming userData contains all the required user fields
@@ -36,13 +34,46 @@ const updateUser = (req, res) => {
   if (!id) {
     return res.status(400).send({ message: "User ID is undefined." });
   }
-  
+
   Models.User.update(updateData, { where: { id } })
     .then((numUpdated) => {
       if (numUpdated[0] === 1) {
-        res.status(200).json({ message: "User updated successfully." });
+        // Fetch the updated user and send it back
+        Models.User.findByPk(id)
+          .then((updatedUser) => {
+            if (updatedUser) {
+              res.status(200).json({
+                message: "User updated successfully.",
+                user: {
+                  email: updatedUser.email,
+                  id: updatedUser.id,
+                  firstName: updatedUser.firstName,
+                  lastName: updatedUser.lastName,
+                  phoneNumber: updatedUser.phoneNumber,
+                  profilePicture: updatedUser.profilePicture,
+                  textNotifications: updatedUser.textNotifications,
+                  pushNotifications: updatedUser.pushNotifications,
+                  marketingEmails: updatedUser.marketingEmails,
+                },
+              });
+            } else {
+              res.status(404).send({ message: "Updated user not found." });
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            res
+              .status(500)
+              .send({
+                error: "An error occurred while retrieving updated user.",
+              });
+          });
       } else {
-        res.status(404).send({ message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!` });
+        res
+          .status(404)
+          .send({
+            message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!`,
+          });
       }
     })
     .catch((err) => {
@@ -54,13 +85,17 @@ const updateUser = (req, res) => {
 // Delete a user from the database
 const deleteUser = (req, res) => {
   const { id } = req.params; // Extracting user ID from request parameters
-  
+
   Models.User.destroy({ where: { id } })
     .then((numDeleted) => {
       if (numDeleted === 1) {
         res.status(200).json({ message: "User was deleted successfully." });
       } else {
-        res.status(404).send({ message: `Cannot delete user with id=${id}. Maybe user was not found.` });
+        res
+          .status(404)
+          .send({
+            message: `Cannot delete user with id=${id}. Maybe user was not found.`,
+          });
       }
     })
     .catch((err) => {

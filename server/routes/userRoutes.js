@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Controllers = require("../controllers");
-const bodyParser = require("body-parser");
 const { User } = require("../models"); // Adjust the path as necessary
+
+
 
 // GET all users
 // Example endpoint: http://localhost:8082/api/users
@@ -61,7 +62,17 @@ router.post("/signin", (req, res) => {
       if (user.password === password) {
         res.json({
           message: "Login successful",
-          user: { email: user.email, id: user.id, firstName: user.firstName, lastName: user.lastName, phoneNumber: user.phoneNumber, profilePicture: user.profilePicture },
+          user: {
+            email: user.email,
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phoneNumber: user.phoneNumber,
+            profilePicture: user.profilePicture,
+            textNotifications: user.textNotifications,
+            pushNotifications: user.pushNotifications,
+            marketingEmails: user.marketingEmails
+          },
         }); // Avoid sending back the password
       } else {
         res.status(401).json({ message: "Invalid credentials" });
