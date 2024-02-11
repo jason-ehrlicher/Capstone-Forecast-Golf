@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -10,26 +10,77 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+import { useAuth } from "../../context/AuthContext";
 
 const Settings = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+
+  const { user, updateUserContext } = useAuth();
+
+  useEffect(() => {
+    console.log("Settings Current User: ", user);
+    console.log("user id: ", user?.user?.id);
+  }, [user]);
+
   // State for managing checkbox selections
   const [notificationSettings, setNotificationSettings] = useState({
-    email: false,
-    text: false,
-    push: false,
+    email: user?.user?.marketingEmails || false,
+    text: user?.user?.textNotifications || false,
+    push: user?.user?.pushNotifications || false,
+    id: user?.user?.id || null,
   });
 
+
   // Handler for changing checkbox state
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = async (event) => {
+    const { name, checked } = event.target;
     setNotificationSettings({
       ...notificationSettings,
-      [event.target.name]: event.target.checked,
+      [name]: checked,
     });
-  };
 
+    const requestBody = {};
+    if (name === "email") {
+      requestBody.marketingEmails = checked;
+    } else if (name === "text") {
+      requestBody.textNotifications = checked;
+    } else if (name === "push") {
+      requestBody.pushNotifications = checked;
+    }
+  
+
+    const updateBody = requestBody.email || requestBody.text || requestBody.push;
+
+    const userId = user?.user?.id;
+    console.log("Update request sent for ID:", userId);
+    console.log("Request body:", JSON.stringify({ [name]: checked }));
+
+    // Update in database
+    try {
+      const response = await fetch(`http://localhost:8082/api/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (response.ok) {
+        // Assuming the backend returns the updated user object
+        const updatedUser = await response.json();
+        // Update user context with the updated user data
+        updateUserContext(updatedUser);
+        alert("Preferences updated successfully.");
+      } else {
+        throw new Error("Failed to update preferences.");
+      }
+    } catch (error) {
+      console.error("Error updating preferences:", error);
+      alert("Error updating preferences.");
+    }
+  };
   // Custom checkbox styling for dark mode
   const checkboxStyle =
     theme.palette.mode === "dark"
@@ -47,7 +98,9 @@ const Settings = () => {
 
   // Custom button color for light mode
   const buttonColorLightMode =
-    theme.palette.mode === "light" ? colors.blueAccent[200] : colors.greenAccent[700];
+    theme.palette.mode === "light"
+      ? colors.blueAccent[200]
+      : colors.greenAccent[700];
 
   return (
     <Box p="20px">
@@ -98,7 +151,7 @@ const Settings = () => {
       </Box>
 
       {/* Save Button for Notifications */}
-      <Button
+      {/* <Button
         variant="contained"
         color="primary"
         sx={{
@@ -107,7 +160,7 @@ const Settings = () => {
         }}
       >
         Save
-      </Button>
+      </Button> */}
 
       {/* Password Section */}
       <Box mt="40px">
