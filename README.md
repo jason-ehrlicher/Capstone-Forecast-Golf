@@ -1,9 +1,6 @@
 
 # Forecast Golf 
 
-## Introduction
-Forecast Golf, envisioned by Jason Ehrlicher, is an innovative platform tailored for golf course professionals and employees. The website is under active development, promising to bring a suite of features designed to enhance operational efficiency and the golfing experience.
-
 ## Website Summary and Application Flow
 
 ForeCast Golf is a dynamic platform aimed at revolutionizing golf course management with a user-friendly interface and advanced features. It is designed to provide real-time insights, weather updates, and tools for event scheduling and team management.
