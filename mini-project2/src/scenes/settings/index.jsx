@@ -72,7 +72,7 @@ const Settings = () => {
         const updatedUser = await response.json();
         // Update user context with the updated user data
         updateUserContext(updatedUser);
-        alert("Preferences updated successfully.");
+        // alert("Preferences updated successfully.");
       } else {
         throw new Error("Failed to update preferences.");
       }

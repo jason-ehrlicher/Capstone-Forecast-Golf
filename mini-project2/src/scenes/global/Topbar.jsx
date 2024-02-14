@@ -69,7 +69,7 @@ const Topbar = () => {
       alignItems="center"
       p={2}
     >
-      {/* Search Bar on the left */}
+      {/* Search Bar on the left
       <Box
         display="flex"
         backgroundColor={colors.primary[400]}
@@ -79,7 +79,7 @@ const Topbar = () => {
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
         </IconButton>
-      </Box>
+      </Box> */}
 
       {/* Welcome component in the middle */}
       <Welcome />
