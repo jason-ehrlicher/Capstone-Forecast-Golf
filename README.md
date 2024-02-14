@@ -2,7 +2,7 @@
 # Forecast Golf 
 
 ## Introduction
-**Forecast Golf** Forecast Golf, envisioned by Jason Ehrlicher, is an innovative platform tailored for golf course professionals and employees. The website is under active development, promising to bring a suite of features designed to enhance operational efficiency and the golfing experience.
+Forecast Golf, envisioned by Jason Ehrlicher, is an innovative platform tailored for golf course professionals and employees. The website is under active development, promising to bring a suite of features designed to enhance operational efficiency and the golfing experience.
 
 ## Website Summary and Application Flow
 
