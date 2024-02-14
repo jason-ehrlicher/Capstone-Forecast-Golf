@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import CalendarModal from "../../components/CalendarModal";
+import { useAuth } from "../../context/AuthContext";
 
 // Calendar component definition
 const Calendar = () => {
@@ -30,6 +31,8 @@ const Calendar = () => {
 
   // Ref for accessing the FullCalendar API
   const calendarRef = useRef(null);
+
+  const { user } = useAuth();
 
   // Function to create a unique event ID
   const createEventId = () => {
@@ -62,37 +65,93 @@ const Calendar = () => {
   };
 
   // Function to handle adding a new event
-  const handleEventAdd = (event) => {
-    const calendarApi = calendarRef.current.getApi();
-    calendarApi.addEvent({
-      id: createEventId(), // Ensure a unique ID is generated for new events
-      title: event.title,
-      start: event.start,
-      end: event.end,
-      allDay: event.allDay,
-    });
-    setCurrentEvents(calendarApi.getEvents());
+  const handleEventAdd = async (event) => {
+
+    const eventWithUser = { 
+      ...event, 
+      userId: user?.user?.id, 
+    };
+  
+    try {
+      const response = await fetch("http://localhost:8082/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventWithUser), 
+      });
+      const data = await response.json();
+      if (response.ok) {
+        const calendarApi = calendarRef.current.getApi();
+        calendarApi.addEvent({
+          id: data.id, // Use the id from the response
+          ...event,
+        });
+        setCurrentEvents(calendarApi.getEvents());
+      } else {
+        console.error("Failed to create event:", data.message);
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
   };
+  
 
   // Function to handle updating an existing event
-  const handleEventUpdate = (event) => {
-    const calendarApi = calendarRef.current.getApi();
-    let eventToUpdate = calendarApi.getEventById(event.id);
-    if (eventToUpdate) {
-      eventToUpdate.setProp("title", event.title);
-      eventToUpdate.setDates(event.start, event.end);
+  const handleEventUpdate = async (event) => {
+    
+    try {
+      const response = await fetch(`http://localhost:8082/api/events/${event.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...event,
+          userId: user?.user?.id, // Include if your backend requires it for validation
+        }),
+      });
+      if (response.ok) {
+        const calendarApi = calendarRef.current.getApi();
+        let eventToUpdate = calendarApi.getEventById(event.id);
+        if (eventToUpdate) {
+          eventToUpdate.setProp("title", event.title);
+          eventToUpdate.setDates(event.start, event.end);
+        }
+        setCurrentEvents(calendarApi.getEvents());
+      } else {
+        const data = await response.json();
+        console.error("Failed to update event:", data.message);
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
     }
-    setCurrentEvents(calendarApi.getEvents());
   };
 
   // Function to handle deleting an event
-  const handleEventDelete = (event) => {
-    const calendarApi = calendarRef.current.getApi();
-    let eventToDelete = calendarApi.getEventById(event.id);
-    if (eventToDelete) {
-      eventToDelete.remove();
+  const handleEventDelete = async (event) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8082/api/events/${event.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        // Remove the event from the calendar
+        const calendarApi = calendarRef.current.getApi();
+        let eventToDelete = calendarApi.getEventById(event.id);
+        if (eventToDelete) {
+          eventToDelete.remove();
+        }
+        setCurrentEvents(calendarApi.getEvents());
+      } else {
+        const data = await response.json();
+        console.error("Failed to delete event:", data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
     }
-    setCurrentEvents(calendarApi.getEvents());
   };
 
   // Rendering the Calendar component
@@ -167,50 +226,49 @@ const Calendar = () => {
             select={handleDateClick}
             eventClick={handleEventClick}
             eventsSet={(events) => setCurrentEvents(events)}
-            
             // Array of initial events
-            initialEvents={[
-              {
-                id: "12315",
-                title: "UAE Tournament",
-                date: "2024-01-19",
-              },
-              {
-                id: "5123",
-                title: "Tuesday Mens League",
-                date: "2024-01-23",
-              },
-              {
-                id: "5124",
-                title: "Tuesday Mens League",
-                date: "2024-01-02",
-              },
-              {
-                id: "5125",
-                title: "Tuesday Mens League",
-                date: "2024-01-09",
-              },
-              {
-                id: "5126",
-                title: "Tuesday Mens League",
-                date: "2024-01-16",
-              },
-              {
-                id: "5127",
-                title: "Tuesday Mens League",
-                date: "2024-01-30",
-              },
-              {
-                id: "5128",
-                title: "Tuesday Mens League",
-                date: "2024-02-06",
-              },
-            ]}
+            // initialEvents={[
+            //   {
+            //     id: "12315",
+            //     title: "UAE Tournament",
+            //     date: "2024-01-19",
+            //   },
+            //   {
+            //     id: "5123",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-01-23",
+            //   },
+            //   {
+            //     id: "5124",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-01-02",
+            //   },
+            //   {
+            //     id: "5125",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-01-09",
+            //   },
+            //   {
+            //     id: "5126",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-01-16",
+            //   },
+            //   {
+            //     id: "5127",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-01-30",
+            //   },
+            //   {
+            //     id: "5128",
+            //     title: "Tuesday Mens League",
+            //     date: "2024-02-06",
+            //   },
+            // ]}
           />
         </Box>
       </Box>
 
-          {/* Modal for adding, updating, and deleting events */}
+      {/* Modal for adding, updating, and deleting events */}
       <CalendarModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
