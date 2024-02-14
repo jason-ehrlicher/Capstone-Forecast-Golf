@@ -1,5 +1,5 @@
 import Header from "../../components/Header";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -33,11 +33,38 @@ const Calendar = () => {
   const calendarRef = useRef(null);
 
   const { user } = useAuth();
+  const [events, setEvents] = useState([]);
 
   // Function to create a unique event ID
   // const createEventId = () => {
   //   return String(new Date().getTime()); // Create a unique ID based on the current timestamp
   // };
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:8082/api/events");
+      const data = await response.json();
+      if (response.ok) {
+        // Transform the data as needed to match FullCalendar's event object shape
+        const transformedEvents = data.map((event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          // Add other properties as needed
+        }));
+        setEvents(transformedEvents);
+      } else {
+        console.error("Failed to fetch events:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   // Function to handle date selection on the calendar
   const handleDateClick = (selectedInfo) => {
@@ -66,19 +93,18 @@ const Calendar = () => {
 
   // Function to handle adding a new event
   const handleEventAdd = async (event) => {
-
-    const eventWithUser = { 
-      ...event, 
-      userId: user?.user?.id, 
+    const eventWithUser = {
+      ...event,
+      userId: user?.user?.id,
     };
-  
+
     try {
       const response = await fetch("http://localhost:8082/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(eventWithUser), 
+        body: JSON.stringify(eventWithUser),
       });
       const data = await response.json();
       if (response.ok) {
@@ -95,22 +121,23 @@ const Calendar = () => {
       console.error("Error creating event:", error);
     }
   };
-  
 
   // Function to handle updating an existing event
   const handleEventUpdate = async (event) => {
-    
     try {
-      const response = await fetch(`http://localhost:8082/api/events/${event.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...event,
-          userId: user?.user?.id, // Include if your backend requires it for validation
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:8082/api/events/${event.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...event,
+            userId: user?.user?.id, // Include if your backend requires it for validation
+          }),
+        }
+      );
       if (response.ok) {
         const calendarApi = calendarRef.current.getApi();
         let eventToUpdate = calendarApi.getEventById(event.id);
@@ -119,6 +146,7 @@ const Calendar = () => {
           eventToUpdate.setDates(event.start, event.end);
         }
         setCurrentEvents(calendarApi.getEvents());
+        onClose();
       } else {
         const data = await response.json();
         console.error("Failed to update event:", data.message);
@@ -145,12 +173,80 @@ const Calendar = () => {
           eventToDelete.remove();
         }
         setCurrentEvents(calendarApi.getEvents());
+        setModalOpen(false);
       } else {
         const data = await response.json();
         console.error("Failed to delete event:", data.message);
       }
     } catch (error) {
       console.error("Error deleting event:", error);
+    }
+  };
+
+  // Function to handle event drag and drop
+  const handleEventDrop = async (eventDropInfo) => {
+    const { event } = eventDropInfo;
+    const updatedEvent = {
+      id: event.id,
+      title: event.title,
+      start: event.start ? event.start.toISOString() : undefined, // Check if start exists before calling toISOString
+      end: event.end ? event.end.toISOString() : undefined, // Check if end exists before calling toISOString
+      allDay: event.allDay,
+      userId: user?.user?.id, // Include user ID if needed
+    };
+    if (updatedEvent.start) {
+    try {
+      const response = await fetch(
+        `http://localhost:8082/api/events/${updatedEvent.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update event");
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      // Handle error (e.g., show a notification to the user)
+    }
+  };
+}
+
+  // Function to handle event resize
+  const handleEventResize = async (eventResizeInfo) => {
+    const { event } = eventResizeInfo;
+    const updatedEvent = {
+      id: event.id,
+      title: event.title, // Assuming the title doesn't change, but include if your API needs it
+      start: event.start.toISOString(),
+      end: event.end.toISOString(),
+      allDay: event.allDay,
+      userId: user?.user?.id, // Include user ID if needed
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:8082/api/events/${updatedEvent.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update event");
+      }
+      // If you're managing events in state, you might want to update the state here
+      // Alternatively, you can fetch the updated events list from the server
+    } catch (error) {
+      console.error("Error updating event:", error);
+      // Handle error (e.g., show a notification to the user)
     }
   };
 
@@ -226,6 +322,9 @@ const Calendar = () => {
             select={handleDateClick}
             eventClick={handleEventClick}
             eventsSet={(events) => setCurrentEvents(events)}
+            eventDrop={handleEventDrop}
+            eventResize={handleEventResize}
+            events={events}
             // Array of initial events
             // initialEvents={[
             //   {
