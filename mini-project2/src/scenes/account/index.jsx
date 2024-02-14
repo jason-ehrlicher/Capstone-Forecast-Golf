@@ -13,12 +13,16 @@ import HankHill from "/assets/Hank_Hill.jpg";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FormControl } from "@mui/material";
+import UpdateModal from "../../components/UpdateModal"
+
 
 const Account = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { user, updateUserContext } = useAuth();
   const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
+
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
   useEffect(() => {
     console.log("Profile Current User: ", user);
@@ -86,7 +90,8 @@ const Account = () => {
       if (response.ok) {
         const updatedUserData = await response.json();
         updateUserContext({ ...user, ...updatedUserData }); // Ensure this merges as expected
-        alert("Profile updated successfully.");
+        // alert("Profile updated successfully.");
+        setUpdateModalOpen(true); 
       } else {
         const result = await response.json();
         throw new Error(result.message || "Failed to update user.");
@@ -100,6 +105,13 @@ const Account = () => {
   return (
     <Box p="20px">
       <Header title="ACCOUNT" subtitle="Manage Your Account" />
+
+      <>
+    <UpdateModal
+      open={updateModalOpen}
+      onClose={() => setUpdateModalOpen(false)}
+    />
+  </>
 
       {/* Avatar Section */}
       <Box mt="40px" display="flex" flexDirection="column" alignItems="center">
