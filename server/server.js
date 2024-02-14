@@ -7,7 +7,10 @@ const WeatherController = require("./controllers/WeatherController");
 const RoundsPlayedController = require("./controllers/RoundsPlayedController");
 const WeatherByLocationController = require("./controllers/WeatherByLocationController");
 
+
 const userRoutes = require("./routes/userRoutes"); 
+
+const eventRoutes = require('./routes/eventRoutes')
 
 
 const app = express();
@@ -32,6 +35,8 @@ app.get(
   WeatherByLocationController.getWeatherByLocation
 );
 app.use("/api/users", userRoutes);
+app.use('/api/events', eventRoutes);
+
 
 
 // Start the server
