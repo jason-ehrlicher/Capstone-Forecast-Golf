@@ -49,7 +49,7 @@ The backend architecture is structured to support the website's core functionali
 - **Routes:** Define API endpoints for frontend-backend communication, ensuring seamless data flow for features like the calendar, weather updates, and team management.
 - **Utilities:** Include functions for processing and analyzing weather and golf rounds data, supporting the Forecast and History features.
 
-Further backend documentation can be found in the `server` folder
+Further backend documentation can be found in the [server](https://github.com/jason-ehrlicher/Mini-Project-II/tree/main/server) folder
 
 ## Contribution
 As the website is still under construction, we are open to ideas and suggestions. If you're interested in contributing or have feedback, please reach out to Jason Ehrlicher.
