@@ -35,9 +35,9 @@ const Calendar = () => {
   const { user } = useAuth();
 
   // Function to create a unique event ID
-  const createEventId = () => {
-    return String(new Date().getTime()); // Create a unique ID based on the current timestamp
-  };
+  // const createEventId = () => {
+  //   return String(new Date().getTime()); // Create a unique ID based on the current timestamp
+  // };
 
   // Function to handle date selection on the calendar
   const handleDateClick = (selectedInfo) => {

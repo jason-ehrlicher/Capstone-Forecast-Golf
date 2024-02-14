@@ -1,10 +1,13 @@
 
-# Mini-Project II: Forecast Golf Website
+# Forecast Golf 
 
 ## Introduction
-**Forecast Golf** is an upcoming, dynamic platform dedicated to golf course professionals and employees. Designed by Jason Ehrlicher, this website is currently under construction and aims to offer a variety of innovative features to enhance the golfing experience.
+**Forecast Golf** Forecast Golf, envisioned by Jason Ehrlicher, is an innovative platform tailored for golf course professionals and employees. The website is under active development, promising to bring a suite of features designed to enhance operational efficiency and the golfing experience.
 
 ## Website Summary and Application Flow
+
+ForeCast Golf is a dynamic platform aimed at revolutionizing golf course management with a user-friendly interface and advanced features. It is designed to provide real-time insights, weather updates, and tools for event scheduling and team management.
+
 [ForeCast Golf](https://docs.google.com/document/d/1EcNyStuKZMT6oxdce0QkIrljRRvrvcrXnfQdPf7P0r8/edit?usp=sharing)
 
 ## Figma
@@ -24,9 +27,30 @@
 - **Forecast**: "Forecast" provides advanced tools for predicting outcomes and trends in golf course activity, aiding in strategic planning and resource allocation.
 
 
-## Technology Stack (Tentative)
-- React JS for frontend design.
-- [Other technologies and frameworks to be decided].
+## Technology Stack 
+- **Frontend:** React JS for dynamic and responsive UI/UX design.
+- **Backend:** Express.js framework on Node.js for RESTful API services, Sequelize ORM for database management.
+- **Database:** MySQL for storing user, event, and other data.
+- **Additional Tools:** Node-fetch for external API calls (e.g., weather data fetching), CORS for handling cross-origin requests, dotenv for environment variable management.
+
+## Frontend Overview
+The frontend is developed using React JS, emphasizing modularity and reusability of components. The application structure is designed to support scalability and ease of maintenance.
+
+**Dashboard, Reports, Weather, and More:** Separate scenes for each major feature, facilitating organized development and navigation.
+**Topbar and Sidebar:** Global components for navigation and settings, enhancing user experience and accessibility.
+**Custom Hooks and Contexts:** For managing themes, authentication, and location services, ensuring a consistent and dynamic UI across the platform.
+**Theme Customization:** Utilizes MUI's theme capabilities to support light and dark modes, with custom tokens for color schemes and typography, adapting the UI to user preferences.
+**Protected Routes:** Leveraging React Router and context for authentication, securing access to application features based on user session.
+**Responsive Design:** Ensures a seamless experience across devices, with adjustments to layout and navigation elements for mobile and desktop views.
+
+
+## Backend Overview
+The backend architecture is structured to support the website's core functionalities, including user management, event scheduling, weather forecasting, and data analysis. Key components include:
+
+**Controllers:** Manage the logic for handling requests and responses, including user and event management.
+**Models:** Define the data structure for users, events, and other entities, facilitating interaction with the MySQL database.
+**Routes:** Define API endpoints for frontend-backend communication, ensuring seamless data flow for features like the calendar, weather updates, and team management.
+**Utilities:** Include functions for processing and analyzing weather and golf rounds data, supporting the Forecast and History features.
 
 ## Contribution
 As the website is still under construction, we are open to ideas and suggestions. If you're interested in contributing or have feedback, please reach out to Jason Ehrlicher.
