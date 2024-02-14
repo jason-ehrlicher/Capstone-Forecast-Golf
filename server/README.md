@@ -27,7 +27,7 @@ Start the server by running `node server.js` (or `npm start` if you have defined
 
 ## Application Structure
 
-- app.js: Main application file where the Express app is defined and middleware is configured.
+- server.js: Main application file where the Express app is defined and middleware is configured.
 - /controllers: Contains controllers for handling the logic for user and event routes, processing weather data, and managing rounds played data.
 - /models: Contains Sequelize models for users and events, and modules for processing weather and rounds played data.
 - /routes: Defines routes for users, events, and API endpoints for fetching weather and rounds played data.
