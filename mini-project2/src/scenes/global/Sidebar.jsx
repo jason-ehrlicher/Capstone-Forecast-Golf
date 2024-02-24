@@ -62,9 +62,9 @@ const Sidebar = () => {
     >
       {/* Main sidebar structure using ProSidebar */}
       <ProSidebar collapsed={isCollapsed}>
-         {/* Menu component to hold all menu items */}
+        {/* Menu component to hold all menu items */}
         <Menu iconShape="square">
-         {/* Menu item for toggling the sidebar's collapsed state */}
+          {/* Menu item for toggling the sidebar's collapsed state */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)} // Toggle function
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined} // Icon for the menu item
@@ -73,7 +73,7 @@ const Sidebar = () => {
               color: colors.grey[100],
             }}
           >
-             {/* Displaying the 'ADMIN' label and toggle icon when sidebar is not collapsed */}
+            {/* Displaying the 'ADMIN' label and toggle icon when sidebar is not collapsed */}
             {!isCollapsed && (
               <Box
                 display="flex"
@@ -91,7 +91,7 @@ const Sidebar = () => {
             )}
           </MenuItem>
 
-            {/* Logo section, displayed only when the sidebar is not collapsed */}
+          {/* Logo section, displayed only when the sidebar is not collapsed */}
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
@@ -118,19 +118,20 @@ const Sidebar = () => {
               </Box>
             </Box>
           )}
-           {/* Menu items for navigation */}
+          {/* Menu items for navigation */}
           <Box paddingLeft={isCollapsed ? undefined : "10px"}>
+            {/* Section title for 'Operations' */}
+            {!isCollapsed && (
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
+              >
+                Operations
+              </Typography>
+            )}
 
-             {/* Section title for 'Operations' */}
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Operations
-            </Typography>
-
-             {/* Individual menu items for different pages */}
+            {/* Individual menu items for different pages */}
             <Item
               title="Dashboard"
               to="/dashboard"
@@ -161,13 +162,15 @@ const Sidebar = () => {
             />
 
             {/* Section title for 'Data' */}
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Data
-            </Typography>
+            {!isCollapsed && (
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
+              >
+                Data
+              </Typography>
+            )}
             <Item
               title="Reports"
               to="/reports"

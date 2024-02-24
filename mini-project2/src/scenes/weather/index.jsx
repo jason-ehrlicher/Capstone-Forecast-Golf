@@ -7,6 +7,7 @@ import CurrentWeather from "../../components/CurrentWether";
 import HourlyForecast from "../../components/HourlyForecast";
 import SevenDayForecast from "../../components/SevenDayForecast";
 
+
 const Weather = () => {
   const [isMetric, setIsMetric] = useState(false);
   const [weatherData, setWeatherData] = useState(null);

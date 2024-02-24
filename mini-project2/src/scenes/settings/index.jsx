@@ -196,7 +196,7 @@ const Settings = () => {
             />
           </Box>
           <Button
-            type="submit"
+            // type="submit"
             variant="contained"
             color="primary"
             sx={{

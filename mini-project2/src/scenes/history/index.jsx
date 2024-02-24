@@ -98,7 +98,9 @@ const History = () => {
 
   const years = Array.from(
     new Set(fetchedData.map((item) => new Date(item.Date).getFullYear()))
-  ).sort();
+  )
+    .filter((year) => year !== 2021) // Exclude 2021 from the list
+    .sort();
 
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
@@ -240,8 +242,8 @@ const History = () => {
             bgcolor={colors.blueAccent[700]}
             color="white"
             sx={{
-              border: `1px solid ${colors.grey[300]}`, 
-              borderRadius: theme.shape.borderRadius, 
+              border: `1px solid ${colors.grey[300]}`,
+              borderRadius: theme.shape.borderRadius,
             }}
           >
             <Typography
@@ -261,8 +263,8 @@ const History = () => {
             color="white"
             width="100%"
             sx={{
-              border: `1px solid ${colors.grey[300]}`, 
-              borderRadius: theme.shape.borderRadius,   
+              border: `1px solid ${colors.grey[300]}`,
+              borderRadius: theme.shape.borderRadius,
             }}
           >
             <Grid container justifyContent="center" alignItems="center">
