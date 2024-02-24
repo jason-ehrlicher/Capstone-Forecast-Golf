@@ -18,6 +18,7 @@ import Settings from "./scenes/settings";
 import Account from "./scenes/account";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Contact from "./scenes/contact";
 
 // Main App component
 
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/faq" element={<ProtectedRoute><FAQ /></ ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ ProtectedRoute>} />
                 <Route path="/account" element={<ProtectedRoute><Account /></ ProtectedRoute>} />
+                <Route path="/contact" element={<Contact />} />
               </Routes>
             </div>
           </div>

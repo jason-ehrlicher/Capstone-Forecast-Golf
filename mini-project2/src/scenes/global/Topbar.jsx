@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Welcome from "../../components/Welcome";
 import { useAuth } from "../../context/AuthContext";
+import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
 
 const Topbar = () => {
   const theme = useTheme(); // Access the current theme
@@ -151,6 +152,17 @@ const Topbar = () => {
                 <SettingsOutlinedIcon />
               </ListItemIcon>
               <ListItemText primary="Settings" />
+            </ListItemButton>
+            <ListItemButton
+              component={Link}
+              to="/contact"
+              selected={selectedIndex === 2}
+              onClick={(event) => handleListItemClick(event, 2)}
+            >
+              <ListItemIcon>
+                <ContactSupportOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Contact Us" />
             </ListItemButton>
             <ListItemButton
               selected={selectedIndex === 3}

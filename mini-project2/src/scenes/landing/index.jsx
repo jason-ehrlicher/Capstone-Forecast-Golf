@@ -16,8 +16,6 @@ import SignUpModal from "../../components/SignUpModal";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-
-
 // Copyright component for the footer
 function Copyright(props) {
   return (
@@ -39,10 +37,8 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-
 // Main SignInSide component
 export default function SignInSide() {
-
   const navigate = useNavigate();
 
   // State to manage the visibility of the SignUp modal
@@ -54,23 +50,21 @@ export default function SignInSide() {
 
   const { login, loginError } = useAuth();
 
-
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-  
+
     const email = data.get("email");
     const password = data.get("password");
-  
+
     await login(email, password);
-  
+
     // Navigate to the dashboard if login is successful
     if (!loginError) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   };
-  
 
   // Rendering the component
   return (
@@ -183,6 +177,11 @@ export default function SignInSide() {
                   style={{ maxWidth: "150px" }}
                 />
               </Box>
+              <Typography variant="body2" color="text.secondary" align="center">
+                <Link color="inherit" href="/contact">
+                  Contact Us
+                </Link>
+              </Typography>
               {/* Copyright information */}
               <Copyright sx={{ mt: 5 }} />
             </Box>
