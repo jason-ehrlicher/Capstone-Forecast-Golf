@@ -15,13 +15,13 @@ const MonthLineChart = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8082/rounds-played");
+        const response = await fetch("http://localhost:8082/api/dailyRounds");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const fetchedData = await response.json();
-        // Transform the fetched data here if necessary
-        setData(fetchedData);
+       
+        setData(fetchedData); 
       } catch (err) {
         setError(err);
       } finally {
@@ -39,16 +39,16 @@ const MonthLineChart = () => {
   };
 
   const totalRoundsPerMonth = useMemo(() => {
-    if (loading || error || !data) {
+    if (loading || error || !data.length) {
       return [];
     }
 
     const roundsByMonth = {};
-    Object.entries(data).forEach(([date, details]) => {
+    data.forEach(({ date, rounds_played }) => {
       const formattedDate = new Date(date);
       const monthYear = formatMonthYear(formattedDate);
       roundsByMonth[monthYear] =
-        (roundsByMonth[monthYear] || 0) + details.roundsPlayed;
+        (roundsByMonth[monthYear] || 0) + rounds_played;
     });
 
     const last12MonthsData = Object.entries(roundsByMonth)
@@ -60,6 +60,7 @@ const MonthLineChart = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
+
 
   return (
     <Box

@@ -15,13 +15,12 @@ const AverageRoundsBarChart = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8082/rounds-played");
+        const response = await fetch("http://localhost:8082/api/dailyRounds");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const fetchedData = await response.json();
-        const formattedData = Object.values(fetchedData); // Convert object to array
-        setData(formattedData);
+        setData(fetchedData); // Assuming the data is directly usable
       } catch (err) {
         setError(err);
       } finally {
@@ -37,23 +36,26 @@ const AverageRoundsBarChart = () => {
       return [];
     }
 
-    const roundsPerDay = data.reduce((acc, item) => {
-      const day = item.day;
-      acc[day] = acc[day] || [];
-      acc[day].push(item.roundsPlayed || 0);
+    // Transform data to calculate the average rounds per day
+    const daysMap = data.reduce((acc, { date, rounds_played }) => {
+      
+
+      const dayOfWeek = new Date(date+ "T12:00:00Z").toLocaleString('en-US', { weekday: 'long' });
+      if (!acc[dayOfWeek]) {
+        acc[dayOfWeek] = [];
+      }
+      acc[dayOfWeek].push(rounds_played);
       return acc;
     }, {});
 
-    return Object.keys(roundsPerDay).map((day) => {
-      const total = roundsPerDay[day].reduce((sum, rounds) => sum + rounds, 0);
-      const average = Math.round(total / roundsPerDay[day].length);
-      return { day, average };
-    });
+    return Object.keys(daysMap).map(day => ({
+      "day": day,
+      "average": Math.round(daysMap[day].reduce((sum, curr) => sum + curr, 0) / daysMap[day].length),
+    }));
   }, [data, loading, error]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
-
    // Render the bar chart inside a Box component
   return (
     <Box
