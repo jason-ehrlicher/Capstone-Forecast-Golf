@@ -1,5 +1,5 @@
 const fs = require('fs');
-const csv = require('csv-parser'); 
+const { parse } = require('csv-parse/sync');
 const path = require('path');
 const GolfRounds = require('../models/dailyRounds'); 
 

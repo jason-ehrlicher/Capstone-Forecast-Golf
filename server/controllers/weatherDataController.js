@@ -16,24 +16,26 @@ const getWeatherData = (req, res) => {
 };
 
 // Retrieve weather data by date
-// const getWeatherDataByDate = (req, res) => {
-//     const { date } = req.params; // Assuming date is in 'YYYY-MM-DD' format
+const getWeatherDataByDate = (req, res) => {
+  const { date } = req.params; 
 
-//     Models.WeatherData.findOne({
-//       where: sequelize.where(sequelize.fn('date', sequelize.col('dt_iso')), '=', date)
-//     })
-//     .then(data => {
-//       if (data) {
-//         res.status(200).json(data);
-//       } else {
-//         res.status(404).send({ message: `No weather data found for date ${date}.` });
-//       }
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       res.status(500).send({ message: "Error retrieving weather data for the specified date", error: error.message });
-//     });
-// };
+  Models.WeatherData.findAll({
+    where: {
+      date: date // Directly using the date column for filtering
+    }
+  })
+  .then(data => {
+    if (data && data.length > 0) { // Checking if the data array is not empty
+      res.status(200).json(data);
+    } else {
+      res.status(404).send({ message: `No weather data found for date ${date}.` });
+    }
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(500).send({ message: "Error retrieving weather data for the specified date", error: error.message });
+  });
+};
 
 // Create a new weather data record in the database
 const createWeatherData = (req, res) => {
@@ -98,7 +100,7 @@ const deleteWeatherData = (req, res) => {
 
 module.exports = {
   getWeatherData,
-  // getWeatherDataByDate,
+  getWeatherDataByDate,
   createWeatherData,
   updateWeatherData,
   deleteWeatherData,

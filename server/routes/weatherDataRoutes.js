@@ -8,7 +8,7 @@ router.get('/', weatherDataController.getWeatherData);
 
 // GET weather data by date
 // Example endpoint: http://localhost:8082/api/weatherData/date/2022-01-01
-// router.get('/date/:date', weatherDataController.getWeatherDataByDate);
+router.get('/date/:date', weatherDataController.getWeatherDataByDate);
 
 // POST create a new weather data record
 // Example endpoint: http://localhost:8082/api/weatherData
