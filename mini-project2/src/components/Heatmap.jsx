@@ -15,16 +15,16 @@ const Heatmap = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8082/rounds-played");
+        const response = await fetch("http://localhost:8082/api/dailyRounds");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const fetchedData = await response.json();
-        const formattedData = Object.entries(fetchedData)
-          .filter(([date]) => !date.startsWith('2021')) // Exclude data from the year 2021
-          .map(([date, details]) => ({
+
+        const formattedData = fetchedData
+          .map(({ date, rounds_played }) => ({
             day: date,
-            value: details.roundsPlayed,
+            value: rounds_played,
           }));
         setData(formattedData);
       } catch (err) {
@@ -33,9 +33,10 @@ const Heatmap = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
