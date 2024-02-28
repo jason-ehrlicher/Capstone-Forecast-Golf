@@ -3,10 +3,13 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
+
 const WeatherController = require("./controllers/WeatherController");
 const RoundsPlayedController = require("./controllers/RoundsPlayedController");
 const WeatherByLocationController = require("./controllers/WeatherByLocationController");
 
+
+const dailyRoundsRoutes = require('./routes/dailyRoundsRoutes');
 
 const userRoutes = require("./routes/userRoutes"); 
 
@@ -36,6 +39,7 @@ app.get(
 );
 app.use("/api/users", userRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/dailyRounds', dailyRoundsRoutes);
 
 
 

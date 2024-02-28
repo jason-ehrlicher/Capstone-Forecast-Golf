@@ -1,4 +1,5 @@
 module.exports = {
     userController: require('./userController'),
-    eventController: require('./eventController')
+    eventController: require('./eventController'),
+    dailyRoundsController: require('./dailyRoundsController')
     }
