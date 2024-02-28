@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
-import { red } from "@mui/material/colors";
+
 
 const InputRounds = () => {
   const theme = useTheme();
@@ -24,9 +24,10 @@ const InputRounds = () => {
   useEffect(() => {
     if (selectedDate) {
       fetch(`http://localhost:8082/api/dailyRounds/date/${selectedDate}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.rounds_played) {
+        .then(response => response.json())
+        .then(data => {
+          // Check if `rounds_played` is not undefined to include cases where it's 0
+          if (data.hasOwnProperty('rounds_played')) {
             setRoundsPlayed(data.rounds_played.toString());
             setIsUpdate(true);
           } else {
@@ -34,7 +35,7 @@ const InputRounds = () => {
             setIsUpdate(false);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("Error fetching data:", error);
           setRoundsPlayed("");
           setIsUpdate(false);
@@ -132,10 +133,13 @@ const InputRounds = () => {
     fetch(`http://localhost:8082/api/dailyRounds/date/${date}`)
       .then((response) => response.json())
       .then((data) => {
-        if (data && data.rounds_played) {
+        // Check explicitly if 'rounds_played' is not undefined to include cases where it's 0
+        if (data !== null && 'rounds_played' in data) {
           setRoundsPlayed(data.rounds_played.toString());
           setIsUpdate(true);
         } else {
+          // This will be executed if there's no data for the selected date,
+          // or if the 'rounds_played' key is missing in the response.
           setRoundsPlayed("");
           setIsUpdate(false);
         }
