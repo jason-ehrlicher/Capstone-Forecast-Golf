@@ -1,20 +1,19 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
 
 const WeatherController = require("./controllers/WeatherController");
 const RoundsPlayedController = require("./controllers/RoundsPlayedController");
 const WeatherByLocationController = require("./controllers/WeatherByLocationController");
 
+const dailyRoundsRoutes = require("./routes/dailyRoundsRoutes");
 
-const dailyRoundsRoutes = require('./routes/dailyRoundsRoutes');
+const userRoutes = require("./routes/userRoutes");
 
-const userRoutes = require("./routes/userRoutes"); 
+const eventRoutes = require("./routes/eventRoutes");
 
-const eventRoutes = require('./routes/eventRoutes')
-
+const weatherDataRoutes = require("./routes/weatherDataRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,10 +37,9 @@ app.get(
   WeatherByLocationController.getWeatherByLocation
 );
 app.use("/api/users", userRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/dailyRounds', dailyRoundsRoutes);
-
-
+app.use("/api/events", eventRoutes);
+app.use("/api/dailyRounds", dailyRoundsRoutes);
+app.use("/api/weatherData", weatherDataRoutes);
 
 // Start the server
 app.listen(PORT, () => {

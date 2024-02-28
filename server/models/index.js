@@ -8,6 +8,7 @@ async function init() {
   await User.sync(); // sync the model
   await Event.sync();
   await GolfRounds.sync();
+  await WeatherData.sync();
 }
 
 init();
