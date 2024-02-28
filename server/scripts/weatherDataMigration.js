@@ -1,44 +1,42 @@
-const fs = require("fs");
-const path = require("path"); 
-const WeatherData = require("../models/weatherData");
-const jsonFilePath = path.join(__dirname, "../data/Historical Weather.json");
+const fs = require('fs');
+const { parse } = require('csv-parse');
+const Models = require("../models");
+const path = require('path');
 
-// Function to read and insert data from JSON to MySQL
-async function insertDataFromJSON(jsonFilePath) {
-  try {
-    const rawData = fs.readFileSync(jsonFilePath);
-    const weatherData = JSON.parse(rawData);
+const csvFilePath = path.join(__dirname, '../data/Formatted Historical Weather Data.csv');
 
-    for (const item of weatherData) {
-      await WeatherData.create({
-        dt: item.dt,
-        dt_iso: item.dt_iso,
-        timezone: item.timezone,
-        temp: item.main.temp,
-        temp_min: item.main.temp_min,
-        temp_max: item.main.temp_max,
-        feels_like: item.main.feels_like,
-        pressure: item.main.pressure,
-        humidity: item.main.humidity,
-        dew_point: item.main.dew_point,
-        clouds_all: item.clouds.all,
-        weather_id: item.weather[0].id,
-        weather_main: item.weather[0].main,
-        weather_description: item.weather[0].description,
-        weather_icon: item.weather[0].icon,
-        wind_speed: item.wind.speed,
-        wind_deg: item.wind.deg,
-        wind_gust: item.wind.gust,
-        lon: item.lon,
-        lat: item.lat,
-        city_name: item.city_name,
-      });
-    }
+const fileStream = fs.createReadStream(csvFilePath);
 
-    console.log("Data import complete");
-  } catch (error) {
-    console.error("Error inserting data:", error);
+const parser = fileStream.pipe(parse({
+  columns: true,
+  skip_empty_lines: true
+}));
+
+
+
+parser.on('readable', async function() {
+  let record;
+  while ((record = parser.read()) !== null) {
+    // Adjust 'rain_1h' and 'snow_1h' before inserting the record
+    record.rain_1h = record.rain_1h === '' ? null : parseFloat(record.rain_1h || '0');
+    record.snow_1h = record.snow_1h === '' ? null : parseFloat(record.snow_1h || '0');
+
+
+    (async () => {
+      try {
+
+        await Models.WeatherData.create(record);
+      } catch (err) {
+        console.error('Error inserting record into database:', err);
+      }
+    })();
   }
-}
+});
 
-insertDataFromJSON(jsonFilePath);
+parser.on('end', () => {
+  console.log('CSV file successfully processed and data inserted into database.');
+});
+
+parser.on('error', (err) => {
+  console.error('Error processing CSV file:', err);
+});
