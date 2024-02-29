@@ -1,31 +1,26 @@
-const { readRoundsPlayed, mergeData } = require("../models/RoundsPlayedModel");
-const processFile = require("../models/WeatherDataModel");
-const path = require("path");
+const fetch = require('node-fetch');
+const { mergeData } = require("../models/RoundsPlayedModel");
 
 const RoundsPlayedController = {
   async getRoundsPlayedData(req, res) {
     try {
-      // Construct the absolute paths for the CSV files
-      const weatherFilePath = path.join(__dirname, '../data/Historical Weather Data.csv');
-      const roundsPlayedFilePath = path.join(__dirname, '../data/Rounds Played copy.csv');
-      
+      // Fetch rounds played data from API
+      const roundsPlayedData = await fetch('http://localhost:8082/api/dailyRounds')
+        .then(response => response.json());
 
-      // Log the resolved file paths
-      console.log("Weather File Path:", weatherFilePath);
-      console.log("Rounds Played File Path:", roundsPlayedFilePath);
-
-      const weatherData = await processFile(weatherFilePath);
-      const roundsPlayedData = await readRoundsPlayed(roundsPlayedFilePath);
+      // Fetch weather data from API
+      const weatherData = await fetch('http://localhost:8082/api/weatherData')
+        .then(response => response.json());
 
       if (!weatherData || !roundsPlayedData) {
-        throw new Error("Failed to process data.");
+        throw new Error("Failed to fetch data from APIs.");
       }
 
       const combinedData = mergeData(weatherData, roundsPlayedData);
       res.json(combinedData);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error processing rounds played data");
+      res.status(500).send("Error fetching rounds played data");
     }
   },
 };
