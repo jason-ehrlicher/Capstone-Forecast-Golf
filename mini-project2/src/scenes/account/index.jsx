@@ -6,15 +6,18 @@ import {
   Button,
   Avatar,
   useTheme,
+  Snackbar,
+  Alert,
+  FormControl,
+  FormHelperText,
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import HankHill from "/assets/Hank_Hill.jpg";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { FormControl } from "@mui/material";
-import UpdateModal from "../../components/UpdateModal"
-
+// import { FormControl } from "@mui/material";
+// import UpdateModal from "../../components/UpdateModal";
 
 const Account = () => {
   const theme = useTheme();
@@ -22,11 +25,17 @@ const Account = () => {
   const { user, updateUserContext } = useAuth();
   const [errors, setErrors] = useState({ email: "", phoneNumber: "" });
 
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  // const [updateModalOpen, setUpdateModalOpen] = useState(false);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     console.log("Profile Current User: ", user);
-    console.log('Phone num:', user?.user?.phoneNumber)
+    console.log("Phone num:", user?.user?.phoneNumber);
   }, [user]);
 
   // Function to validate email format
@@ -69,50 +78,103 @@ const Account = () => {
     }
   };
 
-  
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+
+  //   try {
+  //     const response = await fetch(`http://localhost:8082/api/users/${userData.id}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         firstName: userData.firstName,
+  //         lastName: userData.lastName,
+  //         email: userData.email,
+  //         phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""), // Ensuring phone number format
+  //       }),
+  //     });
+
+  //     if (response.ok) {
+  //       const updatedUserData = await response.json();
+  //       updateUserContext({ ...user, ...updatedUserData }); // Ensure this merges as expected
+  //       // alert("Profile updated successfully.");
+  //       setUpdateModalOpen(true);
+  //     } else {
+  //       const result = await response.json();
+  //       throw new Error(result.message || "Failed to update user.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //     alert("Error updating profile: " + error.message);
+  //   }
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
+    // Updated to show Snackbar on successful update
     try {
-      const response = await fetch(`http://localhost:8082/api/users/${userData.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
-          phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""), // Ensuring phone number format
-        }),
-      });
-  
+      const response = await fetch(
+        `http://localhost:8082/api/users/${userData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            phoneNumber: userData.phoneNumber.replace(/[^\d]/g, ""),
+          }),
+        }
+      );
+
       if (response.ok) {
         const updatedUserData = await response.json();
-        updateUserContext({ ...user, ...updatedUserData }); // Ensure this merges as expected
-        // alert("Profile updated successfully.");
-        setUpdateModalOpen(true); 
+        updateUserContext({ ...user, ...updatedUserData });
+        setSnackbar({
+          open: true,
+          message: "Profile updated successfully.",
+          severity: "success",
+        });
       } else {
-        const result = await response.json();
-        throw new Error(result.message || "Failed to update user.");
+        throw new Error("Failed to update user.");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Error updating profile: " + error.message);
+      setSnackbar({
+        open: true,
+        message: "Error updating profile: " + error.message,
+        severity: "error",
+      });
     }
   };
-
   return (
     <Box p="20px">
       <Header title="ACCOUNT" subtitle="Manage Your Account" />
 
-      <>
-    <UpdateModal
-      open={updateModalOpen}
-      onClose={() => setUpdateModalOpen(false)}
-    />
-  </>
-
+      {/* <>
+        <UpdateModal
+          open={updateModalOpen}
+          onClose={() => setUpdateModalOpen(false)}
+        />
+      </> */}
+     {/* Snackbar for confirmation messages */}
+     <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {/* Avatar Section */}
       <Box mt="40px" display="flex" flexDirection="column" alignItems="center">
         <Avatar
