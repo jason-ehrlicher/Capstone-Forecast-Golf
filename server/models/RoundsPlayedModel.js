@@ -1,71 +1,68 @@
-const fs = require('fs');
-const readline = require('readline');
-const processFile = require('./WeatherDataModel')
-const path = require('path');
+const fetch = require("node-fetch");
+const path = require("path");
 
-// combines weather data with daily rounds played data
+// Function to fetch daily rounds played data from the API
+async function fetchRoundsPlayed() {
+  const url = "http://localhost:8082/api/dailyRounds"; 
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching rounds played data:", error);
+    return null;
+  }
+}
 
-
-
-// Function to read and process the Rounds Played CSV
-async function readRoundsPlayed(filePath) {
-    const fileStream = fs.createReadStream(filePath);
-    const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity,
-    });
-
-    const roundsPlayedData = {};
-    for await (const line of rl) {
-        if (line.startsWith("Date")) continue; // Skip header
-
-        const [date, day, roundsPlayed] = line.split(",");
-        roundsPlayedData[date] = { day, roundsPlayed: parseInt(roundsPlayed, 10) };
-    }
-
-    return roundsPlayedData;
+// Function to fetch weather data from the API
+async function fetchWeatherData() {
+  const url = "http://localhost:8082/api/weatherData"; 
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    return null;
+  }
 }
 
 // Function to merge weather data with rounds played
 function mergeData(weatherData, roundsPlayedData) {
-    let mergedData = {};
-    for (const date in weatherData) {
-        if (roundsPlayedData[date]) {
-            mergedData[date] = { ...weatherData[date], ...roundsPlayedData[date] };
-        } else {
-            console.log(`No rounds played data found for date: ${date}`);
-
-        }
+  let mergedData = {};
+  weatherData.forEach((weatherEntry) => {
+    const date = weatherEntry.date;
+    const roundsPlayedEntry = roundsPlayedData.find(
+      (entry) => entry.date === date
+    );
+    if (roundsPlayedEntry) {
+      mergedData[date] = {
+        ...weatherEntry,
+        roundsPlayed: roundsPlayedEntry.rounds_played,
+      };
+    } else {
+      console.log(`No rounds played data found for date: ${date}`);
     }
-    return mergedData;
+  });
+  return mergedData;
 }
 
-
-
 async function main() {
-    const weatherFilePath = path.join(__dirname, '../data/Historical Weather Data.csv');
-    const roundsPlayedFilePath = path.join(__dirname, '../data/Rounds Played copy.csv');
+  const weatherData = await fetchWeatherData();
+  if (!weatherData) {
+    console.error("Failed to fetch weather data.");
+    return;
+  }
 
-    const weatherData = await processFile(weatherFilePath);
+  const roundsPlayedData = await fetchRoundsPlayed();
+  if (!roundsPlayedData) {
+    console.error("Failed to fetch rounds played data.");
+    return;
+  }
 
-    if (!weatherData) {
-        console.error("Failed to process weather data.");
-        return; // Exit the function if weatherData is not available
-    }
-
-    const roundsPlayedData = await readRoundsPlayed(roundsPlayedFilePath);
-
-    // console.log("Sample weather data:", Object.entries(weatherData).slice(0, 5));
-    // console.log("Sample rounds played data:", Object.entries(roundsPlayedData).slice(0, 5));
-    
-    const combinedData = mergeData(weatherData, roundsPlayedData);
-
-    // console.log(combinedData);
+  const combinedData = mergeData(weatherData, roundsPlayedData);
+  console.log(combinedData);
 }
 
 main();
-
-module.exports = {
-    readRoundsPlayed,
-    mergeData,
-};
+module.exports = { mergeData };
