@@ -20,7 +20,6 @@ const History = () => {
 
   const [selectedYear, setSelectedYear] = useState("");
   const [golfRoundsData, setGolfRoundsData] = useState([]);
-  const [weatherData, setWeatherData] = useState([]);
   const [years, setYears] = useState([]);
 
   useEffect(() => {
@@ -38,19 +37,26 @@ const History = () => {
         }
 
         const golfData = await golfDataResponse.json();
+        console.log("Golf Data:", golfData);
         const weatherData = await weatherDataResponse.json();
 
         let mergedData = mergeData(weatherData, golfData);
 
         // Exclude records from 2021 before setting the state
+        // console.log("Merged Data Before Filtering:", mergedData);
         mergedData = mergedData.filter(
-          (item) => new Date(item.date).getFullYear() !== 2021
+          (item) => new Date(item.date + "T12:00:00Z").getUTCFullYear() !== 2021
         );
 
-        setGolfRoundsData(mergedData);
+        // console.log("Merged Data After Filtering:", mergedData);
 
+        setGolfRoundsData(mergedData);
         const extractedYears = Array.from(
-          new Set(mergedData.map((item) => new Date(item.date).getFullYear()))
+          new Set(
+            mergedData.map((item) =>
+              new Date(item.date + "T12:00:00Z").getUTCFullYear()
+            )
+          )
         ).sort();
         setYears(extractedYears);
       } catch (error) {
@@ -62,20 +68,34 @@ const History = () => {
   }, []);
 
   const mergeData = (weatherData, golfRoundsData) => {
-    // Filter weather data to include only entries at "12:00:00"
-    const filteredWeatherData = weatherData.filter(
-      (data) => data.time === "12:00:00"
-    );
-
     const mergedData = golfRoundsData.map((golfRound) => {
-      // Use the filtered weather data for matching
-      const weather = filteredWeatherData.find(
-        (w) => w.date === golfRound.date
+      let weather;
+
+      // Generate an array of times to check based on the pattern
+      const times = Array.from({ length: 24 }, (_, index) => {
+        const hour = index < 12 ? 12 - index : index - 11;
+        const suffix = index % 2 === 0 ? ":00:00" : ":00:00";
+        return `${hour.toString().padStart(2, "0")}${suffix}`;
+      });
+
+      // Ensure unique and ordered times, starting with "12:00:00"
+      const uniqueTimes = ["12:00:00", ...new Set(times)].filter(
+        (time, index, self) => self.indexOf(time) === index
       );
+
+      // Find the first matching weather data
+      for (let time of uniqueTimes) {
+        weather = weatherData.find(
+          (w) => w.date === golfRound.date && w.time === time
+        );
+        if (weather) break; // Exit loop on first match
+      }
+
+      // Construct the merged data object with the found weather information, if any
       return {
         ...golfRound,
-        roundsPlayed: golfRound.rounds_played, // Adjust based on actual property name
-        weatherDate: weather?.date, // Optional: For verification
+        roundsPlayed: golfRound.rounds_played,
+        weatherDate: weather?.date,
         weatherIcon: weather?.weather_icon,
         temp: weather?.temp,
         feelsLike: weather?.feels_like,
@@ -163,15 +183,30 @@ const History = () => {
 
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
+
+    // Refilter the data whenever the selected year changes
+    filterAndSetData(event.target.value);
+  };
+
+  const filterAndSetData = (selectedYear) => {
+    // Filter data based on the selected year, considering UTC dates to ensure accuracy
+    const filteredData = golfRoundsData.filter((item) => {
+      const itemYear = new Date(item.date + "T12:00:00Z")
+        .getUTCFullYear()
+        .toString();
+      return selectedYear === "" || itemYear === selectedYear;
+    });
+
+    const groupedData = groupDataByMonth(filteredData);
   };
 
   const groupDataByMonth = (data) => {
     const monthlyData = {};
     data.forEach((item) => {
-      const parsedDate = new Date(item.date);
-      // Create a key that correctly represents the year and month
-      const year = parsedDate.getFullYear();
-      const month = parsedDate.getMonth() + 1; // Adjust month index (+1)
+      // Ensure using UTC dates to avoid timezone affecting the day
+      const parsedDate = new Date(item.date + "T12:00:00Z");
+      const year = parsedDate.getUTCFullYear();
+      const month = parsedDate.getUTCMonth() + 1; // Adjust month index (+1)
       const monthYearKey = `${year}-${String(month).padStart(2, "0")}`;
 
       if (!monthlyData[monthYearKey]) {
@@ -180,17 +215,34 @@ const History = () => {
       monthlyData[monthYearKey].push(item);
     });
 
-    // Convert monthYearKey to "January 2023" format for labels
+    const sortedMonthlyData = Object.keys(monthlyData)
+      .sort()
+      .reduce((acc, key) => {
+        const readableKey = `${new Date(key + "-01T00:00:00Z").toLocaleString(
+          "default",
+          { month: "long", year: "numeric", timeZone: "UTC" }
+        )}`;
+        acc[readableKey] = monthlyData[key];
+        return acc;
+      }, {});
+
+    // Convert monthYearKey to "January 2023" format for labels, using UTC dates
     const formattedMonthlyData = Object.entries(monthlyData)
-      .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+      .sort(
+        (a, b) =>
+          new Date(a[0] + "-01T00:00:00Z") - new Date(b[0] + "-01T00:00:00Z")
+      )
       .reduce((acc, [key, value]) => {
+        // Use the first day of the month to create a label, ensuring it's in UTC
         const [year, monthIndex] = key.split("-");
-        const date = new Date(year, monthIndex - 1); // Adjust month index when creating Date
+        const date = new Date(Date.UTC(year, monthIndex - 1, 1));
         const readableMonthYear = date.toLocaleString("default", {
           month: "long",
           year: "numeric",
+          timeZone: "UTC", // Explicitly use UTC for labeling
         });
-        return { ...acc, [readableMonthYear]: value };
+        acc[readableMonthYear] = value;
+        return acc;
       }, {});
 
     return formattedMonthlyData;
@@ -239,8 +291,6 @@ const History = () => {
       )
     : golfRoundsData;
 
-  // const monthlyData = groupDataByMonth(filteredData);
-
   return (
     <Box m={2}>
       <Header title="HISTORICAL DATA" subtitle="Daily Rounds Played Archive" />
@@ -266,23 +316,23 @@ const History = () => {
       {/* Display Yearly and Quarterly Totals */}
       {selectedYear && (
         <>
-         <Box
-         mb={4}
-         p={2}
-         bgcolor={colors.blueAccent[700]}
-         color="white"
-         sx={{
-           border: `1px solid ${colors.grey[300]}`,
-           borderRadius: theme.shape.borderRadius,
-         }}
-       >
+          <Box
+            mb={4}
+            p={2}
+            bgcolor={colors.blueAccent[700]}
+            color="white"
+            sx={{
+              border: `1px solid ${colors.grey[300]}`,
+              borderRadius: theme.shape.borderRadius,
+            }}
+          >
             <Typography
               variant="h2"
               textAlign="center"
               sx={{ fontSize: "1.5rem" }}
             >
-            Total Rounds Played in {selectedYear}: {YTDTotal} 
-          </Typography>
+              Total Rounds Played in {selectedYear}: {YTDTotal}
+            </Typography>
           </Box>
           <Box
             mb={4}
@@ -295,20 +345,19 @@ const History = () => {
               borderRadius: theme.shape.borderRadius,
             }}
           >
-           <Grid container justifyContent="center" alignItems="center">
-            {Object.entries(quarterlyTotals).map(([quarter, total]) => (
-               <Grid item xs={12} sm={3} key={quarter}>
+            <Grid container justifyContent="center" alignItems="center">
+              {Object.entries(quarterlyTotals).map(([quarter, total]) => (
+                <Grid item xs={12} sm={3} key={quarter}>
                   <Typography
                     textAlign="center"
                     sx={{ fontSize: "1.5rem", color: "white" }}
                   >
-                  {quarter}: {total} rounds
-                </Typography>
-              </Grid>
-            ))}
-          </Grid>
-          
-        </Box>
+                    {quarter}: {total} rounds
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
         </>
       )}
       <Grid container spacing={2}>
@@ -317,7 +366,7 @@ const History = () => {
             <Typography variant="h6" gutterBottom>
               {monthYear}
             </Typography>
-            
+
             <DataGrid
               rows={data}
               columns={columns}
@@ -344,10 +393,10 @@ const History = () => {
                   backgroundColor: colors.blueAccent[700],
                 },
                 border: `1px solid ${colors.grey[300]}`,
-                // borderRadius: theme.shape.borderRadius, 
-                marginBottom: theme.spacing(2), 
+                // borderRadius: theme.shape.borderRadius,
+                marginBottom: theme.spacing(2),
               }}
-                          />
+            />
           </Grid>
         ))}
       </Grid>
