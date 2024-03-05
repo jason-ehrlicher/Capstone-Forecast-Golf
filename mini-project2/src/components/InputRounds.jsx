@@ -150,9 +150,10 @@ const InputRounds = () => {
 
   return (
     <>
-      <Box mt="30px" sx={{ backgroundColor: colors.primary[400] }}>
+      <Box mt="30px" sx={{ backgroundColor: colors.primary[400] }}       maxHeight={"300px"}
+      minHeight={"300px"}>
         <Box
-          style={{ padding: "20px", color: colors.grey[100] }}
+          style={{ padding: "15px", color: colors.grey[100] }}
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -160,7 +161,7 @@ const InputRounds = () => {
         >
           <Typography
             variant="h4"
-            style={{ marginBottom: "10px", textAlign: "center" }}
+            style={{ marginBottom: "30px", textAlign: "center" }}
           >
             Input Rounds Played
           </Typography>

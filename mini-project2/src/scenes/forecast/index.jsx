@@ -286,7 +286,7 @@ const Forecast = () => {
                             ) >= 80
                               ? colors.greenAccent[700]
                               : colors.redAccent[700]
-                          }`, // Use your theme's red color here
+                          }`, 
                           backgroundColor:
                             calculateAccuracy(
                               date.actualRoundsPlayed,

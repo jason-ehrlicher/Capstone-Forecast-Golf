@@ -6,7 +6,7 @@ import { tokens } from "../../theme";
 import InputRounds from "../../components/InputRounds";
 import AverageRoundsBarChart from "../../components/AverageRoundsBarChart";
 import MonthLineChart from "../../components/MonthlyRoundsLinechart";
-
+import CalendarWidget from "../../components/CalendarWidget";
 
 // Dashboard component definition
 const Dashboard = () => {
@@ -16,7 +16,14 @@ const Dashboard = () => {
       {/* Header component with a title and subtitle */}
       <Header title="DASHBOARD" subtitle="Your Personalized Overview" />
       <WeatherWidget />
-      <InputRounds />
+      <Box display="flex" width="100%">
+        <Box flex={1} mr={2}>
+          <InputRounds />
+        </Box>
+        <Box flex={1}>
+          <CalendarWidget />
+        </Box>
+      </Box>
       <AverageRoundsBarChart />
       <MonthLineChart />
       <Heatmap />
