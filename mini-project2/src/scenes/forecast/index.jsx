@@ -18,7 +18,8 @@ const formatDate = (date) => {
 const calculateDates = () => {
   const dates = [];
   const today = new Date();
-  for (let i = -3; i <= 3; i++) {
+  // Adjust the range to go from -7 to +7 days
+  for (let i = -7; i <= 7; i++) {
     const date = new Date();
     date.setDate(today.getDate() + i);
     dates.push({
@@ -27,7 +28,7 @@ const calculateDates = () => {
         month: "numeric",
         day: "numeric",
       }),
-      dateString: formatDate(date), // Ensure the correct format
+      dateString: formatDate(date),
       isToday: date.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0),
     });
   }
@@ -49,34 +50,82 @@ const Forecast = () => {
   const todayCardRef = useRef(null);
 
   useEffect(() => {
-    // Create a copy of dates to avoid directly mutating state
-    let updatedDates = [...dates];
+    const fetchData = async () => {
+      await Promise.all(
+        dates.map(async (date, index) => {
+          // Fetch actual rounds for previous days
+          if (index < todayIndex) {
+            try {
+              const response = await fetch(
+                `http://localhost:8082/api/dailyRounds/date/${date.dateString}`
+              );
+              if (!response.ok)
+                throw new Error("Failed to fetch actual rounds played");
+              const data = await response.json();
+              date.actualRoundsPlayed = data.rounds_played;
+            } catch (error) {
+              console.error("Error fetching actual rounds played data:", error);
+            }
+          }
 
-    dates.forEach((date, index) => {
-      if (index < todayIndex && index >= todayIndex - 3) {
-        const formattedDate = date.dateString;
-        if (formattedDate !== "Invalid date") {
-          fetch(`http://localhost:8082/api/dailyRounds/date/${formattedDate}`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data && data.rounds_played !== undefined) {
-                updatedDates[index] = {
-                  ...updatedDates[index],
-                  actualRoundsPlayed: data.rounds_played,
-                };
-                // Update state only once after all fetches are done
-                if (index === todayIndex - 1) {
-                  setDates(updatedDates);
-                }
+          // Fetch predictions for all days
+          try {
+            const predictionResponse = await fetch(
+              `http://localhost:8082/api/prediction`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ date: date.dateString }),
               }
-            })
-            .catch((error) =>
-              console.error("Error fetching actual rounds played data:", error)
             );
-        }
-      }
-    });
-  }, [todayIndex, dates]); // Added dates to the dependency array
+            if (!predictionResponse.ok)
+              throw new Error("Failed to fetch prediction");
+            const predictionData = await predictionResponse.json();
+            date.predictionRounds = predictionData.averageRoundsPlayed;
+          } catch (error) {
+            console.error(
+              "Error fetching prediction for date " + date.dateString + ":",
+              error
+            );
+          }
+        })
+      );
+
+      // Update the state after all fetches are completed
+      setDates([...dates]);
+    };
+
+    fetchData();
+  }, []);
+
+  // Centers scroll position on today
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const scrollContainer = scrollContainerRef.current;
+
+      // Adjust these values based on the new range of cards
+      const todayCardWidth = 300;
+      const otherCardWidth = 260;
+      const cardsToLeft = 7; // Now 7 cards to the left of today's card
+
+      const totalWidthToLeft = cardsToLeft * otherCardWidth;
+
+      // Adjust the calculation for the initial scroll position
+      const leftOffset =
+        totalWidthToLeft + todayCardWidth / 2 - scrollContainer.offsetWidth / 2;
+
+      scrollContainer.scrollLeft = leftOffset;
+    }
+  }, []); // This effect runs only once after the initial render.
+
+  const calculateAccuracy = (actual, predicted) => {
+    if (actual !== undefined && predicted !== undefined) {
+      const difference = Math.abs(actual - predicted);
+      const accuracy = 100 - (difference / actual) * 100;
+      return Math.max(0, accuracy).toFixed(2); // Ensure accuracy is not negative
+    }
+    return undefined;
+  };
 
   return (
     <Box m="20px">
@@ -84,7 +133,10 @@ const Forecast = () => {
         title="ForeCast"
         subtitle="Data-Driven Trends for Informed Decisions"
       />
-      <Box sx={{ overflowX: "auto", display: "flex", alignItems: "center" }}>
+      <Box
+        ref={scrollContainerRef}
+        sx={{ overflowX: "auto", display: "flex", alignItems: "center" }}
+      >
         <Box sx={{ display: "inline-flex", minWidth: "100%" }}>
           {dates.map((date, index) => (
             <Box
@@ -127,7 +179,7 @@ const Forecast = () => {
                   <Typography variant="subtitle1">{`${date.dayOfWeek}, ${date.date}`}</Typography>
                 </Box>
                 {/* For the 3 previous days */}
-                {index < todayIndex && index >= todayIndex - 3 && (
+                {index < todayIndex && index >= todayIndex - 7 && (
                   <>
                     <Box
                       sx={{
@@ -156,10 +208,13 @@ const Forecast = () => {
                           border: `2px solid ${colors.greenAccent[700]}`,
                           borderRadius: "8px",
                           padding: "10px",
+                          width: "115px",
                         }}
                       >
                         <Typography variant="h3" sx={{ textAlign: "center" }}>
-                          95
+                          {date.predictionRounds
+                            ? `${date.predictionRounds}`
+                            : "Loading..."}
                         </Typography>
                         <Typography>Rounds Played</Typography>
                       </Box>
@@ -190,6 +245,7 @@ const Forecast = () => {
                           border: `2px solid ${colors.greenAccent[700]}`,
                           borderRadius: "8px",
                           padding: "10px",
+                          width: "115px",
                         }}
                       >
                         {/* Conditionally render actualRoundsPlayed or a placeholder */}
@@ -223,26 +279,51 @@ const Forecast = () => {
                         sx={{
                           flexGrow: 1,
                           background: colors.primary[400],
-                          border: `2px solid ${colors.greenAccent[700]}`,
+                          border: `2px solid ${
+                            calculateAccuracy(
+                              date.actualRoundsPlayed,
+                              date.predictionRounds
+                            ) >= 80
+                              ? colors.greenAccent[700]
+                              : colors.redAccent[700]
+                          }`, // Use your theme's red color here
+                          backgroundColor:
+                            calculateAccuracy(
+                              date.actualRoundsPlayed,
+                              date.predictionRounds
+                            ) >= 80
+                              ? "green"
+                              : "red", // Conditional background color
                           borderRadius: "8px",
                           padding: "10px",
+                          width: "115px",
                         }}
                       >
                         <Typography variant="h3" sx={{ textAlign: "center" }}>
-                          #%
+                          {calculateAccuracy(
+                            date.actualRoundsPlayed,
+                            date.predictionRounds
+                          )
+                            ? `${calculateAccuracy(
+                                date.actualRoundsPlayed,
+                                date.predictionRounds
+                              )}%`
+                            : "N/A"}
                         </Typography>
                       </Box>
                     </Box>
                   </>
                 )}
                 {/* For today and the next 3 days (existing logic) */}
-                {index >= todayIndex && index <= todayIndex + 3 && (
+                {index >= todayIndex && index <= todayIndex + 7 && (
                   <>
                     <Typography
                       variant={index === todayIndex ? "h2" : "h4"}
                       sx={{ margin: "20px 0 10px", fontWeight: "bold" }}
                     >
-                      Prediction:
+                      {index === todayIndex
+                        ? "Today's Prediction:"
+                        : "Prediction:"}
                     </Typography>
                     <Box
                       sx={{
@@ -261,7 +342,9 @@ const Forecast = () => {
                           fontSize: index === todayIndex ? "6rem" : "2.5rem",
                         }}
                       >
-                        {index === todayIndex ? "56" : "TBD"}
+                        {date.predictionRounds
+                          ? `${date.predictionRounds}`
+                          : "Loading..."}
                       </Typography>
                       <Typography variant={index === todayIndex ? "h4" : "h6"}>
                         Rounds Played

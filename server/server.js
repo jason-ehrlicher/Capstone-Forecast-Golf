@@ -15,6 +15,8 @@ const eventRoutes = require("./routes/eventRoutes");
 
 const weatherDataRoutes = require("./routes/weatherDataRoutes");
 
+const predictionRoutes = require("./routes/predictionRoutes")
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -40,6 +42,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/dailyRounds", dailyRoundsRoutes);
 app.use("/api/weatherData", weatherDataRoutes);
+app.use("/api/prediction", predictionRoutes);
 
 // Start the server
 app.listen(PORT, () => {
