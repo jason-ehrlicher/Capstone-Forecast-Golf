@@ -39,24 +39,19 @@ const History = () => {
         const golfData = await golfDataResponse.json();
         console.log("Golf Data:", golfData);
         const weatherData = await weatherDataResponse.json();
+        console.log("Weather Data:", weatherData);
+        // console.log(
+        //   golfRoundsData.find((golfRound) => golfRound.date === "2022-01-01")
+        // );
+        // console.log(
+        //   weatherData.find((weather) => weather.date === "2022-01-01")
+        // );
 
         let mergedData = mergeData(weatherData, golfData);
 
-        // Exclude records from 2021 before setting the state
-        // console.log("Merged Data Before Filtering:", mergedData);
-        mergedData = mergedData.filter(
-          (item) => new Date(item.date + "T12:00:00Z").getUTCFullYear() !== 2021
-        );
-
-        // console.log("Merged Data After Filtering:", mergedData);
-
         setGolfRoundsData(mergedData);
         const extractedYears = Array.from(
-          new Set(
-            mergedData.map((item) =>
-              new Date(item.date + "T12:00:00Z").getUTCFullYear()
-            )
-          )
+          new Set(mergedData.map((item) => new Date(item.date).getFullYear()))
         ).sort();
         setYears(extractedYears);
       } catch (error) {
@@ -66,63 +61,49 @@ const History = () => {
 
     fetchData();
   }, []);
+  
 
   const mergeData = (weatherData, golfRoundsData) => {
-    const mergedData = golfRoundsData.map((golfRound) => {
-      let weather;
+    const mergedData = golfRoundsData
+      .filter((golfRound) => new Date(golfRound.date).getFullYear() !== 2021)
+      .map((golfRound) => {
+        const weather = weatherData.find((w) => w.date === golfRound.date);
 
-      // Generate an array of times to check based on the pattern
-      const times = Array.from({ length: 24 }, (_, index) => {
-        const hour = index < 12 ? 12 - index : index - 11;
-        const suffix = index % 2 === 0 ? ":00:00" : ":00:00";
-        return `${hour.toString().padStart(2, "0")}${suffix}`;
+        const dayOfWeek = new Date(golfRound.date).toLocaleDateString("en-US", {
+          weekday: "long",
+        });
+
+        return {
+          ...golfRound,
+          dayOfWeek,
+          roundsPlayed: golfRound.rounds_played,
+          weatherDate: weather?.date,
+          weatherIcon: weather?.weather_icon,
+          temp: weather?.temp_mean,
+          feelsLike: weather?.feels_like_mean,
+          tempMin: weather?.temp_min,
+          tempMax: weather?.temp_max,
+          humidity: weather?.humidity_mean,
+          windSpeed: weather?.wind_speed_mean,
+          windGust: weather?.wind_speed_max,
+          weatherMain: weather?.weather_main,
+          weatherDescription: weather?.weather_description,
+          rain: weather?.rain_sum,
+        };
       });
-
-      // Ensure unique and ordered times, starting with "12:00:00"
-      const uniqueTimes = ["12:00:00", ...new Set(times)].filter(
-        (time, index, self) => self.indexOf(time) === index
-      );
-
-      // Find the first matching weather data
-      for (let time of uniqueTimes) {
-        weather = weatherData.find(
-          (w) => w.date === golfRound.date && w.time === time
-        );
-        if (weather) break; // Exit loop on first match
-      }
-
-      // Construct the merged data object with the found weather information, if any
-      return {
-        ...golfRound,
-        roundsPlayed: golfRound.rounds_played,
-        weatherDate: weather?.date,
-        weatherIcon: weather?.weather_icon,
-        temp: weather?.temp,
-        feelsLike: weather?.feels_like,
-        tempMin: weather?.temp_min,
-        tempMax: weather?.temp_max,
-        pressure: weather?.pressure,
-        humidity: weather?.humidity,
-        windSpeed: weather?.wind_speed,
-        windGust: weather?.wind_gust,
-        weatherMain: weather?.weather_main,
-        weatherDescription: weather?.weather_description,
-      };
-    });
-
+    console.log("merged:", mergedData);
     return mergedData;
   };
 
   const columns = [
     { field: "date", headerName: "Date", flex: 1 },
-    { field: "day", headerName: "Day", flex: 1 },
+    { field: "dayOfWeek", headerName: "Day", flex: 1 },
     {
       field: "roundsPlayed",
       headerName: "Rounds Played",
       type: "number",
       flex: 1,
     },
-
     {
       field: "weatherIcon",
       headerName: "Weather",
@@ -135,33 +116,38 @@ const History = () => {
               <p>
                 <strong>Date:</strong> {params.row.date}
               </p>
-              {/* <p><strong>Main:</strong> {params.row.weatherMain}</p> */}
               <p>
                 <strong>Description:</strong> {params.row.weatherDescription}
               </p>
               <p>
-                <strong>Temp:</strong> {params.row.temp}°F
+                <strong>Temp:</strong> {Math.round(params.row.temp)}°F
               </p>
               <p>
-                <strong>Feels Like:</strong> {params.row.feelsLike}°F
+                <strong>Feels Like:</strong> {Math.round(params.row.feelsLike)}
+                °F
               </p>
               <p>
-                <strong>Temp Min:</strong> {params.row.tempMin}°F
+                <strong>Temp Min:</strong> {Math.round(params.row.tempMin)}°F
               </p>
               <p>
-                <strong>Temp Max:</strong> {params.row.tempMax}°F
+                <strong>Temp Max:</strong> {Math.round(params.row.tempMax)}°F
               </p>
               <p>
-                <strong>Pressure:</strong> {params.row.pressure} hPa
+                <strong>Humidity:</strong> {Math.round(params.row.humidity)}%
               </p>
               <p>
-                <strong>Humidity:</strong> {params.row.humidity}%
+                <strong>Wind Speed:</strong> {Math.round(params.row.windSpeed)}{" "}
+                mph
               </p>
               <p>
-                <strong>Wind Speed:</strong> {params.row.windSpeed} mph
+                <strong>Wind Gust:</strong> {Math.round(params.row.windGust)}{" "}
+                mph
               </p>
               <p>
-                <strong>Wind Gust:</strong> {params.row.windGust} mph
+                <strong>Rain:</strong>{" "}
+                {params.row.rain !== undefined
+                  ? `${params.row.rain} mm`
+                  : "N/A"}
               </p>
             </div>
           );
@@ -183,69 +169,83 @@ const History = () => {
 
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
-
-    // Refilter the data whenever the selected year changes
-    filterAndSetData(event.target.value);
-  };
-
-  const filterAndSetData = (selectedYear) => {
-    // Filter data based on the selected year, considering UTC dates to ensure accuracy
-    const filteredData = golfRoundsData.filter((item) => {
-      const itemYear = new Date(item.date + "T12:00:00Z")
-        .getUTCFullYear()
-        .toString();
-      return selectedYear === "" || itemYear === selectedYear;
-    });
-
-    const groupedData = groupDataByMonth(filteredData);
   };
 
   const groupDataByMonth = (data) => {
     const monthlyData = {};
-    data.forEach((item) => {
-      // Ensure using UTC dates to avoid timezone affecting the day
-      const parsedDate = new Date(item.date + "T12:00:00Z");
-      const year = parsedDate.getUTCFullYear();
-      const month = parsedDate.getUTCMonth() + 1; // Adjust month index (+1)
-      const monthYearKey = `${year}-${String(month).padStart(2, "0")}`;
+    data.forEach((item, index) => {
+      const parsedDate = new Date(item.date);
+      // Convert to UTC dates to avoid timezone issues
+      const monthYear =
+        parsedDate.getUTCFullYear() +
+        "-" +
+        ("0" + (parsedDate.getUTCMonth() + 1)).slice(-2); // YYYY-MM format for simplicity
 
-      if (!monthlyData[monthYearKey]) {
-        monthlyData[monthYearKey] = [];
+      // Convert month index to month name if needed
+      const monthName = parsedDate.toLocaleString("default", {
+        month: "long",
+        timeZone: "UTC",
+      });
+      const formattedMonthYear = `${monthName} ${parsedDate.getUTCFullYear()}`;
+
+      if (!monthlyData[formattedMonthYear]) {
+        monthlyData[formattedMonthYear] = [];
       }
-      monthlyData[monthYearKey].push(item);
+      monthlyData[formattedMonthYear].push({
+        ...item,
+        uniqueId: `${formattedMonthYear}-${index}`,
+      });
     });
+    return monthlyData;
+  };
 
-    const sortedMonthlyData = Object.keys(monthlyData)
-      .sort()
-      .reduce((acc, key) => {
-        const readableKey = `${new Date(key + "-01T00:00:00Z").toLocaleString(
-          "default",
-          { month: "long", year: "numeric", timeZone: "UTC" }
-        )}`;
-        acc[readableKey] = monthlyData[key];
-        return acc;
-      }, {});
+  const renderMonthDataGrid = (monthYear, monthData, totalRoundsPlayed) => {
+    const dataWithTotal = [
+      ...monthData,
+      {
+        uniqueId: `${monthYear}-total`,
+        date: "Total",
+        dayOfWeek: "",
+        roundsPlayed: totalRoundsPlayed,
+      },
+    ];
 
-    // Convert monthYearKey to "January 2023" format for labels, using UTC dates
-    const formattedMonthlyData = Object.entries(monthlyData)
-      .sort(
-        (a, b) =>
-          new Date(a[0] + "-01T00:00:00Z") - new Date(b[0] + "-01T00:00:00Z")
-      )
-      .reduce((acc, [key, value]) => {
-        // Use the first day of the month to create a label, ensuring it's in UTC
-        const [year, monthIndex] = key.split("-");
-        const date = new Date(Date.UTC(year, monthIndex - 1, 1));
-        const readableMonthYear = date.toLocaleString("default", {
-          month: "long",
-          year: "numeric",
-          timeZone: "UTC", // Explicitly use UTC for labeling
-        });
-        acc[readableMonthYear] = value;
-        return acc;
-      }, {});
-
-    return formattedMonthlyData;
+    return (
+      <Grid key={monthYear} item xs={12} sm={6} md={4}>
+        <Typography variant="h6" gutterBottom>
+          {monthYear}
+        </Typography>
+        <DataGrid
+          rows={dataWithTotal}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          autoHeight
+          getRowId={(row) => row.uniqueId}
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: `1px solid ${colors.grey[300]}`,
+              backgroundColor: colors.blueAccent[700],
+            },
+            border: `1px solid ${colors.grey[300]}`,
+            marginBottom: theme.spacing(2),
+          }}
+        />
+      </Grid>
+    );
   };
 
   const calculateYTDTotals = () => {
@@ -273,6 +273,7 @@ const History = () => {
     });
     return quarterlyTotals;
   };
+
   const YTDTotal = calculateYTDTotals();
   const quarterlyTotals = calculateQuarterlyTotals();
 
@@ -280,16 +281,10 @@ const History = () => {
     selectedYear
       ? golfRoundsData.filter(
           (item) =>
-            new Date(item.date).getFullYear().toString() === selectedYear
+            new Date(item.date).getUTCFullYear().toString() === selectedYear
         )
       : golfRoundsData
   );
-
-  const filteredData = selectedYear
-    ? golfRoundsData.filter(
-        (item) => new Date(item.date).getFullYear().toString() === selectedYear
-      )
-    : golfRoundsData;
 
   return (
     <Box m={2}>
@@ -313,7 +308,6 @@ const History = () => {
           </Select>
         </FormControl>
       </Box>
-      {/* Display Yearly and Quarterly Totals */}
       {selectedYear && (
         <>
           <Box
@@ -361,44 +355,13 @@ const History = () => {
         </>
       )}
       <Grid container spacing={2}>
-        {Object.entries(monthlyData).map(([monthYear, data]) => (
-          <Grid item xs={12} sm={6} md={4} key={monthYear}>
-            <Typography variant="h6" gutterBottom>
-              {monthYear}
-            </Typography>
-
-            <DataGrid
-              rows={data}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              autoHeight
-              getRowId={(row) => row.id}
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: `1px solid ${colors.grey[300]}`,
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: `1px solid ${colors.grey[300]}`,
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: colors.blueAccent[700],
-                  borderBottom: `1px solid ${colors.grey[300]}`,
-                },
-                "& .MuiDataGrid-virtualScroller": {
-                  backgroundColor: colors.primary[400],
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  borderTop: `1px solid ${colors.grey[300]}`,
-                  backgroundColor: colors.blueAccent[700],
-                },
-                border: `1px solid ${colors.grey[300]}`,
-                // borderRadius: theme.shape.borderRadius,
-                marginBottom: theme.spacing(2),
-              }}
-            />
-          </Grid>
-        ))}
+        {Object.entries(monthlyData).map(([monthYear, monthData]) => {
+          const totalRoundsPlayed = monthData.reduce(
+            (sum, item) => sum + item.roundsPlayed,
+            0
+          );
+          return renderMonthDataGrid(monthYear, monthData, totalRoundsPlayed);
+        })}
       </Grid>
     </Box>
   );

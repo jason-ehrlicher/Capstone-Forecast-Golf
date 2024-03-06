@@ -61,7 +61,7 @@ async function main() {
   }
 
   const combinedData = mergeData(weatherData, roundsPlayedData);
-  console.log(combinedData);
+  // console.log(combinedData);
 }
 
 main();
