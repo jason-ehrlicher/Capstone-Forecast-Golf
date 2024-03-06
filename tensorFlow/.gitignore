@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
+# Misc
+*.local
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# IDE files
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Environment files
+.env
+/Users/jasonehrlicher/git/Mini-Project-II/server/.env
+
+# Configuration files
+config.js
+
+.env
