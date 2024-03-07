@@ -13,6 +13,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { tokens } from '../theme';
 
+// The component function receives props: 'open' to control visibility, 'onClose' as a function to call on closing the modal
 function UpdateNotificationModal({ open, onClose }) {
   // Accessing the theme for styling
   const theme = useTheme();

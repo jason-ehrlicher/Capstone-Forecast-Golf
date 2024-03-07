@@ -1,6 +1,6 @@
 const WeatherModel = require("../models/WeatherModel");
 
-
+// Controller object for handling requests related to weather by location
 const WeatherByLocationController = {
   async getWeatherByLocation(req, res) {
     try {

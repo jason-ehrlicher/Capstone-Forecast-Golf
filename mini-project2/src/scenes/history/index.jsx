@@ -18,16 +18,20 @@ const History = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // State variables
   const [selectedYear, setSelectedYear] = useState("");
   const [golfRoundsData, setGolfRoundsData] = useState([]);
   const [years, setYears] = useState([]);
 
+  // Fetch data from APIs on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch golf rounds data
         const golfDataResponse = await fetch(
           "http://localhost:8082/api/dailyRounds"
         );
+        // Fetch weather data
         const weatherDataResponse = await fetch(
           "http://localhost:8082/api/weatherData"
         );
@@ -47,8 +51,10 @@ const History = () => {
         //   weatherData.find((weather) => weather.date === "2022-01-01")
         // );
 
+        // Merge golf rounds and weather data
         let mergedData = mergeData(weatherData, golfData);
 
+        // Set state variables
         setGolfRoundsData(mergedData);
         const extractedYears = Array.from(
           new Set(mergedData.map((item) => new Date(item.date).getFullYear()))
@@ -61,8 +67,8 @@ const History = () => {
 
     fetchData();
   }, []);
-  
 
+  // Merge golf rounds and weather data
   const mergeData = (weatherData, golfRoundsData) => {
     const mergedData = golfRoundsData
       .filter((golfRound) => new Date(golfRound.date).getFullYear() !== 2021)
@@ -95,6 +101,7 @@ const History = () => {
     return mergedData;
   };
 
+  // Columns configuration for the data grid
   const columns = [
     { field: "date", headerName: "Date", flex: 1 },
     { field: "dayOfWeek", headerName: "Day", flex: 1 },
@@ -110,7 +117,9 @@ const History = () => {
       flex: 1,
       renderCell: (params) => {
         if (params.value) {
+          // Construct URL for weather icon
           const iconUrl = `http://openweathermap.org/img/wn/${params.value}@2x.png`;
+          // Tooltip content for weather details
           const tooltipContent = (
             <div>
               <p>
@@ -151,7 +160,7 @@ const History = () => {
               </p>
             </div>
           );
-
+          // Render weather icon with tooltip
           return (
             <Tooltip title={tooltipContent} arrow>
               <img
@@ -166,11 +175,11 @@ const History = () => {
       },
     },
   ];
-
+  // Event handler for year selection change
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
-
+  // Group data by month
   const groupDataByMonth = (data) => {
     const monthlyData = {};
     data.forEach((item, index) => {
@@ -209,7 +218,7 @@ const History = () => {
         roundsPlayed: totalRoundsPlayed,
       },
     ];
-
+    // Render data grid for each month
     return (
       <Grid key={monthYear} item xs={12} sm={6} md={4}>
         <Typography variant="h6" gutterBottom>
@@ -247,7 +256,7 @@ const History = () => {
       </Grid>
     );
   };
-
+  // Calculate total rounds played for the selected year
   const calculateYTDTotals = () => {
     return golfRoundsData.reduce((total, item) => {
       if (new Date(item.date).getFullYear().toString() === selectedYear) {
@@ -256,7 +265,7 @@ const History = () => {
       return total;
     }, 0);
   };
-
+  // Calculate quarterly totals for rounds played
   const calculateQuarterlyTotals = () => {
     const quarterlyTotals = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
     golfRoundsData.forEach((item) => {
@@ -276,7 +285,7 @@ const History = () => {
 
   const YTDTotal = calculateYTDTotals();
   const quarterlyTotals = calculateQuarterlyTotals();
-
+  // Group data by month
   const monthlyData = groupDataByMonth(
     selectedYear
       ? golfRoundsData.filter(
@@ -310,6 +319,7 @@ const History = () => {
       </Box>
       {selectedYear && (
         <>
+          {/* Display total rounds played for the selected year */}
           <Box
             mb={4}
             p={2}
@@ -328,6 +338,7 @@ const History = () => {
               Total Rounds Played in {selectedYear}: {YTDTotal}
             </Typography>
           </Box>
+          {/* Display quarterly totals for rounds played */}
           <Box
             mb={4}
             p={2}
@@ -354,6 +365,7 @@ const History = () => {
           </Box>
         </>
       )}
+      {/* Display data grids for each month */}
       <Grid container spacing={2}>
         {Object.entries(monthlyData).map(([monthYear, monthData]) => {
           const totalRoundsPlayed = monthData.reduce(

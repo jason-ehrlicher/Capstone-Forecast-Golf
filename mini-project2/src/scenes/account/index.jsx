@@ -19,6 +19,7 @@ import { useAuth } from "../../context/AuthContext";
 // import { FormControl } from "@mui/material";
 // import UpdateModal from "../../components/UpdateModal";
 
+// The Account component for managing user account information
 const Account = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -27,12 +28,14 @@ const Account = () => {
 
   // const [updateModalOpen, setUpdateModalOpen] = useState(false);
 
+  // State for managing the Snackbar component for feedback messages
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
+  // Effect hook for logging user information, demonstrating how to access nested user data
   useEffect(() => {
     console.log("Profile Current User: ", user);
     console.log("Phone num:", user?.user?.phoneNumber);
@@ -110,6 +113,7 @@ const Account = () => {
   //   }
   // };
 
+  // Handler for form submission, performing an update request to a backend API
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -161,8 +165,8 @@ const Account = () => {
           onClose={() => setUpdateModalOpen(false)}
         />
       </> */}
-     {/* Snackbar for confirmation messages */}
-     <Snackbar
+      {/* Snackbar for confirmation messages */}
+      <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}

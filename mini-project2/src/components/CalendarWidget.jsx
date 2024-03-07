@@ -10,11 +10,13 @@ import {
 import { tokens } from "../theme";
 import { formatDate } from "@fullcalendar/core";
 
+// Define the CalendarWidget functional component
 const CalendarWidget = () => {
   const [events, setEvents] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+    // Function to fetch event data from an API
   const fetchEvents = async () => {
     try {
       const response = await fetch("http://localhost:8082/api/events");
@@ -29,10 +31,12 @@ const CalendarWidget = () => {
     }
   };
 
+  // useEffect hook to fetch event data when the component mounts
   useEffect(() => {
     fetchEvents();
   }, []);
 
+   // Render the CalendarWidget component
   return (
     <Box
       backgroundColor={colors.primary[400]}

@@ -7,11 +7,9 @@ import Box from "@mui/material/Box";
 
 // SignUpModal component definition
 function SignUpModal({ open, onClose }) {
-
-   // Rendering the sign-up modal dialog
+  // Rendering the sign-up modal dialog
   return (
     <Dialog open={open} onClose={onClose}>
-
       {/* Dialog title with a close button */}
       <DialogTitle sx={{ m: 0, p: 2 }}>
         <IconButton
@@ -28,7 +26,7 @@ function SignUpModal({ open, onClose }) {
         </IconButton>
       </DialogTitle>
 
-       {/* Box for displaying the logo */}
+      {/* Box for displaying the logo */}
       <Box sx={{ display: "flex", justifyContent: "center", p: 1 }}>
         <img
           src={logo}
@@ -36,9 +34,9 @@ function SignUpModal({ open, onClose }) {
           style={{ maxWidth: "350px" }}
         />
       </Box>
-      
-       {/* Embedding the SignUp component */}
-      <SignUp/>
+
+      {/* Embedding the SignUp component */}
+      <SignUp />
     </Dialog>
   );
 }

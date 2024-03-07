@@ -48,7 +48,7 @@ export default function SignUp() {
   });
 
 
-
+// Form Validation
   const validateForm = (userData) => {
     const errors = {};
     if (!userData.email.includes("@")) {

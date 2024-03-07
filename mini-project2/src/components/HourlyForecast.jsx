@@ -10,8 +10,8 @@ const HourlyForecast = ({ hourlyData, isMetric }) => {
   // Extracting color tokens based on the current theme mode
   const colors = tokens(theme.palette.mode);
 
-    // Limiting the hourlyData to the next 12 hours
-    const next12HoursData = hourlyData.slice(1, 13);
+  // Limiting the hourlyData to the next 12 hours
+  const next12HoursData = hourlyData.slice(1, 13);
 
   // Rendering the hourly forecast card
   return (

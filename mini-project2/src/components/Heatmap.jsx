@@ -11,6 +11,7 @@ const Heatmap = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // useEffect hook to fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,11 +22,11 @@ const Heatmap = () => {
         }
         const fetchedData = await response.json();
 
-        const formattedData = fetchedData
-          .map(({ date, rounds_played }) => ({
-            day: date,
-            value: rounds_played,
-          }));
+        // Format the data to match the structure expected by ResponsiveCalendar
+        const formattedData = fetchedData.map(({ date, rounds_played }) => ({
+          day: date,
+          value: rounds_played,
+        }));
         setData(formattedData);
       } catch (err) {
         setError(err);
@@ -33,21 +34,23 @@ const Heatmap = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
 
   // Determine the 'from' and 'to' dates for the calendar
-  const calendarFrom = '2023-01-01';
-  const calendarTo = data.length > 0 ? data[data.length - 1].day : '2023-12-31';
+  const calendarFrom = "2023-01-01";
+  const calendarTo = data.length > 0 ? data[data.length - 1].day : "2023-12-31";
 
-
+  // Main component render return
   return (
-    <Box mt="30px" style={{ height: "500px", backgroundColor: colors.primary[400] }}>
+    <Box
+      mt="30px"
+      style={{ height: "500px", backgroundColor: colors.primary[400] }}
+    >
       <Typography
         variant="h4"
         style={{

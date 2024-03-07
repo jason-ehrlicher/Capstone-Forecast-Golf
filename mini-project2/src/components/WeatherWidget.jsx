@@ -33,6 +33,7 @@ const WeatherWidget = () => {
     year: "numeric",
   });
 
+  // useEffect to fetch weather
   useEffect(() => {
     if (!latitude || !longitude) return;
 
@@ -71,9 +72,6 @@ const WeatherWidget = () => {
       </Box>
     );
   }
-  
-
-
 
   // Handling the loading state
   if (!weatherData) {

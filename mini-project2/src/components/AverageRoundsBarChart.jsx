@@ -4,6 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
 import { Box, Typography } from "@mui/material";
 
+// Define the AverageRoundsBarChart component
 const AverageRoundsBarChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,6 +12,7 @@ const AverageRoundsBarChart = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // useEffect hook to fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,6 +33,8 @@ const AverageRoundsBarChart = () => {
     fetchData();
   }, []);
 
+  // useMemo hook to calculate the average rounds per day, ensuring this computation
+  // is memoized and only re-run when data, loading, or error state changes
   const averageRoundsData = useMemo(() => {
     if (loading || error || !data) {
       return [];
@@ -38,9 +42,9 @@ const AverageRoundsBarChart = () => {
 
     // Transform data to calculate the average rounds per day
     const daysMap = data.reduce((acc, { date, rounds_played }) => {
-      
-
-      const dayOfWeek = new Date(date+ "T12:00:00Z").toLocaleString('en-US', { weekday: 'long' });
+      const dayOfWeek = new Date(date + "T12:00:00Z").toLocaleString("en-US", {
+        weekday: "long",
+      });
       if (!acc[dayOfWeek]) {
         acc[dayOfWeek] = [];
       }
@@ -48,15 +52,18 @@ const AverageRoundsBarChart = () => {
       return acc;
     }, {});
 
-    return Object.keys(daysMap).map(day => ({
-      "day": day,
-      "average": Math.round(daysMap[day].reduce((sum, curr) => sum + curr, 0) / daysMap[day].length),
+    // Map over the daysMap object to create the final structure for the bar chart
+    return Object.keys(daysMap).map((day) => ({
+      day: day,
+      average: Math.round(
+        daysMap[day].reduce((sum, curr) => sum + curr, 0) / daysMap[day].length
+      ),
     }));
   }, [data, loading, error]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
-   // Render the bar chart inside a Box component
+  // Render the bar chart inside a Box component
   return (
     <Box
       mt="30px"
@@ -80,9 +87,9 @@ const AverageRoundsBarChart = () => {
         Average Rounds Per Day
       </Typography>
       <ResponsiveBar
-        data={averageRoundsData}  // Data for the bar chart
-        keys={["average"]}  // Keys to determine the bars
-        indexBy="day"  // Indexing by day of the week
+        data={averageRoundsData} // Data for the bar chart
+        keys={["average"]} // Keys to determine the bars
+        indexBy="day" // Indexing by day of the week
         margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
         padding={0.3}
         valueScale={{ type: "linear" }}
