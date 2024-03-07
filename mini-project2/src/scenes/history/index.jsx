@@ -10,9 +10,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import Header from "../../components/Header";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Tooltip from "@mui/material/Tooltip";
+import { styled } from '@mui/material/styles';
 
 const History = () => {
   const theme = useTheme();
@@ -231,6 +232,9 @@ const History = () => {
           rowsPerPageOptions={[5]}
           autoHeight
           getRowId={(row) => row.uniqueId}
+          components={{
+            Toolbar: CustomToolbar,
+          }}
           sx={{
             "& .MuiDataGrid-root": {
               border: `1px solid ${colors.grey[300]}`,
@@ -294,6 +298,23 @@ const History = () => {
         )
       : golfRoundsData
   );
+
+  // Example of styling GridToolbarExport button
+const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
+  color: theme.palette.common.white, // Adjust color here
+  backgroundColor: colors.primary[500], // Adjust background color here
+  '&:hover': {
+    backgroundColor: colors.blueAccent[700], // Adjust hover background color here
+  },
+}));
+
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <StyledGridToolbarExport />
+      </GridToolbarContainer>
+    );
+  }
 
   return (
     <Box m={2}>
