@@ -16,9 +16,10 @@ const Settings = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-
+  // Accessing user context using custom hook
   const { user, updateUserContext } = useAuth();
 
+  // Effect to log user details when user changes
   useEffect(() => {
     console.log("Settings Current User: ", user);
     console.log("user id: ", user?.user?.id);
@@ -32,7 +33,6 @@ const Settings = () => {
     id: user?.user?.id || null,
   });
 
-
   // Handler for changing checkbox state
   const handleCheckboxChange = async (event) => {
     const { name, checked } = event.target;
@@ -40,7 +40,7 @@ const Settings = () => {
       ...notificationSettings,
       [name]: checked,
     });
-
+    // Prepare request body based on checkbox changes
     const requestBody = {};
     if (name === "email") {
       requestBody.marketingEmails = checked;
@@ -49,9 +49,9 @@ const Settings = () => {
     } else if (name === "push") {
       requestBody.pushNotifications = checked;
     }
-  
 
-    const updateBody = requestBody.email || requestBody.text || requestBody.push;
+    const updateBody =
+      requestBody.email || requestBody.text || requestBody.push;
 
     const userId = user?.user?.id;
     console.log("Update request sent for ID:", userId);
@@ -59,14 +59,17 @@ const Settings = () => {
 
     // Update in database
     try {
-      const response = await fetch(`http://localhost:8082/api/users/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-  
+      const response = await fetch(
+        `http://localhost:8082/api/users/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
       if (response.ok) {
         // Assuming the backend returns the updated user object
         const updatedUser = await response.json();

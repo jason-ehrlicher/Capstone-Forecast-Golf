@@ -7,7 +7,6 @@ import CurrentWeather from "../../components/CurrentWether";
 import HourlyForecast from "../../components/HourlyForecast";
 import SevenDayForecast from "../../components/SevenDayForecast";
 
-
 const Weather = () => {
   const [isMetric, setIsMetric] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
@@ -16,11 +15,14 @@ const Weather = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Effect for fetching weather data when location changes
   useEffect(() => {
     if (latitude && longitude) {
       const fetchWeatherData = async () => {
         try {
+          // Determine unit type based on state
           const units = isMetric ? "metric" : "imperial";
+          // Fetch weather data from API based on location and units
           const response = await fetch(
             `http://localhost:8082/weather-by-location?lat=${latitude}&lon=${longitude}&units=${units}`
           );
@@ -37,7 +39,7 @@ const Weather = () => {
       fetchWeatherData();
     }
   }, [latitude, longitude, isMetric]);
-
+  // Function to toggle unit type between metric and imperial
   const toggleUnits = () => setIsMetric(!isMetric);
 
   if (!weatherData) {

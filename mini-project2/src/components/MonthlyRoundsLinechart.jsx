@@ -5,12 +5,14 @@ import { tokens } from "../theme";
 import { Box, Typography } from "@mui/material";
 
 const MonthLineChart = () => {
+  // State hooks for managing fetched data, loading status, and error status
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Effect hook to fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,8 +22,8 @@ const MonthLineChart = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const fetchedData = await response.json();
-       
-        setData(fetchedData); 
+
+        setData(fetchedData);
       } catch (err) {
         setError(err);
       } finally {
@@ -32,17 +34,20 @@ const MonthLineChart = () => {
     fetchData();
   }, []);
 
+  // Utility function to format a Date object into "Month 'YY" format
   const formatMonthYear = (date) => {
     const month = date.toLocaleString("default", { month: "short" });
     const year = date.getFullYear().toString().substr(-2);
     return `${month} '${year}`;
   };
 
+  // Memoized computation of total rounds played per month for the last 12 months
   const totalRoundsPerMonth = useMemo(() => {
     if (loading || error || !data.length) {
       return [];
     }
 
+    // Transform roundsByMonth into an array suitable for Nivo Line chart
     const roundsByMonth = {};
     data.forEach(({ date, rounds_played }) => {
       const formattedDate = new Date(date);
@@ -58,9 +63,9 @@ const MonthLineChart = () => {
     return [{ id: "Rounds", data: last12MonthsData }];
   }, [data, loading, error]);
 
+  // Conditional rendering for loading and error states
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading data: {error.message}</p>;
-
 
   return (
     <Box

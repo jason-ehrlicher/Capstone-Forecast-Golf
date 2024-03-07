@@ -5,7 +5,6 @@ import { tokens } from "../../theme";
 
 // Reports component definition
 const Contact = () => {
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -16,11 +15,13 @@ const Contact = () => {
     message: "",
   });
 
+  // Function to handle changes in the form fields, updating the state accordingly
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...FormDataEvent, [name]: value });
   };
 
+  // Function to handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Form Submitted", formData);

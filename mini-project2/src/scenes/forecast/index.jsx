@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import { Box, Card, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 
+// Function to format a date as YYYY-MM-DD
 const formatDate = (date) => {
   const d = new Date(date);
   let month = "" + (d.getMonth() + 1),
@@ -15,6 +16,7 @@ const formatDate = (date) => {
   return [year, month, day].join("-");
 };
 
+// Function to calculate dates for a range of -7 to +7 days from today
 const calculateDates = () => {
   const dates = [];
   const today = new Date();
@@ -35,6 +37,7 @@ const calculateDates = () => {
   return dates;
 };
 
+// Main component for the forecast
 const Forecast = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -49,6 +52,7 @@ const Forecast = () => {
   // Ref for today's card
   const todayCardRef = useRef(null);
 
+  // Fetch data when component mounts
   useEffect(() => {
     const fetchData = async () => {
       await Promise.all(
@@ -118,6 +122,7 @@ const Forecast = () => {
     }
   }, []); // This effect runs only once after the initial render.
 
+  // Function to calculate accuracy of predictions
   const calculateAccuracy = (actual, predicted) => {
     if (actual !== undefined && predicted !== undefined) {
       const difference = Math.abs(actual - predicted);
@@ -286,7 +291,7 @@ const Forecast = () => {
                             ) >= 80
                               ? colors.greenAccent[700]
                               : colors.redAccent[700]
-                          }`, 
+                          }`,
                           backgroundColor:
                             calculateAccuracy(
                               date.actualRoundsPlayed,

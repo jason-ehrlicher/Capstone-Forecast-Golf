@@ -15,7 +15,7 @@ const SevenDayForecast = ({ dailyData, isMetric }) => {
     <Card
       // Styling for the card
       sx={{
-        p: 3,
+        p: 3, 
         backgroundColor:
           theme.palette.mode === "light"
             ? colors.primary[800]

@@ -3,7 +3,6 @@ import { tokens } from "../theme";
 
 // Header component definition
 const Header = ({ title, subtitle }) => {
-
   // Accessing the theme for styling
   const theme = useTheme();
 
@@ -12,23 +11,20 @@ const Header = ({ title, subtitle }) => {
 
   // Rendering the header component
   return (
-
     // Box component used as a container for the header
     <Box mb="30px">
-
-       {/* Typography for the main title */}
+      {/* Typography for the main title */}
       <Typography
         variant="h2"
         color={colors.grey[100]}
         fontWeight="bold"
         sx={{ mb: "5px" }}
       >
-        {title}  {/* Displaying the title prop */}
+        {title} {/* Displaying the title prop */}
       </Typography>
 
-       {/* Typography for the subtitle */}
+      {/* Typography for the subtitle */}
       <Typography variant="h5" color={colors.greenAccent[400]}>
-       
         {subtitle} {/* Displaying the subtitle prop */}
       </Typography>
     </Box>

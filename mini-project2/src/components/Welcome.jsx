@@ -1,14 +1,11 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { Typography, Box, useTheme } from '@mui/material';
-import { tokens } from '../theme'; 
+import React from "react";
+import { useAuth } from "../context/AuthContext";
+import { Typography, Box, useTheme } from "@mui/material";
+import { tokens } from "../theme";
 
 function Welcome() {
-
   const { user } = useAuth();
   const firstName = user?.user?.firstName;
-  
-
 
   // Accessing the theme for styling
   const theme = useTheme();
@@ -31,7 +28,7 @@ function Welcome() {
         // Message displayed if no user is logged in
         <Typography
           variant="h5"
-          color={colors.primary.main} 
+          color={colors.primary.main}
           sx={{ mb: theme.spacing(1) }}
         >
           Please Log In

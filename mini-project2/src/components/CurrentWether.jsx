@@ -4,7 +4,6 @@ import { tokens } from "../theme";
 
 // CurrentWeather component definition
 const CurrentWeather = ({ weatherData, isMetric }) => {
- 
   // Accessing the theme for styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -13,7 +12,6 @@ const CurrentWeather = ({ weatherData, isMetric }) => {
   return (
     <Card
       sx={{
-       
         // Styling for the card
         p: 3,
         backgroundColor:
@@ -25,19 +23,16 @@ const CurrentWeather = ({ weatherData, isMetric }) => {
         mb: 5,
       }}
     >
-
       {/* Title for the current weather */}
       <Typography variant="h3" gutterBottom>
         Current Weather
       </Typography>
-     
+
       {/* Box to contain weather details */}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-       
         {/* Box for each weather detail */}
         <Box
-        
-        // Styling for the inner box
+          // Styling for the inner box
           sx={{
             minWidth: 150,
             flexShrink: 0,
@@ -51,7 +46,6 @@ const CurrentWeather = ({ weatherData, isMetric }) => {
             m: "0 8px",
           }}
         >
-         
           {/* Displaying various weather details */}
           <Typography variant="h6">
             Temperature: {weatherData.temp}°{isMetric ? "C" : "F"}
@@ -74,7 +68,7 @@ const CurrentWeather = ({ weatherData, isMetric }) => {
           <Typography variant="subtitle1">
             Condition: {weatherData.weather[0].main}
           </Typography>
-          
+
           {/* Weather icon */}
           <Box
             component="img"
