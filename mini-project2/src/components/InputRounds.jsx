@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../theme";
+import { Link } from "react-router-dom";
 
 const InputRounds = () => {
   const theme = useTheme();
@@ -176,12 +177,19 @@ const InputRounds = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Typography
-            variant="h4"
-            style={{ marginBottom: "30px", textAlign: "center" }}
-          >
-            Input Rounds Played
-          </Typography>
+      <Link to="/history" style={{ textDecoration: "none", color: "inherit" }}>
+        <Typography
+          variant="h4"
+          style={{ marginBottom: "10px", textAlign: "center" }}
+          sx={{
+            "&:hover": {
+              color: "#868dfb", 
+            },
+          }}
+        >
+          Input Rounds Played
+        </Typography>
+      </Link>
           <TextField
             label="Rounds"
             variant="outlined"

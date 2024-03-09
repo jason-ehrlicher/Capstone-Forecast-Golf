@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../theme";
 import { formatDate } from "@fullcalendar/core";
+import { Link } from "react-router-dom";
 
 // Define the CalendarWidget functional component
 const CalendarWidget = () => {
@@ -16,7 +17,7 @@ const CalendarWidget = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-    // Function to fetch event data from an API
+  // Function to fetch event data from an API
   const fetchEvents = async () => {
     try {
       const response = await fetch("http://localhost:8082/api/events");
@@ -36,7 +37,7 @@ const CalendarWidget = () => {
     fetchEvents();
   }, []);
 
-   // Render the CalendarWidget component
+  // Render the CalendarWidget component
   return (
     <Box
       backgroundColor={colors.primary[400]}
@@ -45,12 +46,20 @@ const CalendarWidget = () => {
       maxHeight={"300px"}
       minHeight={"300px"}
     >
-      <Typography
-        variant="h4"
-        style={{ marginBottom: "10px", textAlign: "center" }}
-      >
-        Upcoming Events
-      </Typography>
+      <Link to="/calendar" style={{ textDecoration: "none", color: "inherit" }}>
+        <Typography
+          variant="h4"
+          style={{ marginBottom: "10px", textAlign: "center" }}
+          sx={{
+            "&:hover": {
+              color: "#868dfb", 
+            },
+          }}
+        >
+          Upcoming Events
+        </Typography>
+      </Link>
+
       <Box sx={{ overflowY: "auto" }} maxHeight={"230px"} marginBottom={"30px"}>
         <List>
           {events.map((event) => (

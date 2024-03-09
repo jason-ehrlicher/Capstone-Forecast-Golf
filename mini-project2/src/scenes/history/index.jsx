@@ -10,11 +10,15 @@ import {
   MenuItem,
 } from "@mui/material";
 import Header from "../../components/Header";
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Tooltip from "@mui/material/Tooltip";
-import { styled } from '@mui/material/styles';
-import InputRounds from "../../components/InputRounds"
+import { styled } from "@mui/material/styles";
+import InputRounds from "../../components/InputRounds";
 
 const History = () => {
   const theme = useTheme();
@@ -299,16 +303,16 @@ const History = () => {
         )
       : golfRoundsData
   );
-// Export Button Styling
-const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
-  color: theme.palette.common.white, // Adjust color here
-  backgroundColor: colors.primary[500], // Adjust background color here
-  '&:hover': {
-    backgroundColor: colors.blueAccent[700], // Adjust hover background color here
-  },
-}));
+  // Export Button Styling
+  const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
+    color: theme.palette.common.white, // Adjust color here
+    backgroundColor: colors.primary[500], // Adjust background color here
+    "&:hover": {
+      backgroundColor: colors.blueAccent[700], // Adjust hover background color here
+    },
+  }));
 
-// Function to utilize mui export
+  // Function to utilize mui export
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -320,10 +324,15 @@ const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
   return (
     <Box m={2}>
       <Header title="HISTORICAL DATA" subtitle="Daily Rounds Played Archive" />
-      <Box mb={2} >
-      <InputRounds />
-      </Box>
       <Box mb={2}>
+        <InputRounds />
+      </Box>
+      <Box m="30px" sx={{ backgroundColor: colors.primary[400] }}>
+        <Box sx={{ backgroundColor: colors.primary[500] }}>
+        <Typography>
+          Filter by Year:
+        </Typography>
+        </Box>
         <FormControl fullWidth>
           <InputLabel id="year-select-label">Year</InputLabel>
           <Select
