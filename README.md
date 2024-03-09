@@ -68,7 +68,7 @@ Further backend documentation can be found in the [server](https://github.com/ja
 
 ## Installation
 1. Clone the repository:
-   `git clone https://github.com/jason-ehrlicher/Mini-Project-II.git`
+   `git clone https://github.com/jason-ehrlicher/Capstone-Forecast-Golf.git`
    
 2. Navigate to the project directory:
    `cd mini-project-ii`
