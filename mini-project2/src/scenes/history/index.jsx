@@ -14,6 +14,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-g
 import { tokens } from "../../theme";
 import Tooltip from "@mui/material/Tooltip";
 import { styled } from '@mui/material/styles';
+import InputRounds from "../../components/InputRounds"
 
 const History = () => {
   const theme = useTheme();
@@ -298,8 +299,7 @@ const History = () => {
         )
       : golfRoundsData
   );
-
-  // Example of styling GridToolbarExport button
+// Export Button Styling
 const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
   color: theme.palette.common.white, // Adjust color here
   backgroundColor: colors.primary[500], // Adjust background color here
@@ -308,6 +308,7 @@ const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
   },
 }));
 
+// Function to utilize mui export
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
@@ -319,6 +320,9 @@ const StyledGridToolbarExport = styled(GridToolbarExport)(({ theme }) => ({
   return (
     <Box m={2}>
       <Header title="HISTORICAL DATA" subtitle="Daily Rounds Played Archive" />
+      <Box mb={2} >
+      <InputRounds />
+      </Box>
       <Box mb={2}>
         <FormControl fullWidth>
           <InputLabel id="year-select-label">Year</InputLabel>
