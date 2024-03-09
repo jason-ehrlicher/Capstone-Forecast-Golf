@@ -3,7 +3,7 @@
 
 ## Website Summary and Application Flow
 
-ForeCast Golf is a dynamic platform aimed at revolutionizing golf course management with a user-friendly interface and advanced features. It is designed to provide real-time insights, weather updates, and tools for event scheduling and team management.
+ForeCast Golf is a comprehensive golf course management application designed to streamline operations, optimize decision-making, and enhance the overall golfing experience. This application provides a centralized platform for golf course managers, administrators, and staff to track daily rounds played, manage events using a calendar interface, access weather data and forecasts, and gain insights through data visualizations and reports.
 
 [ForeCast Golf](https://docs.google.com/document/d/1EcNyStuKZMT6oxdce0QkIrljRRvrvcrXnfQdPf7P0r8/edit?usp=sharing)
 
@@ -25,10 +25,13 @@ ForeCast Golf is a dynamic platform aimed at revolutionizing golf course managem
 
 
 ## Technology Stack 
-- **Frontend:** React JS for dynamic and responsive UI/UX design.
+- **Frontend:** React JS, HTML, CSS, JavaScript
 - **Backend:** Express.js framework on Node.js for RESTful API services, Sequelize ORM for database management.
 - **Database:** MySQL for storing user, event, and other data.
 - **Additional Tools:** Node-fetch for external API calls (e.g., weather data fetching), CORS for handling cross-origin requests, dotenv for environment variable management.
+- **External APIs:** OpenWeatherMap
+- **Charting Libraries:** Nivo
+- **UI Components:** Material-UI
 
 ## Frontend Overview
 The frontend is developed using React JS, emphasizing modularity and reusability of components. The application structure is designed to support scalability and ease of maintenance.
@@ -50,6 +53,43 @@ The backend architecture is structured to support the website's core functionali
 - **Utilities:** Include functions for processing and analyzing weather and golf rounds data, supporting the Forecast and History features.
 
 Further backend documentation can be found in the [server](https://github.com/jason-ehrlicher/Mini-Project-II/tree/main/server) folder
+
+## Prerequisites
+- Node.js
+- MySQL Database
+- OpenWeatherMap API Key
+
+## Installation
+1. Clone the repository:
+   `git clone https://github.com/jason-ehrlicher/Mini-Project-II.git`
+   
+2. Navigate to the project directory:
+   `cd mini-project-ii`
+
+3. Install the dependencies for the frontend and backend:
+   `cd mini-project2
+    npm install
+
+    cd ../server
+    npm install`
+
+4. Setup the MySQL database
+  - Create a new MySQL database for the application
+  - Update the database configuration in `dbconnect.js`
+
+5. Setup enviromental variables:
+   - Create a `.env` file in the `server` directory
+   - Specify the requires environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
+
+6. Start the development server:
+   `cd server
+    nodemon server.js
+
+    cd ../mini-project2
+    npm run dev`
+
+7. Access the application at (http://localhost:5173)
+
 
 ## Contribution
 As the website is still under construction, we are open to ideas and suggestions. If you're interested in contributing or have feedback, please reach out to Jason Ehrlicher.
