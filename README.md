@@ -67,11 +67,11 @@ Further backend documentation can be found in the [server](https://github.com/ja
    `cd mini-project-ii`
 
 3. Install the dependencies for the frontend and backend:
-   - `cd mini-project2`
-   - `npm install`
+- `cd mini-project2`
+- `npm install`
 
-   - `cd ../server`
-   - `npm install`
+- `cd ../server`
+- `npm install`
 
 4. Setup the MySQL database
   - Create a new MySQL database for the application
