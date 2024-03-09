@@ -95,13 +95,15 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="logo"
-                  width="200px"
-                  height="200px"
-                  src={logo}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                  <img
+                    alt="logo"
+                    width="200px"
+                    height="200px"
+                    src={logo}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                </Link>
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -172,6 +174,13 @@ const Sidebar = () => {
               </Typography>
             )}
             <Item
+              title="ForeCast"
+              to="/forecast"
+              icon={<PsychologyOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Reports"
               to="/reports"
               icon={<PollOutlinedIcon />}
@@ -189,13 +198,6 @@ const Sidebar = () => {
               title="Upload"
               to="/upload"
               icon={<UploadOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="ForeCast"
-              to="/forecast"
-              icon={<PsychologyOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
