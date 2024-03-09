@@ -86,7 +86,7 @@ Further backend documentation can be found in the [server](https://github.com/ja
 
 5. Setup enviromental variables:
    - Create a `.env` file in the `server` directory
-   - Specify the requires environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
+   - Specify the required environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
 
 6. Start the development server:
   - `cd server`
