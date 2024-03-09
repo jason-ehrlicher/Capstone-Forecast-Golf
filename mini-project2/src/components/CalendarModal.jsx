@@ -12,6 +12,7 @@ import {
   IconButton,
   Box,
   useTheme,
+  Grid,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { tokens } from "../theme";
@@ -41,8 +42,34 @@ function CalendarModal({
     if (selectedEvent) {
       setEventTitle(selectedEvent.title || "");
       setAllDay(selectedEvent.allDay || false);
-      setStartTime(selectedEvent.start || new Date());
-      setEndTime(selectedEvent.end || new Date());
+
+      if (selectedEvent.start && selectedEvent.end) {
+        // Check if the selected event has start and end times
+        const startDateTime = new Date(selectedEvent.start);
+        const endDateTime = new Date(selectedEvent.end);
+
+        // Adjust the time zone offset
+        const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
+        const adjustedStartDateTime = new Date(
+          startDateTime.getTime() - timezoneOffset
+        );
+        const adjustedEndDateTime = new Date(
+          endDateTime.getTime() - timezoneOffset
+        );
+
+        // Format the start and end times in the required format (YYYY-MM-DDTHH:mm)
+        const formattedStartTime = adjustedStartDateTime
+          .toISOString()
+          .slice(0, 16);
+        const formattedEndTime = adjustedEndDateTime.toISOString().slice(0, 16);
+
+        setStartTime(formattedStartTime);
+        setEndTime(formattedEndTime);
+      } else {
+        // If the selected event doesn't have start and end times, set default values
+        setStartTime(new Date().toISOString().slice(0, 16));
+        setEndTime(new Date().toISOString().slice(0, 16));
+      }
     }
   }, [selectedEvent]);
 
@@ -127,12 +154,6 @@ function CalendarModal({
                   ? colors.primary[800]
                   : colors.grey[100],
             },
-            // notchedOutline: {
-            //   borderColor:
-            //     theme.palette.mode === "light"
-            //       ? colors.primary[400]
-            //       : colors.grey[100],
-            // },
           }}
           sx={{
             "& label.Mui-focused": {
@@ -151,6 +172,102 @@ function CalendarModal({
             },
           }}
         />
+
+        {/* Grid container for start and end times */}
+        <Grid container spacing={2}>
+          {/* Start time */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Start Time"
+              type="datetime-local"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+                style: {
+                  color:
+                    theme.palette.mode === "light"
+                      ? colors.primary[100]
+                      : colors.grey[100],
+                },
+              }}
+              InputProps={{
+                style: {
+                  color:
+                    theme.palette.mode === "light"
+                      ? colors.primary[800]
+                      : colors.grey[100],
+                },
+              }}
+              sx={{
+                "& label.Mui-focused": {
+                  color: colors.primary[100],
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                  "&:hover fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                },
+              }}
+              disabled={allDay}
+            />
+          </Grid>
+
+          {/* End time */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="End Time"
+              type="datetime-local"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+                style: {
+                  color:
+                    theme.palette.mode === "light"
+                      ? colors.primary[100]
+                      : colors.grey[100],
+                },
+              }}
+              InputProps={{
+                style: {
+                  color:
+                    theme.palette.mode === "light"
+                      ? colors.primary[800]
+                      : colors.grey[100],
+                },
+              }}
+              sx={{
+                "& label.Mui-focused": {
+                  color: colors.primary[100],
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                  "&:hover fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: colors.primary[100],
+                  },
+                },
+              }}
+              disabled={allDay}
+            />
+          </Grid>
+        </Grid>
+
         {/* Checkbox for all-day event */}
         <FormControlLabel
           control={
