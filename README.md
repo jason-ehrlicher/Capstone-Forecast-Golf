@@ -88,7 +88,7 @@ Further backend documentation can be found in the [server](https://github.com/ja
   - `cd ../mini-project2`
   - `npm run dev`
 
-7. Access the application at (http://localhost:5173)
+7. Access the application at http://localhost:5173
 
 
 ## Contribution
