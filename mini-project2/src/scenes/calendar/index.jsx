@@ -13,6 +13,8 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import CalendarModal from "../../components/CalendarModal";
@@ -28,6 +30,12 @@ const Calendar = () => {
   const [currentEvents, setCurrentEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState({
+    text: "",
+    severity: "",
+  });
 
   // Ref for accessing the FullCalendar API
   const calendarRef = useRef(null);
@@ -114,8 +122,18 @@ const Calendar = () => {
           ...event,
         });
         setCurrentEvents(calendarApi.getEvents());
+        setSnackbarMessage({
+          text: "Event created successfully!",
+          severity: "success",
+        });
+        setOpenSnackbar(true);
       } else {
         console.error("Failed to create event:", data.message);
+        setSnackbarMessage({
+          text: "Failed to create event. Please try again.",
+          severity: "error",
+        });
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error creating event:", error);
@@ -134,7 +152,7 @@ const Calendar = () => {
           },
           body: JSON.stringify({
             ...event,
-            userId: user?.user?.id, // Include if your backend requires it for validation
+            userId: user?.user?.id,
           }),
         }
       );
@@ -146,10 +164,20 @@ const Calendar = () => {
           eventToUpdate.setDates(event.start, event.end);
         }
         setCurrentEvents(calendarApi.getEvents());
+        setSnackbarMessage({
+          text: "Event updated successfully!",
+          severity: "success",
+        });
+        setOpenSnackbar(true);
         onClose();
       } else {
         const data = await response.json();
         console.error("Failed to update event:", data.message);
+        setSnackbarMessage({
+          text: "Failed to update event. Please try again.",
+          severity: "error",
+        });
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error updating event:", error);
@@ -174,9 +202,19 @@ const Calendar = () => {
         }
         setCurrentEvents(calendarApi.getEvents());
         setModalOpen(false);
+        setSnackbarMessage({
+          text: "Event deleted successfully!",
+          severity: "success",
+        });
+        setOpenSnackbar(true);
       } else {
         const data = await response.json();
         console.error("Failed to delete event:", data.message);
+        setSnackbarMessage({
+          text: "Failed to delete event. Please try again.",
+          severity: "error",
+        });
+        setOpenSnackbar(true);
       }
     } catch (error) {
       console.error("Error deleting event:", error);
@@ -189,43 +227,53 @@ const Calendar = () => {
     const updatedEvent = {
       id: event.id,
       title: event.title,
-      start: event.start ? event.start.toISOString() : undefined, // Check if start exists before calling toISOString
-      end: event.end ? event.end.toISOString() : undefined, // Check if end exists before calling toISOString
+      start: event.start ? event.start.toISOString() : undefined,
+      end: event.end ? event.end.toISOString() : undefined,
       allDay: event.allDay,
-      userId: user?.user?.id, // Include user ID if needed
+      userId: user?.user?.id,
     };
     if (updatedEvent.start) {
-    try {
-      const response = await fetch(
-        `http://localhost:8082/api/events/${updatedEvent.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedEvent),
+      try {
+        const response = await fetch(
+          `http://localhost:8082/api/events/${updatedEvent.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedEvent),
+          }
+        );
+        if (response.ok) {
+          setSnackbarMessage({
+            text: "Event updated successfully!",
+            severity: "success",
+          });
+          setOpenSnackbar(true);
+        } else {
+          throw new Error("Failed to update event");
         }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to update event");
+      } catch (error) {
+        console.error("Error updating event:", error);
+        setSnackbarMessage({
+          text: "Failed to update event. Please try again.",
+          severity: "error",
+        });
+        setOpenSnackbar(true);
       }
-    } catch (error) {
-      console.error("Error updating event:", error);
-      // Handle error (e.g., show a notification to the user)
     }
   };
-}
 
   // Function to handle event resize
   const handleEventResize = async (eventResizeInfo) => {
     const { event } = eventResizeInfo;
     const updatedEvent = {
       id: event.id,
-      title: event.title, // Assuming the title doesn't change, but include if your API needs it
+      title: event.title,
       start: event.start.toISOString(),
       end: event.end.toISOString(),
       allDay: event.allDay,
-      userId: user?.user?.id, // Include user ID if needed
+      userId: user?.user?.id,
     };
 
     try {
@@ -239,20 +287,41 @@ const Calendar = () => {
           body: JSON.stringify(updatedEvent),
         }
       );
-      if (!response.ok) {
+      if (response.ok) {
+        setSnackbarMessage({
+          text: "Event updated successfully!",
+          severity: "success",
+        });
+        setOpenSnackbar(true);
+      } else {
         throw new Error("Failed to update event");
       }
-      // If you're managing events in state, you might want to update the state here
-      // Alternatively, you can fetch the updated events list from the server
     } catch (error) {
       console.error("Error updating event:", error);
-      // Handle error (e.g., show a notification to the user)
+      setSnackbarMessage({
+        text: "Failed to update event. Please try again.",
+        severity: "error",
+      });
+      setOpenSnackbar(true);
     }
   };
 
   // Rendering the Calendar component
   return (
     <Box m="20px">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={snackbarMessage.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage.text}
+        </Alert>
+      </Snackbar>
       {/* Header component with title and subtitle */}
       <Header title="CALENDAR" subtitle="Plan and Track Your Schedule" />
 
