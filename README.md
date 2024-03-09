@@ -31,6 +31,7 @@ ForeCast Golf is a comprehensive golf course management application designed to 
 - **Frontend:** React JS, HTML, CSS, JavaScript
 - **Backend:** Express.js framework on Node.js for RESTful API services, Sequelize ORM for database management.
 - **Database:** MySQL for storing user, event, and other data.
+- **Predictive Model** TensorFlow.js
 - **Additional Tools:** Node-fetch for external API calls (e.g., weather data fetching), CORS for handling cross-origin requests, dotenv for environment variable management.
 - **External APIs:** OpenWeatherMap
 - **Charting Libraries:** Nivo
