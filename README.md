@@ -5,6 +5,9 @@
 
 ForeCast Golf is a comprehensive golf course management application designed to streamline operations, optimize decision-making, and enhance the overall golfing experience. This application provides a centralized platform for golf course managers, administrators, and staff to track daily rounds played, manage events using a calendar interface, access weather data and forecasts, and gain insights through data visualizations and reports.
 
+[User Flow](https://github.com/jason-ehrlicher/Mini-Project-II/assets/145376122/af2fed89-19f5-4855-9c8d-007785b09466)
+
+
 [ForeCast Golf](https://docs.google.com/document/d/1EcNyStuKZMT6oxdce0QkIrljRRvrvcrXnfQdPf7P0r8/edit?usp=sharing)
 
 ## Figma
@@ -32,6 +35,9 @@ ForeCast Golf is a comprehensive golf course management application designed to 
 - **External APIs:** OpenWeatherMap
 - **Charting Libraries:** Nivo
 - **UI Components:** Material-UI
+
+  [Architecture Diagram](https://github.com/jason-ehrlicher/Mini-Project-II/assets/145376122/1f3bbdcb-efc9-4c66-b5c5-0e8bd8b88450)
+
 
 ## Frontend Overview
 The frontend is developed using React JS, emphasizing modularity and reusability of components. The application structure is designed to support scalability and ease of maintenance.
