@@ -89,10 +89,10 @@ Further backend documentation can be found in the [server](https://github.com/ja
    - Specify the required environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
 
 6. Start the development server:
-   ### Backend:
+   Backend:
   - `cd server`
   - `nodemon server.js`
-   ### Frontend, in a seperate terminal:
+   Frontend, in a seperate terminal:
   - `cd mini-project2`
   - `npm run dev`
 
