@@ -86,14 +86,15 @@ const ForecastWidget = () => {
       {/* Today's Card */}
       <Card
         sx={{
-          background: colors.primary[400],
+            backgroundColor: colors.primary[400],
+            color: colors.grey[100],
           marginBottom: "20px",
         }}
       >
         <Box
           sx={{
             width: "100%",
-            background: colors.blueAccent[700],
+            background: colors.blueAccent[500],
             textAlign: "center",
             color: "#fff",
             padding: "8px 0",
@@ -101,7 +102,7 @@ const ForecastWidget = () => {
           }}
         >
           <Typography
-            variant="h4"
+            variant="h3"
             sx={{
               marginBottom: "10px",
               fontWeight: "bold",
@@ -113,7 +114,11 @@ const ForecastWidget = () => {
         </Box>
         <Box
           sx={{
-            background: colors.primary[500],
+            backgroundColor:
+            theme.palette.mode === "light"
+              ? colors.primary[900]
+              : colors.primary[400],
+          color: colors.grey[100],
             border: `3px solid ${colors.greenAccent[700]}`,
             borderRadius: "12px",
             padding: "20px",
