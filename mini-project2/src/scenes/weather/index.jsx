@@ -75,7 +75,6 @@ const Weather = () => {
           backgroundColor: colors.primary[400],
           color: colors.grey[100],
           width: "100%",
-          margin: "20px",
         }}
       >
         {/* Switch for toggling temperature units */}
@@ -219,11 +218,12 @@ const Weather = () => {
         )}
 
         {/* Hourly Forecast Section */}
-        {weatherData && weatherData.hourly && (
-          <Box sx={{ overflowX: "auto", mb: 2 }}>
-            <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom>
               Hourly Forecast
             </Typography>
+        {weatherData && weatherData.hourly && (
+          <Box sx={{ overflowX: "auto", mb: 2 }}>
+           
             <Box sx={{ display: "flex", width: "100%" }}>
               {/* Mapping over hourly data to display each hour's forecast */}
               {weatherData.hourly.slice(1, 13).map((hour, index) => (
