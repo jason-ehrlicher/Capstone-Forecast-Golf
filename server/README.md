@@ -70,7 +70,7 @@ Start the server by running `node server.js` (or `npm start` if you have defined
 - `DELETE /api/weatherData/:id`: Delete a weather data record by ID
 
 ### Prediction Routes
-- `POST /api/prediction`: Get the average rounds played for a specific day
+- `POST /api/prediction`: Get the rounds played prediction for a specific day
 
 ### Other Routes
 - `GET /weather`: Retrieve weather data
