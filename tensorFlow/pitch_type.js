@@ -57,11 +57,17 @@ function oneHotMonth(dateString) {
   const month = new Date(dateString).getMonth(); // Extracts month as 0 (January) to 11 (December)
   return Array.from({ length: 12 }, (_, index) => (index === month ? 1 : 0));
 }
+function roundsRangeToOneHot(label) {
+  const labels = ["0-19", "20-39", "40-59", "60-79", "80-99", "100-119", "120-139", "140-159", "160-179", "180-200"];
+  const index = labels.indexOf(label);
+  return Array.from({ length: labels.length }, (_, i) => (i === index ? 1 : 0));
+}
+
 
 // Converts a row from the CSV into features and labels.
 // Each feature field is normalized within training data constants
 const csvTransform = ({ xs, ys }) => {
-  const dayVector = oneHotDay(xs.day_of_week);
+  const dayVector = oneHotDay(xs.day);
   const monthVector = oneHotMonth(xs.date);
 
   const values = [
@@ -75,8 +81,13 @@ const csvTransform = ({ xs, ys }) => {
     ...dayVector,
     ...monthVector,
   ];
-  return { xs: values, ys: ys.roundsRange };
+
+  // Update this line to use the roundsRangeToOneHot function
+  const label = roundsRangeToOneHot(ys.roundsRange);
+
+  return { xs: values, ys: label };
 };
+
   // console.log(`Transformed features: ${JSON.stringify(xs)}`);
 // Assuming `transformedLabel` is your label object
 // console.log(`Transformed label: ${JSON.stringify(ys)}`);
@@ -111,14 +122,23 @@ model.add(tf.layers.dense({units: 100, activation: 'relu'}));
 model.add(tf.layers.batchNormalization());
 model.add(tf.layers.dropout({rate: 0.5}));
 model.add(
-  tf.layers.dense({ units: NUM_ROUNDS_CLASSES, activation: "softmax" })
+  tf.layers.dense({ units: 10, activation: "softmax" }) // Corrected to match the number of unique classes
 );
 
+
+// model.compile({
+//   optimizer: tf.train.adam(),
+//   loss: "sparseCategoricalCrossentropy",
+//   metrics: ["accuracy"],
+// });
+
 model.compile({
-  optimizer: tf.train.adam(),
-  loss: "sparseCategoricalCrossentropy",
-  metrics: ["accuracy"],
+  optimizer: 'adam',
+  loss: 'categoricalCrossentropy',
+  metrics: ['accuracy'],
 });
+
+
 
 // Returns pitch class evaluation percentages for training data
 // with an option to include test data

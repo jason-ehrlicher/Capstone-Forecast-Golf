@@ -9,20 +9,13 @@ const socket = io("http://localhost:8001", {
 });
 
 const testSample = [
-  0.5, // Normalized temperature
-  0.3, // Normalized minimum temperature
-  0.7, // Normalized maximum temperature
-  0.8, // Normalized humidity
-  0.2, // Normalized wind speed
-  0.1, // Normalized wind gust
-  0.0, // Normalized rain 1h
-  0,
-  0,
-  0,
-  0,
-  0,
-  1,
-  0, // One-hot encoded day of the week (e.g., Friday)
+  0.85, // Normalized temperature
+  0.6,  // Normalized minimum temperature
+  0.7,  // Normalized maximum temperature
+  0.5,  // Normalized humidity
+  0.4,  // Normalized wind speed
+  0.3,  // Normalized wind gust
+  0.3,  // Normalized rain 1h
   0,
   0,
   0,
@@ -30,12 +23,20 @@ const testSample = [
   0,
   0,
   0,
-  1,
+  1, // One-hot encoded day of the week (e.g., Friday)
   0,
   0,
   0,
-  0, // One-hot encoded month (e.g., August)
-];
+  0,
+  0,
+  0,
+  1, // One-hot encoded month (e.g., October)
+  0,
+  0,
+  0,
+  0,
+]
+
 
 predictButton.onclick = () => {
   // Validate testSample length before sending

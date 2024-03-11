@@ -38,7 +38,7 @@ async function run() {
     });
   });
 
-  let numTrainingIterations = 10;
+  let numTrainingIterations = 50;
 
   for (var i = 0; i < numTrainingIterations; i++) {
     console.log(`Training iteration: ${i + 1} / ${numTrainingIterations}`);
