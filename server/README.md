@@ -37,20 +37,22 @@ Start the server by running `node server.js` (or `npm start` if you have defined
 ## API Endpoints
 
 ### User Routes
-- GET /api/users: Fetch all users.
-- POST /api/users: Create a new user.
-- PUT /api/users/:id: Update a user by ID.
-- DELETE /api/users/:id: Delete a user by ID.
-- POST /api/users/signin`: User sign-in
+- `GET /api/users`: Retrieve all users
+- `GET /api/users/:id`: Retrieve a user by ID
+- `POST /api/users/create`: Create a new user
+- `PUT /api/users/:id`: Update a user by ID
+- `DELETE /api/users/:id`: Delete a user by ID
+- `POST /api/users/signin`: User sign-in
+
 
 ### Event Routes
-- GET /api/events: Fetch all events.
-- POST /api/events: Create a new event.
-- PUT /api/events/:id: Update an event by ID.
-- DELETE /api/events/:id: Delete an event by ID.
+- `GET /api/events`: Retrieve all events
+- `POST /api/events`: Create a new event
+- `PUT /api/events/:id`: Update an existing event by ID
+- `DELETE /api/events/:id`: Delete an event by ID
+
 
 ### Daily Rounds Routes
-**Daily Rounds Routes**
 - `GET /api/dailyRounds`: Retrieve all golf rounds
 - `GET /api/dailyRounds/date/:date`: Retrieve golf rounds by date
 - `POST /api/dailyRounds`: Create a new golf round
@@ -61,9 +63,40 @@ Start the server by running `node server.js` (or `npm start` if you have defined
 
 
 ### Weather Data Routes
-- GET /weather: Fetch processed weather data.
-- GET /rounds-played: Fetch combined weather and rounds played data.
-- GET /weather-by-location: Fetch weather data by geographic coordinates.
+- `GET /api/weatherData`: Retrieve all weather data
+- `GET /api/weatherData/date/:date`: Retrieve weather data by date
+- `POST /api/weatherData`: Create a new weather data record
+- `PUT /api/weatherData/:id`: Update an existing weather data record by ID
+- `DELETE /api/weatherData/:id`: Delete a weather data record by ID
+
+### Prediction Routes
+- `POST /api/prediction`: Get the average rounds played for a specific day
+
+### Other Routes
+- `GET /weather`: Retrieve weather data
+- `GET /rounds-played`: Retrieve rounds played data
+- `GET /weather-by-location`: Retrieve weather data by location
+
+**Request and Response Formats**
+- All requests and responses are in JSON format.
+- For `POST` and `PUT` requests, the request body should include the necessary fields for creating or updating a resource.
+- Successful responses will include the relevant data or a success message.
+- Error responses will include an error message and an appropriate HTTP status code.
+
+**Authentication and Authorization**
+- Some routes may require authentication and authorization.
+- Protected routes may require a valid token or session to be included in the request headers.
+
+**Error Handling**
+- If a resource is not found, the API will respond with a 404 status code and an error message.
+- If there is an error processing the request, the API will respond with a 500 status code and an error message.
+- Validation errors will be returned with a 400 status code and an error message indicating the specific validation failure.
+
+**Rate Limiting and Throttling**
+- The API may implement rate limiting or throttling to prevent abuse and ensure fair usage.
+- If the rate limit is exceeded, the API will respond with a 429 status code and an error message.
+
+
 
 
 ## Database Schemas
