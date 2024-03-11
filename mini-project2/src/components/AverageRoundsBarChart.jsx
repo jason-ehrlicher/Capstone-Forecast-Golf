@@ -131,7 +131,7 @@ const AverageRoundsBarChart = () => {
           },
           tooltip: {
             container: {
-              background: colors.primary[500],
+              background: colors.primary[900],
               color: colors.grey[100],
             },
           },
