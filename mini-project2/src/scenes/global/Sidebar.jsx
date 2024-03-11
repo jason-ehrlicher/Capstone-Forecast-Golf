@@ -95,15 +95,13 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-                  <img
-                    alt="logo"
-                    width="200px"
-                    height="200px"
-                    src={logo}
-                    style={{ cursor: "pointer", borderRadius: "50%" }}
-                  />
-                </Link>
+                <img
+                  alt="logo"
+                  width="200px"
+                  height="200px"
+                  src={logo}
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                />
               </Box>
               <Box textAlign="center">
                 <Typography
