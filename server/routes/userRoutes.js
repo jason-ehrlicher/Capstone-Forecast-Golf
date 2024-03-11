@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Controllers = require("../controllers");
-const { User } = require("../models"); // Adjust the path as necessary
+const { User } = require("../models"); 
+const bcrypt = require('bcryptjs');
 
 
 
@@ -48,6 +49,8 @@ router.delete("/:id", (req, res) => {
   Controllers.userController.deleteUser(req, res);
 });
 
+
+// POST Sign In
 router.post("/signin", (req, res) => {
   const { email, password } = req.body;
 
@@ -57,33 +60,37 @@ router.post("/signin", (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // In a real application, you'd hash the password and compare it securely
-      // Here, we're comparing plain text for simplicity, which is not secure
-      if (user.password === password) {
-        res.json({
-          message: "Login successful",
-          user: {
-            email: user.email,
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phoneNumber: user.phoneNumber,
-            profilePicture: user.profilePicture,
-            textNotifications: user.textNotifications,
-            pushNotifications: user.pushNotifications,
-            marketingEmails: user.marketingEmails
-          },
-        }); // Avoid sending back the password
-      } else {
-        res.status(401).json({ message: "Invalid credentials" });
-      }
+      // Compare provided password with stored hashed password
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Error comparing passwords" });
+        }
+
+        if (isMatch) {
+          // Passwords match, login successful
+          res.json({
+            message: "Login successful",
+            user: {
+              email: user.email,
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              phoneNumber: user.phoneNumber,
+              profilePicture: user.profilePicture,
+              textNotifications: user.textNotifications,
+              pushNotifications: user.pushNotifications,
+              marketingEmails: user.marketingEmails
+            },
+          }); 
+        } else {
+          res.status(401).json({ message: "Invalid credentials" });
+        }
+      });
     })
     .catch((err) => {
       console.error(err);
-      res
-        .status(500)
-        .json({ error: "An error occurred while trying to log in" });
+      res.status(500).json({ error: "An error occurred while trying to log in" });
     });
 });
-
 module.exports = router;

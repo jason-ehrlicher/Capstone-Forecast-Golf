@@ -47,8 +47,9 @@ export default function SignUp() {
     lastName: "",
   });
 
+  const [acceptMarketingEmails, setAcceptMarketingEmails] = useState(false);
 
-// Form Validation
+  // Form Validation
   const validateForm = (userData) => {
     const errors = {};
     if (!userData.email.includes("@")) {
@@ -78,8 +79,10 @@ export default function SignUp() {
       password: data.get("password"),
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
-      marketingEmails: data.get("allowExtraEmails") === "on",
+      marketingEmails: acceptMarketingEmails,
     };
+
+    console.log(acceptMarketingEmails);
 
     // Validate form before submission
     if (!validateForm(userData)) return;
@@ -202,7 +205,14 @@ export default function SignUp() {
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={
-                      <Checkbox value="allowExtraEmails" color="primary" />
+                      <Checkbox
+                        checked={acceptMarketingEmails}
+                        onChange={(e) =>
+                          setAcceptMarketingEmails(e.target.checked)
+                        }
+                        name="marketingEmails"
+                        color="primary"
+                      />
                     }
                     label="I want to receive marketing promotions and updates via email."
                   />

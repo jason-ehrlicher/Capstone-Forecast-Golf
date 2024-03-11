@@ -228,22 +228,17 @@ const Forecast = () => {
         sx={{
           display: "flex",
           overflowX: "auto",
-          "&::-webkit-scrollbar": {
-            height: "8px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: colors.primary[400],
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: colors.blueAccent[700],
-            borderRadius: "4px",
-          },
         }}
       >
         {dates.slice(todayIndex + 1, todayIndex + 8).map((date, index) => (
           <Card
             key={index}
-            sx={{ ...cardStyle, minWidth: "300px", margin: "0 10px" }}
+            sx={{
+              ...cardStyle,
+              minWidth: "300px",
+              margin: "0 10px 10px 0",
+              marginBottom: "20px",
+            }}
           >
             <Box
               sx={{
@@ -395,116 +390,116 @@ const Forecast = () => {
           Predicted vs Actual Rounds Played (Last 7 Days)
         </Typography>
         <div style={{ height: 400 }}>
-        <ResponsiveLine
-  data={chartData}
-  colors={[colors.greenAccent[500], colors.blueAccent[700]]}
-  margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-  xScale={{ type: "point" }}
-  yScale={{
-    type: "linear",
-    min: "auto",
-    max: "auto",
-    stacked: false,
-    reverse: false,
-  }}
-  yFormat=" >-.2f"
-  axisTop={null}
-  axisRight={null}
-  axisBottom={{
-    tickSize: 5,
-    tickPadding: 5,
-    tickRotation: 0,
-    legend: "Date",
-    legendOffset: 36,
-    legendPosition: "middle",
-    legendTextColor: colors.greenAccent[500],
-  }}
-  axisLeft={{
-    tickSize: 5,
-    tickPadding: 5,
-    tickRotation: 0,
-    legend: "Rounds Played",
-    legendOffset: -50,
-    legendPosition: "middle",
-    legendTextColor: colors.greenAccent[500],
-  }}
-  lineWidth={3}
-  pointSize={8}
-  pointColor={{ theme: "background" }}
-  pointBorderWidth={2}
-  pointBorderColor={{ from: "serieColor" }}
-  pointLabelYOffset={-12}
-  useMesh={true}
-  enableGridX={true}
-  enableGridY={true}
-  theme={{
-    axis: {
-      domain: {
-        line: {
-          stroke: colors.grey[100],
-        },
-      },
-      legend: {
-        text: {
-          fill: colors.grey[100],
-        },
-      },
-      ticks: {
-        line: {
-          stroke: colors.grey[100],
-          strokeWidth: 1,
-        },
-        text: {
-          fill: colors.grey[100],
-        },
-      },
-    },
-    legends: {
-      text: {
-        fill: colors.grey[100],
-      },
-    },
-    grid: {
-      line: {
-        stroke: colors.grey[200],
-        strokeWidth: 1,
-      },
-    },
-    tooltip: {
-      container: {
-        background: colors.primary[900],
-        color: colors.grey[100],
-      },
-    },
-  }}
-  legends={[
-    {
-      anchor: "bottom-right",
-      direction: "column",
-      justify: false,
-      translateX: 100,
-      translateY: 0,
-      itemsSpacing: 0,
-      itemDirection: "left-to-right",
-      itemWidth: 80,
-      itemHeight: 20,
-      itemOpacity: 0.75,
-      symbolSize: 12,
-      symbolShape: "circle",
-      symbolBorderColor: "rgba(0, 0, 0, .5)",
-      textColor: colors.grey[100],
-      effects: [
-        {
-          on: "hover",
-          style: {
-            itemBackground: "rgba(0, 0, 0, .03)",
-            itemOpacity: 1,
-          },
-        },
-      ],
-    },
-  ]}
-/>
+          <ResponsiveLine
+            data={chartData}
+            colors={[colors.greenAccent[500], colors.blueAccent[700]]}
+            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+            xScale={{ type: "point" }}
+            yScale={{
+              type: "linear",
+              min: "auto",
+              max: "auto",
+              stacked: false,
+              reverse: false,
+            }}
+            yFormat=" >-.2f"
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: "Date",
+              legendOffset: 36,
+              legendPosition: "middle",
+              legendTextColor: colors.greenAccent[500],
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: "Rounds Played",
+              legendOffset: -50,
+              legendPosition: "middle",
+              legendTextColor: colors.greenAccent[500],
+            }}
+            lineWidth={3}
+            pointSize={8}
+            pointColor={{ theme: "background" }}
+            pointBorderWidth={2}
+            pointBorderColor={{ from: "serieColor" }}
+            pointLabelYOffset={-12}
+            useMesh={true}
+            enableGridX={true}
+            enableGridY={true}
+            theme={{
+              axis: {
+                domain: {
+                  line: {
+                    stroke: colors.grey[100],
+                  },
+                },
+                legend: {
+                  text: {
+                    fill: colors.grey[100],
+                  },
+                },
+                ticks: {
+                  line: {
+                    stroke: colors.grey[100],
+                    strokeWidth: 1,
+                  },
+                  text: {
+                    fill: colors.grey[100],
+                  },
+                },
+              },
+              legends: {
+                text: {
+                  fill: colors.grey[100],
+                },
+              },
+              grid: {
+                line: {
+                  stroke: colors.grey[200],
+                  strokeWidth: 1,
+                },
+              },
+              tooltip: {
+                container: {
+                  background: colors.primary[900],
+                  color: colors.grey[100],
+                },
+              },
+            }}
+            legends={[
+              {
+                anchor: "bottom-right",
+                direction: "column",
+                justify: false,
+                translateX: 100,
+                translateY: 0,
+                itemsSpacing: 0,
+                itemDirection: "left-to-right",
+                itemWidth: 80,
+                itemHeight: 20,
+                itemOpacity: 0.75,
+                symbolSize: 12,
+                symbolShape: "circle",
+                symbolBorderColor: "rgba(0, 0, 0, .5)",
+                textColor: colors.grey[100],
+                effects: [
+                  {
+                    on: "hover",
+                    style: {
+                      itemBackground: "rgba(0, 0, 0, .03)",
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]}
+          />
         </div>
       </Box>
     </Box>
