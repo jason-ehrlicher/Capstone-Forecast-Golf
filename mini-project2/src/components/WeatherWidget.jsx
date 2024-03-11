@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../theme";
 import useLocation from "../hooks/useLocation";
+import ForecastWidget from "./ForecastWidget";
 
 // WeatherWidget component definition
 const WeatherWidget = () => {
@@ -262,6 +263,7 @@ const WeatherWidget = () => {
               </Box>
             ))}
           </Box>
+          <ForecastWidget />
         </Box>
       )}
     </Box>
