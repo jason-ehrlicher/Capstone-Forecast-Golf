@@ -86,7 +86,13 @@ Further backend documentation can be found in the [server](https://github.com/ja
 
 5. Setup enviromental variables:
    - Create a `.env` file in the `server` directory
-   - Specify the required environment variables such as `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`
+   - Specify the required environment variables:
+      - PORT: Port on which the server will run (e.g., 3000).
+      - DB_NAME: Name of your MySQL database.
+      - DB_USER: Username for MySQL database access.
+      - DB_PASSWORD: Password for the MySQL database user.
+      - DB_HOST: Hostname where your MySQL database is hosted (typically localhost).
+      - OPENWEATHER_API_KEY: API key for accessing OpenWeather data.
 
 6. Start the development server:
 - Backend:
