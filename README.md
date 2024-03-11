@@ -8,7 +8,7 @@ ForeCast Golf is a comprehensive golf course management application designed to 
 [User Flow](https://github.com/jason-ehrlicher/Mini-Project-II/assets/145376122/af2fed89-19f5-4855-9c8d-007785b09466)
 
 
-[ForeCast Golf](https://docs.google.com/document/d/1EcNyStuKZMT6oxdce0QkIrljRRvrvcrXnfQdPf7P0r8/edit?usp=sharing)
+[ForeCast Golf](https://docs.google.com/document/d/1LDIdomD0fkNUCcXyQEySS3fOuHSBZ0jk19qylGCioxM/edit?usp=sharing)
 
 ## Figma
 [Lo-Fi Figma](https://www.figma.com/file/FGMenTFkTijGt2Roxo0Ycj/Untitled?type=design&node-id=0%3A1&mode=design&t=6JYsDUN32u71WAn0-1)
