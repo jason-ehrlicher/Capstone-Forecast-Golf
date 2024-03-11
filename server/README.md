@@ -41,12 +41,24 @@ Start the server by running `node server.js` (or `npm start` if you have defined
 - POST /api/users: Create a new user.
 - PUT /api/users/:id: Update a user by ID.
 - DELETE /api/users/:id: Delete a user by ID.
+- POST /api/users/signin`: User sign-in
 
 ### Event Routes
 - GET /api/events: Fetch all events.
 - POST /api/events: Create a new event.
 - PUT /api/events/:id: Update an event by ID.
 - DELETE /api/events/:id: Delete an event by ID.
+
+### Daily Rounds Routes
+**Daily Rounds Routes**
+- `GET /api/dailyRounds`: Retrieve all golf rounds
+- `GET /api/dailyRounds/date/:date`: Retrieve golf rounds by date
+- `POST /api/dailyRounds`: Create a new golf round
+- `PUT /api/dailyRounds/:id`: Update an existing golf round by ID
+- `PUT /api/dailyRounds/date/:date`: Update golf rounds by date
+- `DELETE /api/dailyRounds/:id`: Delete a golf round by ID
+- `DELETE /api/dailyRounds/date/:date`: Delete golf rounds by date
+
 
 ### Weather Data Routes
 - GET /weather: Fetch processed weather data.
