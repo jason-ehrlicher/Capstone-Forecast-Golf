@@ -42,12 +42,12 @@ function CalendarModal({
     if (selectedEvent) {
       setEventTitle(selectedEvent.title || "");
       setAllDay(selectedEvent.allDay || false);
-
+  
       if (selectedEvent.start && selectedEvent.end) {
         // Check if the selected event has start and end times
         const startDateTime = new Date(selectedEvent.start);
         const endDateTime = new Date(selectedEvent.end);
-
+  
         // Adjust the time zone offset
         const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
         const adjustedStartDateTime = new Date(
@@ -56,20 +56,29 @@ function CalendarModal({
         const adjustedEndDateTime = new Date(
           endDateTime.getTime() - timezoneOffset
         );
-
+  
         // Format the start and end times in the required format (YYYY-MM-DDTHH:mm)
-        const formattedStartTime = adjustedStartDateTime
-          .toISOString()
-          .slice(0, 16);
+        const formattedStartTime = adjustedStartDateTime.toISOString().slice(0, 16);
         const formattedEndTime = adjustedEndDateTime.toISOString().slice(0, 16);
-
+  
         setStartTime(formattedStartTime);
         setEndTime(formattedEndTime);
-      } else {
-        // If the selected event doesn't have start and end times, set default values
-        setStartTime(new Date().toISOString().slice(0, 16));
-        setEndTime(new Date().toISOString().slice(0, 16));
       }
+    } else {
+      // Set default start and end times to the selected date (if available) or current date
+      const currentDate = new Date();
+      const selectedDate = selectedEvent ? new Date(selectedEvent.start) : currentDate;
+  
+      // Set the time to 12:00 PM for the selected date
+      selectedDate.setHours(12, 0, 0, 0);
+  
+      const formattedStartTime = selectedDate.toISOString().slice(0, 16);
+      const formattedEndTime = selectedDate.toISOString().slice(0, 16);
+  
+      setStartTime(formattedStartTime);
+      setEndTime(formattedEndTime);
+      setEventTitle("");
+      setAllDay(false);
     }
   }, [selectedEvent]);
 

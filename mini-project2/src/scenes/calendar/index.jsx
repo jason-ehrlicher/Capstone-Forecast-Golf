@@ -78,8 +78,9 @@ const Calendar = () => {
   const handleDateClick = (selectedInfo) => {
     // Creating a new event object and opening the modal
     const newEvent = {
-      start: selectedInfo.startStr,
-      end: selectedInfo.endStr,
+      title: "", // Add a default empty title
+      start: new Date(selectedInfo.start),
+      end: new Date(selectedInfo.end),
       allDay: selectedInfo.allDay,
     };
     setSelectedEvent(newEvent);
@@ -169,7 +170,7 @@ const Calendar = () => {
           severity: "success",
         });
         setOpenSnackbar(true);
-        onClose();
+        // Removed the call to onClose()
       } else {
         const data = await response.json();
         console.error("Failed to update event:", data.message);
@@ -229,9 +230,10 @@ const Calendar = () => {
       title: event.title,
       start: event.start ? event.start.toISOString() : undefined,
       end: event.end ? event.end.toISOString() : undefined,
-      allDay: event.allDay,
+      allDay: eventDropInfo.view.type === "dayGridMonth",
       userId: user?.user?.id,
     };
+
     if (updatedEvent.start) {
       try {
         const response = await fetch(
@@ -245,6 +247,15 @@ const Calendar = () => {
           }
         );
         if (response.ok) {
+          // Update the event in the calendar
+          const calendarApi = calendarRef.current.getApi();
+          const eventToUpdate = calendarApi.getEventById(event.id);
+          if (eventToUpdate) {
+            eventToUpdate.setDates(event.start, event.end, {
+              allDay: updatedEvent.allDay,
+            });
+            eventToUpdate.setAllDay(updatedEvent.allDay);
+          }
           setSnackbarMessage({
             text: "Event updated successfully!",
             severity: "success",
@@ -337,30 +348,33 @@ const Calendar = () => {
           {/* Title for the events list */}
           <Typography variant="h5">Events</Typography>
           <List>
-            {currentEvents.map((event) => (
-              <ListItem
-                key={event.id} // Unique key for each event
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  margin: "10px 0",
-                  borderRadius: "2px",
-                }}
-              >
-                {/* Event title and date */}
-                <ListItemText
-                  primary={event.title} // Event title
-                  secondary={
-                    <Typography>
-                      {formatDate(event.start, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
+            {currentEvents
+              .slice() // Create a shallow copy of the array
+              .sort((a, b) => a.start.getTime() - b.start.getTime()) // Sort the events chronologically
+              .map((event) => (
+                <ListItem
+                  key={event.id} // Unique key for each event
+                  sx={{
+                    backgroundColor: colors.greenAccent[500],
+                    margin: "10px 0",
+                    borderRadius: "2px",
+                  }}
+                >
+                  {/* Event title and date */}
+                  <ListItemText
+                    primary={event.title} // Event title
+                    secondary={
+                      <Typography>
+                        {formatDate(event.start, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              ))}
           </List>
         </Box>
 
@@ -394,44 +408,6 @@ const Calendar = () => {
             eventDrop={handleEventDrop}
             eventResize={handleEventResize}
             events={events}
-            // Array of initial events
-            // initialEvents={[
-            //   {
-            //     id: "12315",
-            //     title: "UAE Tournament",
-            //     date: "2024-01-19",
-            //   },
-            //   {
-            //     id: "5123",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-01-23",
-            //   },
-            //   {
-            //     id: "5124",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-01-02",
-            //   },
-            //   {
-            //     id: "5125",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-01-09",
-            //   },
-            //   {
-            //     id: "5126",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-01-16",
-            //   },
-            //   {
-            //     id: "5127",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-01-30",
-            //   },
-            //   {
-            //     id: "5128",
-            //     title: "Tuesday Mens League",
-            //     date: "2024-02-06",
-            //   },
-            // ]}
           />
         </Box>
       </Box>
