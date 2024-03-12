@@ -144,19 +144,20 @@ const Forecast = () => {
   const chartData = [
     {
       id: "Predicted",
-      data: dates.slice(todayIndex - 7, todayIndex + 1).map((date) => ({
+      data: dates.slice(todayIndex - 7, todayIndex).map((date) => ({
         x: date.date,
         y: date.predictionRounds || 0,
       })),
     },
     {
       id: "Actual",
-      data: dates.slice(todayIndex - 7, todayIndex + 1).map((date) => ({
+      data: dates.slice(todayIndex - 7, todayIndex).map((date) => ({
         x: date.date,
         y: date.actualRoundsPlayed || 0,
       })),
     },
   ];
+
   return (
     <Box m="20px">
       <Header
@@ -212,7 +213,7 @@ const Forecast = () => {
               ? `${dates[todayIndex].predictionRounds}`
               : "Loading..."}
           </Typography>
-          <Typography variant="h4">Rounds Played</Typography>
+          <Typography variant="h4">Rounds to be Played</Typography>
         </Box>
         <ForecastWeatherWidget date={new Date(dates[todayIndex].dateString)} />
       </Card>
@@ -286,95 +287,12 @@ const Forecast = () => {
                   ? `${date.predictionRounds}`
                   : "Loading..."}
               </Typography>
-              <Typography variant="h6">Rounds Played</Typography>
+              <Typography variant="h6">Rounds to be Played</Typography>
             </Box>
             <ForecastWeatherWidget date={new Date(date.dateString)} />
           </Card>
         ))}
       </Box>
-
-      {/* Last 7 Days Recap */}
-      <Typography
-        variant="h5"
-        sx={{
-          marginBottom: "10px",
-          marginTop: "20px",
-          fontWeight: "bold",
-          textAlign: "center",
-        }}
-      >
-        Last 7 Days:
-      </Typography>
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={dates
-            .slice(todayIndex - 7, todayIndex)
-            .reverse()
-            .map((date, index) => ({
-              id: index,
-              date: `${date.dayOfWeek}, ${date.date}`,
-              predicted: date.predictionRounds ? date.predictionRounds : "N/A",
-              actual:
-                date.actualRoundsPlayed !== undefined
-                  ? date.actualRoundsPlayed
-                  : "N/A",
-              difference:
-                date.actualRoundsPlayed !== undefined &&
-                date.predictionRounds !== undefined
-                  ? date.actualRoundsPlayed - date.predictionRounds
-                  : "N/A",
-              accuracy: calculateAccuracy(
-                date.actualRoundsPlayed,
-                date.predictionRounds
-              )
-                ? `${calculateAccuracy(
-                    date.actualRoundsPlayed,
-                    date.predictionRounds
-                  )}%`
-                : "N/A",
-            }))}
-          columns={[
-            { field: "date", headerName: "Date", flex: 1 },
-            { field: "predicted", headerName: "Predicted", flex: 1 },
-            { field: "actual", headerName: "Actual", flex: 1 },
-            { field: "difference", headerName: "Difference", flex: 1 },
-            {
-              field: "accuracy",
-              headerName: "Accuracy",
-              flex: 1,
-              cellClassName: (params) =>
-                params.value >= 80 ? "green-cell" : "red-cell",
-            },
-          ]}
-          pageSize={7}
-          rowsPerPageOptions={[7]}
-          disableSelectionOnClick
-          components={{
-            Toolbar: CustomToolbar,
-          }}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: `1px solid ${colors.grey[300]}`,
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: `1px solid ${colors.grey[300]}`,
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: `1px solid ${colors.grey[300]}`,
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: `1px solid ${colors.grey[300]}`,
-              backgroundColor: colors.blueAccent[700],
-            },
-            border: `1px solid ${colors.grey[300]}`,
-            marginBottom: theme.spacing(2),
-          }}
-        />
-      </div>
       {/* Line Chart */}
       <Box style={{ backgroundColor: colors.primary[400] }}>
         <Typography
@@ -502,6 +420,88 @@ const Forecast = () => {
           />
         </div>
       </Box>
+      {/* Last 7 Days Recap */}
+      <Typography
+        variant="h5"
+        sx={{
+          marginBottom: "10px",
+          marginTop: "20px",
+          fontWeight: "bold",
+          textAlign: "center",
+        }}
+      >
+        Last 7 Days:
+      </Typography>
+      <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={dates
+            .slice(todayIndex - 7, todayIndex)
+            .reverse()
+            .map((date, index) => ({
+              id: index,
+              date: `${date.dayOfWeek}, ${date.date}`,
+              predicted: date.predictionRounds ? date.predictionRounds : "N/A",
+              actual:
+                date.actualRoundsPlayed !== undefined
+                  ? date.actualRoundsPlayed
+                  : "N/A",
+              difference:
+                date.actualRoundsPlayed !== undefined &&
+                date.predictionRounds !== undefined
+                  ? date.actualRoundsPlayed - date.predictionRounds
+                  : "N/A",
+              accuracy: calculateAccuracy(
+                date.actualRoundsPlayed,
+                date.predictionRounds
+              )
+                ? `${calculateAccuracy(
+                    date.actualRoundsPlayed,
+                    date.predictionRounds
+                  )}%`
+                : "N/A",
+            }))}
+          columns={[
+            { field: "date", headerName: "Date", flex: 1 },
+            { field: "predicted", headerName: "Predicted", flex: 1 },
+            { field: "actual", headerName: "Actual", flex: 1 },
+            { field: "difference", headerName: "Difference", flex: 1 },
+            {
+              field: "accuracy",
+              headerName: "Accuracy",
+              flex: 1,
+              cellClassName: (params) =>
+                params.value >= 80 ? "green-cell" : "red-cell",
+            },
+          ]}
+          pageSize={7}
+          rowsPerPageOptions={[7]}
+          disableSelectionOnClick
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: `1px solid ${colors.grey[300]}`,
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: `1px solid ${colors.grey[300]}`,
+              backgroundColor: colors.blueAccent[700],
+            },
+            border: `1px solid ${colors.grey[300]}`,
+            marginBottom: theme.spacing(2),
+          }}
+        />
+      </div>
     </Box>
   );
 };

@@ -120,6 +120,13 @@ const Sidebar = () => {
           )}
           {/* Menu items for navigation */}
           <Box paddingLeft={isCollapsed ? undefined : "10px"}>
+          <Item
+              title="ForeCast"
+              to="/forecast"
+              icon={<PsychologyOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             {/* Section title for 'Operations' */}
             {!isCollapsed && (
               <Typography
@@ -171,13 +178,7 @@ const Sidebar = () => {
                 Data
               </Typography>
             )}
-            <Item
-              title="ForeCast"
-              to="/forecast"
-              icon={<PsychologyOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+
             <Item
               title="Reports"
               to="/reports"

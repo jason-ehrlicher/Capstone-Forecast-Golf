@@ -74,38 +74,40 @@ const History = () => {
     fetchData();
   }, []);
 
-  // Merge golf rounds and weather data
-  const mergeData = (weatherData, golfRoundsData) => {
-    const mergedData = golfRoundsData
-      .filter((golfRound) => new Date(golfRound.date).getFullYear() !== 2021)
-      .map((golfRound) => {
-        const weather = weatherData.find((w) => w.date === golfRound.date);
+// Merge golf rounds and weather data
+const mergeData = (weatherData, golfRoundsData) => {
+  const mergedData = golfRoundsData
+    .filter((golfRound) => new Date(golfRound.date).getFullYear() !== 2021)
+    .map((golfRound) => {
+      const weather = weatherData.find((w) => w.date === golfRound.date);
 
-        const dayOfWeek = new Date(golfRound.date).toLocaleDateString("en-US", {
-          weekday: "long",
-        });
-
-        return {
-          ...golfRound,
-          dayOfWeek,
-          roundsPlayed: golfRound.rounds_played,
-          weatherDate: weather?.date,
-          weatherIcon: weather?.weather_icon,
-          temp: weather?.temp_mean,
-          feelsLike: weather?.feels_like_mean,
-          tempMin: weather?.temp_min,
-          tempMax: weather?.temp_max,
-          humidity: weather?.humidity_mean,
-          windSpeed: weather?.wind_speed_mean,
-          windGust: weather?.wind_speed_max,
-          weatherMain: weather?.weather_main,
-          weatherDescription: weather?.weather_description,
-          rain: weather?.rain_sum,
-        };
+      const date = new Date(golfRound.date);
+      const dayOfWeek = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        timeZone: 'UTC',
       });
-    console.log("merged:", mergedData);
-    return mergedData;
-  };
+
+      return {
+        ...golfRound,
+        dayOfWeek,
+        roundsPlayed: golfRound.rounds_played,
+        weatherDate: weather?.date,
+        weatherIcon: weather?.weather_icon,
+        temp: weather?.temp_mean,
+        feelsLike: weather?.feels_like_mean,
+        tempMin: weather?.temp_min,
+        tempMax: weather?.temp_max,
+        humidity: weather?.humidity_mean,
+        windSpeed: weather?.wind_speed_mean,
+        windGust: weather?.wind_speed_max,
+        weatherMain: weather?.weather_main,
+        weatherDescription: weather?.weather_description,
+        rain: weather?.rain_sum,
+      };
+    });
+  // console.log('merged:', mergedData);
+  return mergedData;
+};
 
   // Columns configuration for the data grid
   const columns = [
