@@ -65,7 +65,6 @@ const Weather = () => {
   }
 
   // Render method of the Weather component
-  // Rendering the weather widget
   return (
     <Box sx={{ m: "20px" }}>
       <Header title="Weather" subtitle="Your Weather Dashboard" />
@@ -219,11 +218,10 @@ const Weather = () => {
 
         {/* Hourly Forecast Section */}
         <Typography variant="h4" gutterBottom>
-              Hourly Forecast
-            </Typography>
+          Hourly Forecast
+        </Typography>
         {weatherData && weatherData.hourly && (
           <Box sx={{ overflowX: "auto", mb: 2 }}>
-           
             <Box sx={{ display: "flex", width: "100%" }}>
               {/* Mapping over hourly data to display each hour's forecast */}
               {weatherData.hourly.slice(1, 13).map((hour, index) => (
@@ -231,43 +229,55 @@ const Weather = () => {
                   key={index} // Unique key for each hour
                   sx={{
                     minWidth: 150,
-                    p: 1,
                     textAlign: "center",
                     backgroundColor:
                       theme.palette.mode === "light"
                         ? colors.primary[900]
                         : colors.primary[500],
-                    borderRadius: 1,
                     m: "0 4px",
-                    flex: "1 1 auto",
                     mb: 2,
+                    borderRadius: 2,
                   }}
                 >
-                  {/* Displaying the time of the forecast */}
-                  <Typography variant="subtitle2">
-                    {new Date(hour.dt * 1000).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </Typography>
-
-                  {/* Displaying the temperature */}
-                  <Typography variant="subtitle2">
-                    {hour.temp}°{isMetric ? "C" : "F"}
-                  </Typography>
-
-                  {/* Displaying the weather icon */}
+                  {/* Time container */}
                   <Box
-                    component="img"
-                    sx={{ height: 25 }}
-                    src={`http://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
-                    alt={hour.weather[0].description}
-                  />
+                    sx={{
+                      width: "100%",
+                      background: colors.blueAccent[700],
+                      textAlign: "center",
+                      color: "#fff",
+                      padding: "8px 0",
+                    }}
+                  >
+                    {/* Displaying the time of the forecast */}
+                    <Typography variant="subtitle2">
+                      {new Date(hour.dt * 1000).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Typography>
+                  </Box>
 
-                  {/* Displaying the main weather condition */}
-                  <Typography variant="subtitle2">
-                    {hour.weather[0].main}
-                  </Typography>
+                  {/* Forecast details */}
+                  <Box sx={{ p: 2 }}>
+                    {/* Displaying the temperature */}
+                    <Typography variant="subtitle2">
+                      {hour.temp}°{isMetric ? "C" : "F"}
+                    </Typography>
+
+                    {/* Displaying the weather icon */}
+                    <Box
+                      component="img"
+                      sx={{ height: 25 }}
+                      src={`http://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
+                      alt={hour.weather[0].description}
+                    />
+
+                    {/* Displaying the main weather condition */}
+                    <Typography variant="subtitle2">
+                      {hour.weather[0].main}
+                    </Typography>
+                  </Box>
                 </Box>
               ))}
             </Box>
@@ -303,7 +313,6 @@ const Weather = () => {
                     // Styling for each forecast item
                     minWidth: 150,
                     flexShrink: 0,
-                    p: 2,
                     textAlign: "center",
                     backgroundColor:
                       theme.palette.mode === "light"
@@ -314,42 +323,56 @@ const Weather = () => {
                     borderRadius: 2,
                   }}
                 >
-                  {/* Displaying date */}
-                  <Typography variant="subtitle1">
-                    {new Date(day.dt * 1000).toLocaleDateString("en-US", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                    })}
-                  </Typography>
-
-                  {/* Displaying high temperature */}
-                  <Typography variant="subtitle2">
-                    High: {day.temp.max}°{isMetric ? "C" : "F"}
-                  </Typography>
-
-                  {/* Displaying low temperature */}
-                  <Typography variant="subtitle2">
-                    Low: {day.temp.min}°{isMetric ? "C" : "F"}
-                  </Typography>
-
-                  {/* Displaying humidity */}
-                  <Typography variant="subtitle2">
-                    Humidity: {day.humidity}%
-                  </Typography>
-
-                  {/* Displaying wind speed */}
-                  <Typography variant="subtitle2">
-                    Wind: {day.wind_speed} {isMetric ? "m/s" : "mph"}
-                  </Typography>
-
-                  {/* Weather icon */}
+                  {/* Date container */}
                   <Box
-                    component="img"
-                    sx={{ height: 30 }}
-                    src={`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
-                    alt={day.weather[0].description}
-                  />
+                    sx={{
+                      width: "100%",
+                      background: colors.blueAccent[700],
+                      textAlign: "center",
+                      color: "#fff",
+                      padding: "8px 0",
+                    }}
+                  >
+                    {/* Displaying date */}
+                    <Typography variant="subtitle1">
+                      {new Date(day.dt * 1000).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </Typography>
+                  </Box>
+
+                  {/* Forecast details */}
+                  <Box sx={{ p: 2 }}>
+                    {/* Displaying high temperature */}
+                    <Typography variant="subtitle2">
+                      High: {day.temp.max}°{isMetric ? "C" : "F"}
+                    </Typography>
+
+                    {/* Displaying low temperature */}
+                    <Typography variant="subtitle2">
+                      Low: {day.temp.min}°{isMetric ? "C" : "F"}
+                    </Typography>
+
+                    {/* Displaying humidity */}
+                    <Typography variant="subtitle2">
+                      Humidity: {day.humidity}%
+                    </Typography>
+
+                    {/* Displaying wind speed */}
+                    <Typography variant="subtitle2">
+                      Wind: {day.wind_speed} {isMetric ? "m/s" : "mph"}
+                    </Typography>
+
+                    {/* Weather icon */}
+                    <Box
+                      component="img"
+                      sx={{ height: 30 }}
+                      src={`http://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
+                      alt={day.weather[0].description}
+                    />
+                  </Box>
                 </Box>
               ))}
             </Box>

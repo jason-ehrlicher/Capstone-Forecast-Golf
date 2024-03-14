@@ -19,8 +19,7 @@ const WeatherWidget = () => {
   const [isMetric, setIsMetric] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const toggleUnits = () => setIsMetric(!isMetric);
-  const { latitude, longitude, error } = useLocation();
-
+  const { latitude, longitude, error } = useLocation();                                                                                                                                                                                                                             
   // Accessing the theme for styling
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -214,58 +213,71 @@ const WeatherWidget = () => {
       )}
 
       {/* Hourly Forecast Section */}
-      {weatherData && weatherData.hourly && (
-        <Box sx={{ overflowX: "auto" }}>
-          <Box sx={{ display: "flex", width: "100%" }}>
-            {/* Mapping over hourly data to display each hour's forecast */}
-            {weatherData.hourly.slice(1, 13).map((hour, index) => (
-              <Box
-                key={index} // Unique key for each hour
-                sx={{
-                  minWidth: 150,
-                  p: 1,
-                  textAlign: "center",
-                  backgroundColor:
-                    theme.palette.mode === "light"
-                      ? colors.primary[900]
-                      : colors.primary[500],
-                  borderRadius: 1,
-                  m: "0 4px",
-                  flex: "1 1 auto",
-                  mb: 2,
-                }}
-              >
-                {/* Displaying the time of the forecast */}
-                <Typography variant="subtitle2">
-                  {new Date(hour.dt * 1000).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Typography>
-
-                {/* Displaying the temperature */}
-                <Typography variant="subtitle2">
-                  {hour.temp}°{isMetric ? "C" : "F"}
-                </Typography>
-
-                {/* Displaying the weather icon */}
-                <Box
-                  component="img"
-                  sx={{ height: 25 }}
-                  src={`http://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
-                  alt={hour.weather[0].description}
-                />
-
-                {/* Displaying the main weather condition */}
-                <Typography variant="subtitle2">
-                  {hour.weather[0].main}
-                </Typography>
-              </Box>
-            ))}
+{/* Hourly Forecast Section */}
+{weatherData && weatherData.hourly && (
+  <Box sx={{ overflowX: "auto", mb: 2 }}>
+    <Box sx={{ display: "flex", width: "100%" }}>
+      {/* Mapping over hourly data to display each hour's forecast */}
+      {weatherData.hourly.slice(1, 13).map((hour, index) => (
+        <Box
+          key={index} // Unique key for each hour
+          sx={{
+            minWidth: 150,
+            textAlign: "center",
+            backgroundColor:
+              theme.palette.mode === "light"
+                ? colors.primary[900]
+                : colors.primary[500],
+            m: "0 4px",
+            mb: 2,
+            borderRadius: 2,
+          }}
+        >
+          {/* Time container */}
+          <Box
+            sx={{
+              width: "100%",
+              background: colors.blueAccent[700],
+              textAlign: "center",
+              color: "#fff",
+              padding: "8px 0",
+            }}
+          >
+            {/* Displaying the time of the forecast */}
+            <Typography variant="subtitle2">
+              {new Date(hour.dt * 1000).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </Typography>
           </Box>
-          <ForecastWidget />
+
+          {/* Forecast details */}
+          <Box sx={{ p: 2 }}>
+            {/* Displaying the temperature */}
+            <Typography variant="subtitle2">
+              {hour.temp}°{isMetric ? "C" : "F"}
+            </Typography>
+
+            {/* Displaying the weather icon */}
+            <Box
+              component="img"
+              sx={{ height: 25 }}
+              src={`http://openweathermap.org/img/wn/${hour.weather[0].icon}.png`}
+              alt={hour.weather[0].description}
+            />
+
+            {/* Displaying the main weather condition */}
+            <Typography variant="subtitle2">
+              {hour.weather[0].main}
+            </Typography>
+          </Box>
         </Box>
-      )}
+      ))}
+    </Box>
+    <ForecastWidget />
+  </Box>
+)}
     </Box>
   );
 };
